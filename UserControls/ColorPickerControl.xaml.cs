@@ -8,12 +8,11 @@ using System.Windows.Media;
 namespace MVVMPaintApp.UserControls
 {
     /// <summary>
-    /// Interaction logic for ColorPicker.xaml
+    /// Interaction logic for ColorPickerControl.xaml
     /// </summary>
     public partial class ColorPickerControl : UserControl
     {
-        #region Public
-
+        #region Public Properties
         public Color SelectedColor
         {
             get => (Color)GetValue(SelectedColorProperty);
@@ -41,35 +40,30 @@ namespace MVVMPaintApp.UserControls
                 nameof(CurrentSpectrumColor),
                 typeof(Color),
                 typeof(ColorPickerControl),
-                new PropertyMetadata(
-                    Colors.Transparent));
+                new PropertyMetadata(Colors.Transparent));
+        
+        public event EventHandler<Color>? ColorChanged;
+        #endregion
 
+        #region Private Fields
+        private bool _isDragging;
+        private bool _isMouseCaptured;
+        private Color _currentColor;
+
+        private const double BlackToColorPoint = 0.33;
+        private const double ColorToWhitePoint = 0.66;
+        #endregion
+
+        #region Constructor
         public ColorPickerControl()
         {
             InitializeComponent();
             AlphaSlider.Value = 255;
             UpdateControls();
         }
-
-        public event EventHandler<Color>? ColorChanged;
-
         #endregion
 
-        #region Private
-
-        private bool _isDragging;
-        private bool _isMouseCaptured;
-        private Color _currentColor;
-
-        private const double blackToColorPoint = 0.33;
-        private const double colorToWhitePoint = 0.66;
-
-        private void ColorSpectrum_LostMouseCapture(object sender, MouseEventArgs e)
-        {
-            _isDragging = false;
-            _isMouseCaptured = false;
-        }
-
+        #region Event Handlers
         private void ColorSpectrum_MouseDown(object sender, MouseButtonEventArgs e)
         {
             _isDragging = true;
@@ -80,48 +74,29 @@ namespace MVVMPaintApp.UserControls
 
         private void ColorSpectrum_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isDragging && e.LeftButton == MouseButtonState.Pressed)
-            {
-                Point mousePos = e.GetPosition(ColorSpectrum);
-                // Allow dragging outside the color spectrum while maintaining color selection
-                if (_isMouseCaptured)
-                {
-                    UpdateColorFromSpectrum(mousePos);
-                }
-            }
-            else
-            {
-                if (_isMouseCaptured)
-                {
-                    ColorSpectrum.ReleaseMouseCapture();
-                }
-                _isDragging = false;
-                _isMouseCaptured = false;
-            }
+            if (!HandleSpectrumMouseMove(e)) return;
+            UpdateColorFromSpectrum(e.GetPosition(ColorSpectrum));
         }
 
         private void ColorSpectrum_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isMouseCaptured)
-            {
-                ColorSpectrum.ReleaseMouseCapture();
-            }
-            _isDragging = false;
-            _isMouseCaptured = false;
-            Cursor = Cursors.Arrow;
-
+            ReleaseMouseCapture();
             ColorChanged?.Invoke(this, SelectedColor);
+        }
+
+        private void ColorSpectrum_LostMouseCapture(object sender, MouseEventArgs e)
+        {
+            ReleaseMouseCapture();
         }
 
         private void ColorValue_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                UpdateColorFromRgbTextBoxes();
-                UpdateTextBoxes();
-                ((TextBox)sender).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-            }
+            if (e.Key != Key.Enter) return;
+            UpdateColorFromRgbTextBoxes();
+            UpdateTextBoxes();
+            ((TextBox)sender).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         }
+
         private void ColorValue_LostFocus(object sender, RoutedEventArgs e)
         {
             UpdateColorFromRgbTextBoxes();
@@ -129,11 +104,9 @@ namespace MVVMPaintApp.UserControls
 
         private void HexValue_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                UpdateColorFromHexTextBox();
-                ((TextBox)sender).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-            }
+            if (e.Key != Key.Enter) return;
+            UpdateColorFromHexTextBox();
+            ((TextBox)sender).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         }
 
         private void HexValue_LostFocus(object sender, RoutedEventArgs e)
@@ -152,11 +125,91 @@ namespace MVVMPaintApp.UserControls
             UpdateControls();
             SelectedColor = _currentColor;
         }
+        #endregion
 
+        #region Color Calculations
+        private static Color GetRainbowColor(double position)
+        {
+            var (r, g, b) = CalculateRainbowComponents(position * 6);
+            return Color.FromRgb(r, g, b);
+        }
+
+        private static (byte r, byte g, byte b) CalculateRainbowComponents(double position)
+        {
+            int index = (int)position;
+            double remainder = position - index;
+
+            return index switch
+            {
+                0 => (255, (byte)(255 * remainder), 0),                    // Red to Yellow
+                1 => ((byte)(255 * (1 - remainder)), 255, 0),             // Yellow to Green
+                2 => (0, 255, (byte)(255 * remainder)),                   // Green to Cyan
+                3 => (0, (byte)(255 * (1 - remainder)), 255),            // Cyan to Blue
+                4 => ((byte)(255 * remainder), 0, 255),                   // Blue to Magenta
+                _ => (255, 0, (byte)(255 * (1 - remainder)))             // Magenta to Red
+            };
+        }
+
+        private static Color MixColors(Color color1, Color color2, double amount)
+        {
+            return Color.FromRgb(
+                (byte)(color1.R * (1 - amount) + color2.R * amount),
+                (byte)(color1.G * (1 - amount) + color2.G * amount),
+                (byte)(color1.B * (1 - amount) + color2.B * amount)
+            );
+        }
+
+        private static double GetHue(Color color)
+        {
+            var (h, _, _) = RgbToHsv(color);
+            return h;
+        }
+
+        private static (double h, double s, double v) RgbToHsv(Color color)
+        {
+            double r = color.R / 255.0;
+            double g = color.G / 255.0;
+            double b = color.B / 255.0;
+
+            double max = Math.Max(r, Math.Max(g, b));
+            double min = Math.Min(r, Math.Min(g, b));
+            double delta = max - min;
+
+            double hue = delta == 0 ? 0 :
+                max == r ? 60 * ((g - b) / delta) :
+                max == g ? 60 * (2 + (b - r) / delta) :
+                          60 * (4 + (r - g) / delta);
+
+            if (hue < 0) hue += 360;
+
+            double saturation = max == 0 ? 0 : delta / max;
+            double value = max;
+
+            return (hue, saturation, value);
+        }
+
+        private static double GetRelativeBrightness(Color color, Color baseColor)
+        {
+            double colorBrightness = CalculateBrightness(color);
+            double baseBrightness = CalculateBrightness(baseColor);
+
+            if (colorBrightness < baseBrightness)
+                return (colorBrightness / baseBrightness) - 1;
+            if (colorBrightness > baseBrightness)
+                return (colorBrightness - baseBrightness) / (1.0 - baseBrightness);
+            return 0;
+        }
+
+        private static double CalculateBrightness(Color color) =>
+            (color.R * 0.299 + color.G * 0.587 + color.B * 0.114) / 255.0;
+        #endregion
+
+        #region UI Updates
         private void UpdateControls()
         {
-            ColorPreview.Fill = new SolidColorBrush(_currentColor);
-            ColorSelector.Fill = new SolidColorBrush(_currentColor);
+            var brush = new SolidColorBrush(_currentColor);
+            ColorPreview.Fill = brush;
+            ColorSelector.Fill = brush;
             ColorChanged?.Invoke(this, _currentColor);
         }
 
@@ -171,22 +224,93 @@ namespace MVVMPaintApp.UserControls
             }
             catch
             {
-                return;
+                // Maintain current values if update fails
             }
+        }
+
+        public void UpdateColorSelectorPosition()
+        {
+            if (_isDragging) return;
+
+            double hueScale = GetHue(_currentColor) / 360.0;
+            double x = hueScale * ColorSpectrum.ActualWidth;
+
+            Color baseColor = GetRainbowColor(Math.Min(hueScale, 0.9999));
+            double brightness = GetRelativeBrightness(_currentColor, baseColor);
+
+            double y = CalculateYPosition(brightness);
+
+            UpdateSelectorPosition(x, y);
+        }
+
+        private double CalculateYPosition(double brightness)
+        {
+            double y = brightness switch
+            {
+                < 0 => (brightness + 1) * BlackToColorPoint,
+                > 0 => ColorToWhitePoint + (brightness * (1 - ColorToWhitePoint)),
+                _ => (BlackToColorPoint + ColorToWhitePoint) / 2
+            };
+
+            return y * ColorSpectrum.ActualHeight;
+        }
+
+        private void UpdateSelectorPosition(double x, double y)
+        {
+            double halfSize = ColorSelector.Width / 2;
+            Canvas.SetLeft(ColorSelector, x - halfSize);
+            Canvas.SetTop(ColorSelector, y - halfSize);
+        }
+        #endregion
+
+        #region Color Updates
+        private void UpdateColorFromSpectrum(Point position)
+        {
+            var (x, y) = ClampPosition(position);
+            UpdateSelectorPosition(x, y);
+
+            double huePosition = Math.Min(x / ColorSpectrum.ActualWidth, 0.9999);
+            Color baseColor = GetRainbowColor(huePosition);
+
+            _currentColor = CalculateColorFromPosition(y / ColorSpectrum.ActualHeight, baseColor);
+            _currentColor.A = (byte)AlphaSlider.Value;
+
+            CurrentSpectrumColor = _currentColor;
+            SelectedColor = _currentColor;
+
+            UpdateControls();
+            UpdateTextBoxes();
+        }
+
+        private (double x, double y) ClampPosition(Point position) => (
+            Math.Clamp(position.X, 0, ColorSpectrum.ActualWidth),
+            Math.Clamp(position.Y, 0, ColorSpectrum.ActualHeight)
+        );
+
+        private static Color CalculateColorFromPosition(double normalizedY, Color baseColor)
+        {
+            if (normalizedY < BlackToColorPoint)
+            {
+                double blackAmount = 1.0 - (normalizedY / BlackToColorPoint);
+                return MixColors(baseColor, Colors.Black, blackAmount);
+            }
+
+            if (normalizedY > ColorToWhitePoint)
+            {
+                double whiteAmount = (normalizedY - ColorToWhitePoint) / (1.0 - ColorToWhitePoint);
+                return MixColors(baseColor, Colors.White, whiteAmount);
+            }
+
+            return baseColor;
         }
 
         private void UpdateColorFromRgbTextBoxes()
         {
             if (_isDragging) return;
 
-            if (byte.TryParse(RedTextBox.Text, out byte r) &&
-                byte.TryParse(GreenTextBox.Text, out byte g) &&
-                byte.TryParse(BlueTextBox.Text, out byte b))
+            if (TryParseRgbValues(out var color))
             {
-                SelectedColor = Color.FromRgb(r, g, b);
-                CurrentSpectrumColor = _currentColor;
-                UpdateColorSelectorPosition();
-                UpdateControls();
+                UpdateColorAndUI(color);
             }
             else
             {
@@ -194,18 +318,27 @@ namespace MVVMPaintApp.UserControls
             }
         }
 
+        private bool TryParseRgbValues(out Color color)
+        {
+            color = Colors.Black;
+            if (byte.TryParse(RedTextBox.Text, out byte r) &&
+                byte.TryParse(GreenTextBox.Text, out byte b) &&
+                byte.TryParse(BlueTextBox.Text, out byte g))
+            {
+                color = Color.FromRgb(r, g, b);
+                return true;
+            }
+            return false;
+        }
+
         private void UpdateColorFromHexTextBox()
         {
             if (_isDragging) return;
 
-            string hex = HexTextBox.Text.PadLeft(6, '0');
             try
             {
-                var color = (Color)ColorConverter.ConvertFromString(hex);
-                SelectedColor = color;
-                CurrentSpectrumColor = _currentColor;
-                UpdateColorSelectorPosition();
-                UpdateControls();
+                var color = (Color)ColorConverter.ConvertFromString(HexTextBox.Text.PadLeft(6, '0'));
+                UpdateColorAndUI(color);
             }
             catch
             {
@@ -213,196 +346,37 @@ namespace MVVMPaintApp.UserControls
             }
         }
 
-        private void UpdateColorFromSpectrum(Point position)
+        private void UpdateColorAndUI(Color color)
         {
-            double x = Math.Clamp(position.X, 0, ColorSpectrum.ActualWidth);
-            double y = Math.Clamp(position.Y, 0, ColorSpectrum.ActualHeight);
-
-            // Update selector position with clamping to prevent overlap with borders
-            int halfSize = (int)ColorSelector.Width / 2;
-            Canvas.SetLeft(ColorSelector, Math.Clamp(x - halfSize, -halfSize, ColorSpectrum.ActualWidth - halfSize));
-            Canvas.SetTop(ColorSelector, Math.Clamp(y - halfSize, -halfSize, ColorSpectrum.ActualHeight - halfSize));
-
-            // Normalize x position to prevent color wrapping at the edge
-            double huePosition = Math.Min(x / ColorSpectrum.ActualWidth, 0.9999);
-            Color baseColor = GetRainbowColor(huePosition);
-
-            double normalizedY = y / ColorSpectrum.ActualHeight;
-
-            // Apply black || white
-            if (normalizedY < blackToColorPoint)
-            {
-                double blackAmount = 1.0 - (normalizedY / blackToColorPoint);
-                _currentColor = MixColors(baseColor, Colors.Black, blackAmount);
-            }
-            else if (normalizedY > colorToWhitePoint)
-            {
-                double whiteAmount = (normalizedY - colorToWhitePoint) / (1.0 - colorToWhitePoint);
-                _currentColor = MixColors(baseColor, Colors.White, whiteAmount);
-            }
-            else
-            {
-                _currentColor = baseColor;
-            }
-
+            SelectedColor = color;
             CurrentSpectrumColor = _currentColor;
-            _currentColor.A = (byte)AlphaSlider.Value;
-            SelectedColor = _currentColor;
-
+            UpdateColorSelectorPosition();
             UpdateControls();
-            UpdateTextBoxes();
         }
-
-        public void UpdateColorSelectorPosition()
-        {
-            // Calculate x position based on hue
-            double hueScale = GetHue(_currentColor) / 360.0;
-            int x = (int)(hueScale * ColorSpectrum.ActualWidth);
-
-            // Get the pure hue color at this position
-            double huePosition = Math.Min(hueScale, 0.9999);
-            Color baseColor = GetRainbowColor(huePosition);
-
-            // Calculate brightness relative to the pure color
-            double brightness = GetRelativeBrightness(_currentColor, baseColor);
-
-            // Map brightness to y position:
-            // -1 to 0 (darker) maps to 0 to 0.33
-            // 0 (pure) maps to 0.5
-            // 0 to 1 (lighter) maps to 0.66 to 1
-            double y;
-            if (brightness < 0)
-            {
-                // Map -1 to 0 range to 0 to blackToColorPoint
-                y = (brightness + 1) * blackToColorPoint;
-            }
-            else if (brightness > 0)
-            {
-                // Map 0 to 1 range to colorToWhitePoint to 1
-                y = colorToWhitePoint + (brightness * (1 - colorToWhitePoint));
-            }
-            else
-            {
-                // Pure color in the middle of the gap
-                y = (blackToColorPoint + colorToWhitePoint) / 2;
-            }
-
-            y *= ColorSpectrum.ActualHeight;
-
-            // Update selector position
-            Canvas.SetLeft(ColorSelector, x - ColorSelector.Width / 2);
-            Canvas.SetTop(ColorSelector, y - ColorSelector.Height / 2);
-        }
-
-        private static Color GetRainbowColor(double position)
-        {
-            position *= 6;
-            int index = (int)position;
-            double remainder = position - index;
-
-            byte r = 0, g = 0, b = 0;
-
-            switch (index)
-            {
-                case 0: // Red to Yellow
-                    r = 255;
-                    g = (byte)(255 * remainder);
-                    break;
-                case 1: // Yellow to Green
-                    r = (byte)(255 * (1 - remainder));
-                    g = 255;
-                    break;
-                case 2: // Green to Cyan
-                    g = 255;
-                    b = (byte)(255 * remainder);
-                    break;
-                case 3: // Cyan to Blue
-                    g = (byte)(255 * (1 - remainder));
-                    b = 255;
-                    break;
-                case 4: // Blue to Magenta
-                    b = 255;
-                    r = (byte)(255 * remainder);
-                    break;
-                default: // Magenta to Red
-                    b = (byte)(255 * (1 - remainder));
-                    r = 255;
-                    break;
-            }
-
-            return Color.FromRgb(r, g, b);
-        }
-
-        private static Color MixColors(Color color1, Color color2, double amount)
-        {
-            return Color.FromRgb(
-                (byte)(color1.R * (1 - amount) + color2.R * amount),
-                (byte)(color1.G * (1 - amount) + color2.G * amount),
-                (byte)(color1.B * (1 - amount) + color2.B * amount)
-            );
-        }
-
-        private static double GetHue(Color color)
-        {
-            double r = color.R / 255.0;
-            double g = color.G / 255.0;
-            double b = color.B / 255.0;
-            double max = Math.Max(r, Math.Max(g, b));
-            double min = Math.Min(r, Math.Min(g, b));
-            if (max == min)
-            {
-                return 0;
-            }
-            double hue;
-            double delta = max - min;
-            if (max == r)
-            {
-                hue = (g - b) / delta;
-            }
-            else if (max == g)
-            {
-                hue = 2.0 + (b - r) / delta;
-            }
-            else
-            {
-                hue = 4.0 + (r - g) / delta;
-            }
-            hue *= 60.0;
-            if (hue < 0)
-            {
-                hue += 360.0;
-            }
-            return hue;
-        }
-
-        private static double GetRelativeBrightness(Color color, Color baseColor)
-        {
-            // Get brightness value from -1 (black) through 0 (base color) to 1 (white)
-
-            // Calculate relative brightness of the current color
-            double colorBrightness = (color.R * 0.299 + color.G * 0.587 + color.B * 0.114) / 255.0;
-            double baseBrightness = (baseColor.R * 0.299 + baseColor.G * 0.587 + baseColor.B * 0.114) / 255.0;
-
-            if (colorBrightness < baseBrightness)
-            {
-                // Color is darker than base - map to -1 to 0
-                return (colorBrightness / baseBrightness) - 1;
-            }
-            else if (colorBrightness > baseBrightness)
-            {
-                // Color is lighter than base - map to 0 to 1
-                double maxPossibleBrightness = 1.0;
-                return (colorBrightness - baseBrightness) / (maxPossibleBrightness - baseBrightness);
-            }
-            else
-            {
-                // Color is the base color
-                return 0;
-            }
-        }
-        
         #endregion
 
+        #region Mouse Handling
+        private bool HandleSpectrumMouseMove(MouseEventArgs e)
+        {
+            if (_isDragging && e.LeftButton == MouseButtonState.Pressed)
+                return _isMouseCaptured;
+
+            MyReleaseMouseCapture();
+            return false;
+        }
+
+        private void MyReleaseMouseCapture()
+        {
+            if (_isMouseCaptured)
+                ColorSpectrum.ReleaseMouseCapture();
+
+            _isDragging = false;
+            _isMouseCaptured = false;
+            Cursor = Cursors.Arrow;
+        }
+        #endregion
+
+        #region Callback
         private static void OnSelectedColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ColorPickerControl colorPicker)
@@ -411,5 +385,6 @@ namespace MVVMPaintApp.UserControls
                 colorPicker.UpdateControls();
             }
         }
+        #endregion
     }
 }

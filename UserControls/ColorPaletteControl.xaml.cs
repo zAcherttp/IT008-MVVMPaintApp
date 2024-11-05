@@ -12,7 +12,7 @@ namespace MVVMPaintApp.UserControls
         public ColorPaletteControl()
         {
             InitializeComponent();
-            DataContext = new ColorPaletteViewModel(ref ColorPicker);
+            DataContext = new ColorPaletteViewModel(ColorPicker);
         }
 
         private void OnPrimaryColorChecked(object sender, RoutedEventArgs e)

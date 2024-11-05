@@ -10,177 +10,242 @@ using System.Windows.Data;
 using System.Windows;
 using System.Windows.Controls;
 using MVVMPaintApp.UserControls;
+using System.Runtime.CompilerServices;
 
 namespace MVVMPaintApp.ViewModels
 {
     public class ColorPaletteViewModel : INotifyPropertyChanged
     {
-        private Color _PrimaryColor = Colors.Black;
-        private Color _SecondaryColor = Colors.White;
-        private int _ColorsListIndex = 0;
-        private bool _IsColorPickerOpen = false;
+        #region Constants
+        private const int DEFAULT_PALETTE_ROWS = 3;
+        private const int DEFAULT_PALETTE_COLUMNS = 9;
+        private const int CUSTOM_COLORS_START_INDEX = 9;
+        private const int MAX_CUSTOM_COLORS = 18;
+        #endregion
 
-        private ColorPickerControl _colorPickerControl;
+        #region Private Fields
+        private readonly ColorPickerControl _colorPicker;
+        private Color _primaryColor = Colors.White;
+        private Color _secondaryColor = Colors.Black;
+        private int _nextCustomColorIndex;
+        private bool _isColorPickerOpen;
+        private bool _isPrimarySelected = true;
+        #endregion
 
+        #region Public Properties
         public Color PrimaryColor
         {
-            get => _PrimaryColor;
+            get => _primaryColor;
             set
             {
-                _PrimaryColor = value;
+                _primaryColor = value;
                 OnPropertyChanged(nameof(PrimaryColor));
             }
         }
 
         public Color SecondaryColor
         {
-            get => _SecondaryColor;
+            get => _secondaryColor;
             set
             {
-                _SecondaryColor = value;
+                _secondaryColor = value;
                 OnPropertyChanged(nameof(SecondaryColor));
             }
         }
 
         public bool IsColorPickerOpen
         {
-            get => _IsColorPickerOpen;
+            get => _isColorPickerOpen;
             set
             {
-                _IsColorPickerOpen = value;
+                _isColorPickerOpen = value;
                 OnPropertyChanged(nameof(IsColorPickerOpen));
             }
         }
 
-        public ObservableCollection<ColorSlot> ColorsList { get; }
+        public ObservableCollection<PaletteColorSlot> ColorsList { get; }
 
         public ICommand ToggleColorPickerCommand { get; }
         public ICommand AddColorCommand { get; }
-        public ICommand ColorClickCommand { get; }
+        public ICommand ColorLeftClickCommand { get; }
         public ICommand ColorRightClickCommand { get; }
+        #endregion
 
-        public ColorPaletteViewModel(ref ColorPickerControl colorPickerControl)
+        #region Constructor
+        public ColorPaletteViewModel(ColorPickerControl colorPicker)
         {
+            _colorPicker = colorPicker;
             ColorsList = [];
-            InitializeColorSlots();
 
-            _colorPickerControl = colorPickerControl;
-            ToggleColorPickerCommand = new RelayCommand(_ => IsColorPickerOpen ^= true);
-            AddColorCommand = new RelayCommand(_ => AddColorToList(_colorPickerControl.SelectedColor));
-            ColorClickCommand = new RelayCommand(ExecuteColorClick);
-            ColorRightClickCommand = new RelayCommand(ExecuteColorRightClick);
+            ToggleColorPickerCommand = new RelayCommand(_ => ToggleColorPicker());
+            AddColorCommand = new RelayCommand(_ => AddSelectedColorToPalette());
+            ColorLeftClickCommand = new RelayCommand(HandleColorLeftClick);
+            ColorRightClickCommand = new RelayCommand(HandleColorRightClick);
+            InitializePalette();
         }
+        #endregion
 
-        private void ExecuteColorClick(object? parameter)
+        #region Commands
+        private void ToggleColorPicker() =>
+            IsColorPickerOpen ^= true;
+
+        private void AddSelectedColorToPalette() =>
+            AddColorToPalette(_colorPicker.SelectedColor);
+        #endregion
+
+        #region Color Selection Handlers
+        private void HandleColorLeftClick(object? parameter)
         {
-            
-            if (parameter is ColorSlot colorSlot)
-            {
-                if (IsPrimarySelected)
-                    PrimaryColor = colorSlot.Color;
-                else if (IsSecondarySelected)
-                    SecondaryColor = colorSlot.Color;
-            }
+            if (parameter is not PaletteColorSlot colorSlot) return;
+
+            if (_isPrimarySelected)
+                PrimaryColor = colorSlot.Color;
+            else
+                SecondaryColor = colorSlot.Color;
         }
 
-        private void ExecuteColorRightClick(object? parameter)
+        private void HandleColorRightClick(object? parameter)
         {
-            if (parameter is ColorSlot colorSlot)
-            {
-                if (IsPrimarySelected)
-                    SecondaryColor = colorSlot.Color;
-                else if (IsSecondarySelected)
-                    PrimaryColor = colorSlot.Color;
-            }
-        }
+            if (parameter is not PaletteColorSlot colorSlot) return;
 
-        private bool IsPrimarySelected { get; set; } = true;
-        private bool IsSecondarySelected { get; set; }
+            if (_isPrimarySelected)
+                SecondaryColor = colorSlot.Color;
+            else
+                PrimaryColor = colorSlot.Color;
+        }
 
         public void SetActiveColor(bool isPrimary)
         {
-            IsPrimarySelected = isPrimary;
-            IsSecondarySelected = !isPrimary;
+            _isPrimarySelected = isPrimary;
         }
+        #endregion
 
-        private void AddColorToList(Color color)
+        #region Palette Management
+        private void InitializePalette()
         {
-            if (ColorsList.Any(x => x.Color == color))
-                return;
-
-            ColorsList[_ColorsListIndex++ % 18 + 9].Color = color;
+            CreateEmptyPalette();
+            PopulateDefaultColors();
         }
 
-        private void InitializeColorSlots()
+        private void CreateEmptyPalette()
         {
             ColorsList.Clear();
+            int totalSlots = DEFAULT_PALETTE_ROWS * DEFAULT_PALETTE_COLUMNS;
 
-            // Create 27 slots (3 rows x 9 columns)
-            for (int i = 0; i < 27; i++)
+            for (int i = 0; i < totalSlots; i++)
             {
-                ColorsList.Add(new ColorSlot());
+                ColorsList.Add(new PaletteColorSlot());
             }
+        }
 
-            // Add default colors
-            var defaultColors = new[]
-            {
-                Colors.Black, Colors.Gray, Colors.DarkRed, Colors.Red,
-                Colors.Orange, Colors.Yellow, Colors.Green, Colors.Blue, Colors.Purple
-            };
+        private void PopulateDefaultColors()
+        {
+            Color[] defaultColors = GetDefaultColors();
 
             for (int i = 0; i < defaultColors.Length; i++)
             {
-                ColorsList[i].Color = defaultColors[i];
+                ColorsList[i].SetColor(defaultColors[i]);
             }
+
+            _nextCustomColorIndex = CUSTOM_COLORS_START_INDEX;
         }
 
+        private static Color[] GetDefaultColors() =>
+        [
+            Colors.Black,
+            Colors.Gray,
+            Colors.DarkRed,
+            Colors.Red,
+            Colors.Orange,
+            Colors.Yellow,
+            Colors.Green,
+            Colors.Blue,
+            Colors.Purple
+        ];
+
+        private void AddColorToPalette(Color color)
+        {
+            if (ColorAlreadyExists(color)) return;
+
+            ColorsList[GetNextCustomColorIndex()].SetColor(color);
+        }
+
+        private bool ColorAlreadyExists(Color color) =>
+            ColorsList.Any(slot => slot.Color.Equals(color));
+
+        private int GetNextCustomColorIndex()
+        {
+            int index = CUSTOM_COLORS_START_INDEX + (_nextCustomColorIndex % MAX_CUSTOM_COLORS);
+            _nextCustomColorIndex++;
+            return index;
+        }
+        #endregion
+
+        #region INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+
+        protected virtual void OnPropertyChanged(string? propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
     }
 
-    public class ColorSlot : INotifyPropertyChanged
+    public class PaletteColorSlot : INotifyPropertyChanged
     {
-        private bool isEmpty = true;
-        private Color color = Colors.Transparent;
+        #region Private Fields
+        private bool _isEmpty = true;
+        private Color _color = Colors.Transparent;
+        #endregion
 
-        public ColorSlot()
-        {
-        }
-
-        public ColorSlot(Color color)
-        {
-            Color = color;
-            IsEmpty = false;
-        }
-
+        #region Public Properties
         public bool IsEmpty
         {
-            get => isEmpty;
-            set
+            get => _isEmpty;
+            private set
             {
-                isEmpty = value;
+                _isEmpty = value;
                 OnPropertyChanged(nameof(IsEmpty));
             }
         }
 
         public Color Color
         {
-            get => color;
-            set
+            get => _color;
+            private set
             {
-                color = value;
-                IsEmpty = false;
+                _color = value;
                 OnPropertyChanged(nameof(Color));
             }
         }
+        #endregion
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string name)
+        #region Constructors
+        public PaletteColorSlot()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public PaletteColorSlot(Color initialColor)
+        {
+            SetColor(initialColor);
+        }
+        #endregion
+
+        #region Method
+        public void SetColor(Color newColor)
+        {
+            Color = newColor;
+            IsEmpty = false;
+        }
+        #endregion
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string? propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }
