@@ -242,7 +242,7 @@
                             <DataTemplate>
                                 <Button Width="20" Height="20"
                                         Style="{StaticResource ColorButtonStyle}"
-                                        Command="{Binding DataContext.ColorClickCommand, 
+                                        Command="{Binding DataContext.ColorLeftClickCommand, 
                                                   RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding}"
                                         IsEnabled="{Binding IsEmpty, 

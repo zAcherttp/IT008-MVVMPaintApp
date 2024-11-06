@@ -19,7 +19,7 @@ namespace MVVMPaintApp.ViewModels
         #region Constants
         private const int DEFAULT_PALETTE_ROWS = 3;
         private const int DEFAULT_PALETTE_COLUMNS = 9;
-        private const int CUSTOM_COLORS_START_INDEX = 9;
+        private const int CUSTOM_COLORS_START_OFFSET_INDEX = 9;
         private const int MAX_CUSTOM_COLORS = 18;
         #endregion
 
@@ -147,7 +147,7 @@ namespace MVVMPaintApp.ViewModels
                 ColorsList[i].SetColor(defaultColors[i]);
             }
 
-            _nextCustomColorIndex = CUSTOM_COLORS_START_INDEX;
+            _nextCustomColorIndex = 0;
         }
 
         private static Color[] GetDefaultColors() =>
@@ -174,8 +174,8 @@ namespace MVVMPaintApp.ViewModels
             ColorsList.Any(slot => slot.Color.Equals(color));
 
         private int GetNextCustomColorIndex()
-        {
-            int index = CUSTOM_COLORS_START_INDEX + (_nextCustomColorIndex % MAX_CUSTOM_COLORS);
+        { 
+            int index = CUSTOM_COLORS_START_OFFSET_INDEX + (_nextCustomColorIndex % MAX_CUSTOM_COLORS);
             _nextCustomColorIndex++;
             return index;
         }
