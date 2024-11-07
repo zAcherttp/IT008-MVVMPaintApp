@@ -2,15 +2,9 @@
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Input;
-using System;
-using System.Linq;
 using MVVMPaintApp.Commands;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows;
-using System.Windows.Controls;
 using MVVMPaintApp.UserControls;
-using System.Runtime.CompilerServices;
+using MVVMPaintApp.Models;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -19,16 +13,18 @@ namespace MVVMPaintApp.ViewModels
         #region Constants
         private const int DEFAULT_PALETTE_ROWS = 3;
         private const int DEFAULT_PALETTE_COLUMNS = 9;
-        private const int CUSTOM_COLORS_START_OFFSET_INDEX = 9;
+        private const int CUSTOM_PALETTE_START_OFFSET_INDEX = 9;
         private const int MAX_CUSTOM_COLORS = 18;
         #endregion
 
         #region Private Fields
-        private readonly ColorPickerControl _colorPicker;
         private Color _primaryColor = Colors.White;
         private Color _secondaryColor = Colors.Black;
+        private Color _colorPickerColor;
+        private Color _paletteButtonColor = Colors.Green;
         private int _nextCustomColorIndex;
         private bool _isColorPickerOpen;
+        private bool _isColorListButtonHovered;
         private bool _isPrimarySelected = true;
         #endregion
 
@@ -53,6 +49,26 @@ namespace MVVMPaintApp.ViewModels
             }
         }
 
+        public Color PaletteButtonColor
+        {
+            get => _paletteButtonColor;
+            set
+            {
+                _paletteButtonColor = value;
+                OnPropertyChanged(nameof(PaletteButtonColor));
+            }
+        }
+
+        public Color ColorPickerColor
+        {
+            get => _colorPickerColor;
+            set
+            {
+                _colorPickerColor = value;
+                OnPropertyChanged(nameof(ColorPickerColor));
+            }
+        }
+
         public bool IsColorPickerOpen
         {
             get => _isColorPickerOpen;
@@ -72,9 +88,8 @@ namespace MVVMPaintApp.ViewModels
         #endregion
 
         #region Constructor
-        public ColorPaletteViewModel(ColorPickerControl colorPicker)
+        public ColorPaletteViewModel( )
         {
-            _colorPicker = colorPicker;
             ColorsList = [];
 
             ToggleColorPickerCommand = new RelayCommand(_ => ToggleColorPicker());
@@ -90,7 +105,7 @@ namespace MVVMPaintApp.ViewModels
             IsColorPickerOpen ^= true;
 
         private void AddSelectedColorToPalette() =>
-            AddColorToPalette(_colorPicker.SelectedColor);
+            AddColorToPalette(_colorPickerColor);
         #endregion
 
         #region Color Selection Handlers
@@ -117,6 +132,19 @@ namespace MVVMPaintApp.ViewModels
         public void SetActiveColor(bool isPrimary)
         {
             _isPrimarySelected = isPrimary;
+        }
+
+        public void SetPreviewColor(Color? color)
+        {
+            if (color.HasValue)
+            {
+                _paletteButtonColor = color.Value;
+                _isColorListButtonHovered = true;
+            }
+            else
+            {
+                _isColorListButtonHovered = false;
+            }
         }
         #endregion
 
@@ -150,6 +178,18 @@ namespace MVVMPaintApp.ViewModels
             _nextCustomColorIndex = 0;
         }
 
+        /// <summary>
+        /// To be implemented with ProjectManager class
+        /// </summary>
+        /// <returns></returns>
+        //private void SaveCustomPalette()
+        //{
+        //}
+
+        //private void LoadCustomPalette()
+        //{
+        //}
+
         private static Color[] GetDefaultColors() =>
         [
             Colors.Black,
@@ -175,67 +215,9 @@ namespace MVVMPaintApp.ViewModels
 
         private int GetNextCustomColorIndex()
         { 
-            int index = CUSTOM_COLORS_START_OFFSET_INDEX + (_nextCustomColorIndex % MAX_CUSTOM_COLORS);
+            int index = CUSTOM_PALETTE_START_OFFSET_INDEX + (_nextCustomColorIndex % MAX_CUSTOM_COLORS);
             _nextCustomColorIndex++;
             return index;
-        }
-        #endregion
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string? propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-    }
-
-    public class PaletteColorSlot : INotifyPropertyChanged
-    {
-        #region Private Fields
-        private bool _isEmpty = true;
-        private Color _color = Colors.Transparent;
-        #endregion
-
-        #region Public Properties
-        public bool IsEmpty
-        {
-            get => _isEmpty;
-            private set
-            {
-                _isEmpty = value;
-                OnPropertyChanged(nameof(IsEmpty));
-            }
-        }
-
-        public Color Color
-        {
-            get => _color;
-            private set
-            {
-                _color = value;
-                OnPropertyChanged(nameof(Color));
-            }
-        }
-        #endregion
-
-        #region Constructors
-        public PaletteColorSlot()
-        {
-        }
-
-        public PaletteColorSlot(Color initialColor)
-        {
-            SetColor(initialColor);
-        }
-        #endregion
-
-        #region Method
-        public void SetColor(Color newColor)
-        {
-            Color = newColor;
-            IsEmpty = false;
         }
         #endregion
 

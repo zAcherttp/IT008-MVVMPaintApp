@@ -4,10 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVMPaintApp.Views"
-        xmlns:UserControls="clr-namespace:MVVMPaintApp.UserControls" x:Class="MVVMPaintApp.Views.HomeView"
+        xmlns:uc="clr-namespace:MVVMPaintApp.UserControls" x:Class="MVVMPaintApp.Views.HomeView"
+        xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
         mc:Ignorable="d"
         Title="Home" Height="450" Width="800">
+    <Window.Resources>
+        <conv:BrushConverter x:Key="BrushConverter"/>
+    </Window.Resources>
+    
     <Grid>
-        <UserControls:ColorPaletteControl HorizontalAlignment="Left" Margin="10,344,0,0" VerticalAlignment="Top"/>
+        <uc:ColorPaletteControl x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="10,344,0,0" VerticalAlignment="Top"/>
+        <Border Background="{Binding DataContext.PaletteButtonColor,
+            ElementName=MyColorPaletteControl,
+            Mode=TwoWay,
+            Converter={StaticResource BrushConverter}}"
+            BorderThickness="1" Margin="132,49,132,141"/>
     </Grid>
 </Window>

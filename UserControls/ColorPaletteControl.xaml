@@ -211,7 +211,9 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-
+    <UserControl.DataContext>
+        <vm:ColorPaletteViewModel/>
+    </UserControl.DataContext>
     <Grid>
         <StackPanel>
             <Border x:Name="ColorPaletteControlBorder"
@@ -241,12 +243,14 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Width="20" Height="20"
-                                        Style="{StaticResource ColorButtonStyle}"
-                                        Command="{Binding DataContext.ColorLeftClickCommand, 
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"
-                                        IsEnabled="{Binding IsEmpty, 
-                                                  Converter={StaticResource BooleanNegationConverter}}">
+                                    Style="{StaticResource ColorButtonStyle}"
+                                    Command="{Binding DataContext.ColorLeftClickCommand, 
+                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"
+                                    IsEnabled="{Binding IsEmpty, 
+                                                Converter={StaticResource BooleanNegationConverter}}"
+                                    MouseEnter="OnColorButtonMouseEnter"
+                                    MouseLeave="OnColorButtonMouseLeave">               
                                     <Button.InputBindings>
                                         <MouseBinding MouseAction="RightClick" 
                                                     Command="{Binding DataContext.ColorRightClickCommand, 
@@ -284,7 +288,10 @@
             <Border Background="#09FFFFFF" BorderBrush="#00FFFFFF" BorderThickness="1" 
                     CornerRadius="5" Padding="10" Width="610">
                 <StackPanel>
-                    <uc:ColorPickerControl x:Name="ColorPicker" Margin="0,0,0,-30" />
+                    <uc:ColorPickerControl SelectedColor="{Binding Path=DataContext.ColorPickerColor, 
+                                                RelativeSource={RelativeSource FindAncestor, 
+                                                AncestorType={x:Type uc:ColorPaletteControl}},
+                                                Mode=TwoWay}" x:Name="ColorPicker" Margin="0,0,0,-30" />
                     <Button HorizontalAlignment="Right" Content="Add Color" Command="{Binding AddColorCommand}"/>
                 </StackPanel>
             </Border>
