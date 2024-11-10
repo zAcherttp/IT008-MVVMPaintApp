@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="WriteableBitmapEx" Version="1.6.8" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\ColorPaletteGradientButtonIcon.png" />
   </ItemGroup>
 

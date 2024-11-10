@@ -39,22 +39,22 @@ namespace MVVMPaintApp.UserControls
         {
             if (sender is Button button && button.DataContext is PaletteColorSlot slot)
             {
-                Debug.WriteLine($"Hovered Color: {slot.Color}");
+                //Debug.WriteLine($"Hovered Color: {slot.Color}");
 
                 var viewModel = (ColorPaletteViewModel)DataContext;
                 if (viewModel != null)
                 {
                     viewModel.PaletteButtonColor = slot.Color;
                 }
-                else
-                {
-                    Debug.WriteLine("ViewModel is null.");
-                }
+                //else
+                //{
+                //    Debug.WriteLine("ViewModel is null.");
+                //}
             }
-            else
-            {
-                Debug.WriteLine("Button DataContext is not a PaletteColorSlot.");
-            }
+            //else
+            //{
+            //    Debug.WriteLine("Button DataContext is not a PaletteColorSlot.");
+            //}
 
         }
 

@@ -24,7 +24,6 @@ namespace MVVMPaintApp.ViewModels
         private Color _paletteButtonColor = Colors.Green;
         private int _nextCustomColorIndex;
         private bool _isColorPickerOpen;
-        private bool _isColorListButtonHovered;
         private bool _isPrimarySelected = true;
         #endregion
 
@@ -139,11 +138,6 @@ namespace MVVMPaintApp.ViewModels
             if (color.HasValue)
             {
                 _paletteButtonColor = color.Value;
-                _isColorListButtonHovered = true;
-            }
-            else
-            {
-                _isColorListButtonHovered = false;
             }
         }
         #endregion
