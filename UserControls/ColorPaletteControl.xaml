@@ -5,9 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
              xmlns:uc="clr-namespace:MVVMPaintApp.UserControls"
-             xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance vm:ColorPaletteViewModel}">
+             xmlns:conv="clr-namespace:MVVMPaintApp.Converters">
 
     <UserControl.Resources>
         <conv:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>

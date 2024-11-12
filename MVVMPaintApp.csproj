@@ -14,6 +14,8 @@
 
   <ItemGroup>
     <None Remove="Resources\ColorPaletteGradientButtonIcon.png" />
+    <None Remove="Resources\MyPaintAppIcon.png" />
+    <None Remove="Resources\placeholder.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +24,8 @@
 
   <ItemGroup>
     <Resource Include="Resources\ColorPaletteGradientButtonIcon.png" />
+    <Resource Include="Resources\MyPaintAppIcon.png" />
+    <Resource Include="Resources\placeholder.png" />
   </ItemGroup>
 
   <ItemGroup>

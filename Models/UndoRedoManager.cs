@@ -11,7 +11,7 @@ namespace MVVMPaintApp.Models
     {
         private readonly Stack<IUndoable> UndoStack = new();
         private readonly Stack<IUndoable> RedoStack = new();
-        private const int MaxStackSize = 50;  // Limit memory usage
+        private const int MAX_STACK_SIZE = 20;  // Limit memory usage
 
         public bool CanUndo => UndoStack.Count > 0;
         public bool CanRedo => RedoStack.Count > 0;
@@ -22,10 +22,10 @@ namespace MVVMPaintApp.Models
             RedoStack.Clear();  // Clear redo stack when new action is performed
 
             // Maintain stack size limit
-            if (UndoStack.Count > MaxStackSize)
+            if (UndoStack.Count > MAX_STACK_SIZE)
             {
                 var tempStack = new Stack<IUndoable>();
-                for (int i = 0; i < MaxStackSize; i++)
+                for (int i = 0; i < MAX_STACK_SIZE; i++)
                 {
                     tempStack.Push(UndoStack.Pop());
                 }

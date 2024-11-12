@@ -65,10 +65,10 @@ namespace MVVMPaintApp.UserControls
             {
                 viewModel.PaletteButtonColor = viewModel.PrimaryColor;
             }
-            else
-            {
-                Debug.WriteLine("ViewModel is null.");
-            }
+            //else
+            //{
+            //    Debug.WriteLine("ViewModel is null.");
+            //}
         }
     }
 }

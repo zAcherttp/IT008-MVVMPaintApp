@@ -1,0 +1,4 @@
+﻿12/11/2024
+ - Customize HomeView ListView Scrollbar to look like in Figma
+ - Justify HomeView ListView items
+ - Add NewFileView

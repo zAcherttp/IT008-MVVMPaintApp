@@ -10,11 +10,15 @@ using System.Windows.Media;
 using System.Dynamic;
 using MVVMPaintApp.Models;
 using Microsoft.Win32;
+using System.ComponentModel;
+using System.Windows;
 
 namespace MVVMPaintApp.Models
 {
     public class Project
     {
+        private const int THUMBNAIL_HEIGHT = 100;
+
         public string Name { get; set; }
         public string FilePath { get; set; }
         public int Width { get; set; }
@@ -23,7 +27,13 @@ namespace MVVMPaintApp.Models
         public ObservableCollection<Layer> Layers { get; set; }
         public Color Background { get; set; }
         public ObservableCollection<PaletteColorSlot> ColorsList { get; set; }
-
+        public double HomeViewCanvasWidth
+        {
+            get
+            {
+                return (double)Width / Height * THUMBNAIL_HEIGHT;
+            }
+        }
         public Project()
         {
             string defaultFolder = Path.Combine(
@@ -150,6 +160,43 @@ namespace MVVMPaintApp.Models
             // Save the PNG to the specified path
             using var fileStream = new FileStream(outputPath, FileMode.Create);
             encoder.Save(fileStream);
+        }
+
+        public void GenerateThumbnail(BitmapImage originalBitmap)
+        {
+            if (originalBitmap == null)
+                throw new ArgumentNullException(nameof(originalBitmap));
+
+            // Calculate scaled dimensions while maintaining aspect ratio
+            double scaleFactor = (double)THUMBNAIL_HEIGHT / originalBitmap.Height;
+            int scaledWidth = (int)(originalBitmap.Width * scaleFactor);
+
+            // Create a new TransformedBitmap for scaling
+            TransformedBitmap transformedBitmap = new TransformedBitmap();
+            transformedBitmap.BeginInit();
+            transformedBitmap.Source = originalBitmap;
+            transformedBitmap.Transform = new ScaleTransform(scaleFactor, scaleFactor);
+            transformedBitmap.EndInit();
+
+            // Convert to PNG stream
+            using (MemoryStream stream = new MemoryStream())
+            {
+                // Create PNG encoder and save the scaled image
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(transformedBitmap));
+                encoder.Save(stream);
+                stream.Position = 0;
+
+                // Create the final BitmapImage
+                BitmapImage thumbnailImage = new BitmapImage();
+                thumbnailImage.BeginInit();
+                thumbnailImage.CacheOption = BitmapCacheOption.OnLoad;
+                thumbnailImage.StreamSource = stream;
+                thumbnailImage.EndInit();
+                thumbnailImage.Freeze(); // Important for performance
+
+                Thumbnail = thumbnailImage;
+            }
         }
     }
 }
