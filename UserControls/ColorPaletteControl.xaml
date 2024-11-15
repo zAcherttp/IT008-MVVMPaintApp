@@ -232,7 +232,7 @@
 
                     <!-- Color List -->
                     <ItemsControl x:Name="ColorList" Margin="12,0,12,0" Width="174" Height="60" 
-                                ItemsSource="{Binding ColorsList}">
+                                ItemsSource="{Binding PaletteColors}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Rows="3" Columns="9"/>
@@ -242,18 +242,15 @@
                             <DataTemplate>
                                 <Button Width="20" Height="20"
                                     Style="{StaticResource ColorButtonStyle}"
-                                    Command="{Binding DataContext.ColorLeftClickCommand, 
-                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    Command="{Binding DataContext.PaletteButtonLeftClickCommand, 
+                                            RelativeSource={RelativeSource AncestorType=UserControl}}"
                                     CommandParameter="{Binding}"
-                                    IsEnabled="{Binding IsEmpty, 
-                                                Converter={StaticResource BooleanNegationConverter}}"
-                                    MouseEnter="OnColorButtonMouseEnter"
-                                    MouseLeave="OnColorButtonMouseLeave">               
+                                    IsEnabled="{Binding IsEmpty, Converter={StaticResource BooleanNegationConverter}}">
                                     <Button.InputBindings>
                                         <MouseBinding MouseAction="RightClick" 
-                                                    Command="{Binding DataContext.ColorRightClickCommand, 
-                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                    CommandParameter="{Binding}"/>
+                                             Command="{Binding DataContext.PaletteButtonRightClickCommand, 
+                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                             CommandParameter="{Binding}"/>
                                     </Button.InputBindings>
                                 </Button>
                             </DataTemplate>
@@ -268,12 +265,12 @@
                                    Margin="10,0,10,0" Height="30" Width="30"
                                    Style="{StaticResource ActiveColorButtonStyle}"
                                    Background="{Binding PrimaryColor, Converter={StaticResource BrushConverter}}"
-                                   Checked="OnPrimaryColorChecked"/>
+                                   Command="{Binding SetPrimaryColorCommand}"/>
                         <RadioButton x:Name="SecondaryColorRadioButton"
                                    Margin="10,0,10,0" Height="30" Width="30"
                                    Style="{StaticResource ActiveColorButtonStyle}"
                                    Background="{Binding SecondaryColor, Converter={StaticResource BrushConverter}}"
-                                   Checked="OnSecondaryColorChecked"/>
+                                   Command="{Binding SetSecondaryColorCommand}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -290,7 +287,7 @@
                                                 RelativeSource={RelativeSource FindAncestor, 
                                                 AncestorType={x:Type uc:ColorPaletteControl}},
                                                 Mode=TwoWay}" x:Name="ColorPicker" Margin="0,0,0,-30" />
-                    <Button HorizontalAlignment="Right" Content="Add Color" Command="{Binding AddColorCommand}"/>
+                    <Button HorizontalAlignment="Right" Content="Add Color" Command="{Binding AddPickedColorToPaletteCommand}"/>
                 </StackPanel>
             </Border>
         </Popup>

@@ -8,27 +8,21 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Models;
 
 namespace MVVMPaintApp.ViewModels
 {
-    internal class HomeViewModel : INotifyPropertyChanged
+    internal partial class HomeViewModel : ObservableObject
     {
-        private ObservableCollection<Project> _recentProjects;
-        public ObservableCollection<Project> RecentProjects
-        {
-            get => _recentProjects;
-            set
-            {
-                _recentProjects = value;
-                OnPropertyChanged(nameof(RecentProjects));
-            }
-        }
+        [ObservableProperty]
+        private ObservableCollection<Project> recentProjects;
 
         public HomeViewModel()
         {
             //to do: check default folder for available projects
-            _recentProjects = [];
+            recentProjects = [];
             LoadDummyProjects();
         }
 
@@ -80,12 +74,6 @@ namespace MVVMPaintApp.ViewModels
             AddDummyProject("project5.ptd", 800, 800);
             AddDummyProject("project6.ptd", 800, 600);
 
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -5,10 +5,14 @@ using System.Windows.Input;
 using MVVMPaintApp.Commands;
 using MVVMPaintApp.UserControls;
 using MVVMPaintApp.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics.Eventing.Reader;
+using System.DirectoryServices;
 
 namespace MVVMPaintApp.ViewModels
 {
-    public class ColorPaletteViewModel : INotifyPropertyChanged
+    internal partial class ColorPaletteViewModel : ObservableObject
     {
         #region Constants
         private const int DEFAULT_PALETTE_ROWS = 3;
@@ -17,211 +21,124 @@ namespace MVVMPaintApp.ViewModels
         private const int MAX_CUSTOM_COLORS = 18;
         #endregion
 
-        #region Private Fields
-        private Color _primaryColor = Colors.White;
-        private Color _secondaryColor = Colors.Black;
-        private Color _colorPickerColor;
-        private Color _paletteButtonColor = Colors.Green;
-        private int _nextCustomColorIndex;
-        private bool _isColorPickerOpen;
-        private bool _isPrimarySelected = true;
-        #endregion
+        [ObservableProperty]
+        private Color primaryColor = Colors.White;
 
-        #region Public Properties
-        public Color PrimaryColor
+        [ObservableProperty]
+        private Color secondaryColor = Colors.Black;
+
+        [ObservableProperty]
+        private ObservableCollection<PaletteColorSlot> paletteColors = [];
+
+        [ObservableProperty]
+        private Color paletteButtonColor = Colors.Transparent;
+
+        [ObservableProperty]
+        private Color colorPickerColor;
+
+        [ObservableProperty]
+        private bool isColorPickerOpen;
+
+        private int nextColorButtonIndex;
+        private bool isPrimaryColorSelected;
+
+        [RelayCommand]
+        private void ToggleColorPicker() => IsColorPickerOpen ^= true;
+
+        [RelayCommand]
+        private void AddPickedColorToPalette()
         {
-            get => _primaryColor;
-            set
-            {
-                _primaryColor = value;
-                OnPropertyChanged(nameof(PrimaryColor));
-            }
+            AddColorToPalette(ColorPickerColor);
         }
 
-        public Color SecondaryColor
+        [RelayCommand]
+        private void SetPrimaryColor() => isPrimaryColorSelected = true;
+
+        [RelayCommand]
+        private void SetSecondaryColor() => isPrimaryColorSelected = false;
+
+        [RelayCommand]
+        private void PaletteButtonRightClick(object? param)
         {
-            get => _secondaryColor;
-            set
-            {
-                _secondaryColor = value;
-                OnPropertyChanged(nameof(SecondaryColor));
-            }
+            if (param is not PaletteColorSlot slot) return;
+            if (isPrimaryColorSelected)
+                SecondaryColor = slot.Color;
+            else
+                PrimaryColor = slot.Color;
         }
 
-        public Color PaletteButtonColor
+        [RelayCommand]
+        private void PaletteButtonLeftClick(object? param)
         {
-            get => _paletteButtonColor;
-            set
-            {
-                _paletteButtonColor = value;
-                OnPropertyChanged(nameof(PaletteButtonColor));
-            }
+            if (param is not PaletteColorSlot slot) return;
+            if (isPrimaryColorSelected)
+                PrimaryColor = slot.Color;
+            else
+                SecondaryColor = slot.Color;
         }
 
-        public Color ColorPickerColor
+        [RelayCommand]
+        private void OnPaletteButtonMouseEnter(object? param)
         {
-            get => _colorPickerColor;
-            set
-            {
-                _colorPickerColor = value;
-                OnPropertyChanged(nameof(ColorPickerColor));
-            }
+            if (param is not PaletteColorSlot slot) return;
+            PaletteButtonColor = slot.Color;
         }
 
-        public bool IsColorPickerOpen
+        [RelayCommand]
+        private void OnPaletteButtonMouseLeave()
         {
-            get => _isColorPickerOpen;
-            set
-            {
-                _isColorPickerOpen = value;
-                OnPropertyChanged(nameof(IsColorPickerOpen));
-            }
+            PaletteButtonColor = PrimaryColor;
         }
 
-        public ObservableCollection<PaletteColorSlot> ColorsList { get; }
-
-        public ICommand ToggleColorPickerCommand { get; }
-        public ICommand AddColorCommand { get; }
-        public ICommand ColorLeftClickCommand { get; }
-        public ICommand ColorRightClickCommand { get; }
-        #endregion
-
-        #region Constructor
-        public ColorPaletteViewModel( )
+        public ColorPaletteViewModel()
         {
-            ColorsList = [];
-
-            ToggleColorPickerCommand = new RelayCommand(_ => ToggleColorPicker());
-            AddColorCommand = new RelayCommand(_ => AddSelectedColorToPalette());
-            ColorLeftClickCommand = new RelayCommand(HandleColorLeftClick);
-            ColorRightClickCommand = new RelayCommand(HandleColorRightClick);
+            paletteColors = [];
             InitializePalette();
         }
-        #endregion
 
-        #region Commands
-        private void ToggleColorPicker() =>
-            IsColorPickerOpen ^= true;
-
-        private void AddSelectedColorToPalette() =>
-            AddColorToPalette(_colorPickerColor);
-        #endregion
-
-        #region Color Selection Handlers
-        private void HandleColorLeftClick(object? parameter)
-        {
-            if (parameter is not PaletteColorSlot colorSlot) return;
-
-            if (_isPrimarySelected)
-                PrimaryColor = colorSlot.Color;
-            else
-                SecondaryColor = colorSlot.Color;
-        }
-
-        private void HandleColorRightClick(object? parameter)
-        {
-            if (parameter is not PaletteColorSlot colorSlot) return;
-
-            if (_isPrimarySelected)
-                SecondaryColor = colorSlot.Color;
-            else
-                PrimaryColor = colorSlot.Color;
-        }
-
-        public void SetActiveColor(bool isPrimary)
-        {
-            _isPrimarySelected = isPrimary;
-        }
-
-        public void SetPreviewColor(Color? color)
-        {
-            if (color.HasValue)
-            {
-                _paletteButtonColor = color.Value;
-            }
-        }
-        #endregion
-
-        #region Palette Management
         private void InitializePalette()
         {
             CreateEmptyPalette();
-            PopulateDefaultColors();
+            PopulatePaletteWithDefaultColors();
         }
 
         private void CreateEmptyPalette()
         {
-            ColorsList.Clear();
+            PaletteColors.Clear();
             int totalSlots = DEFAULT_PALETTE_ROWS * DEFAULT_PALETTE_COLUMNS;
-
             for (int i = 0; i < totalSlots; i++)
             {
-                ColorsList.Add(new PaletteColorSlot());
+                PaletteColors.Add(new PaletteColorSlot());
             }
         }
 
-        private void PopulateDefaultColors()
+        private void PopulatePaletteWithDefaultColors()
         {
-            Color[] defaultColors = GetDefaultColors();
+            Color[] defaults =
+            [
+                Colors.Black, Colors.Gray, Colors.DarkRed,
+                Colors.Red, Colors.Orange, Colors.Yellow,
+                Colors.Green, Colors.Blue, Colors.Purple
+            ];
 
-            for (int i = 0; i < defaultColors.Length; i++)
+            for (int i = 0; i < defaults.Length; i++)
             {
-                ColorsList[i].SetColor(defaultColors[i]);
+                PaletteColors[i].SetColor(defaults[i]);
             }
 
-            _nextCustomColorIndex = 0;
+            nextColorButtonIndex = 0;
         }
 
-        /// <summary>
-        /// To be implemented with ProjectManager class
-        /// </summary>
-        /// <returns></returns>
-        //private void SaveCustomPalette()
-        //{
-        //}
-
-        //private void LoadCustomPalette()
-        //{
-        //}
-
-        private static Color[] GetDefaultColors() =>
-        [
-            Colors.Black,
-            Colors.Gray,
-            Colors.DarkRed,
-            Colors.Red,
-            Colors.Orange,
-            Colors.Yellow,
-            Colors.Green,
-            Colors.Blue,
-            Colors.Purple
-        ];
-
-        private void AddColorToPalette(Color color)
+        private void AddColorToPalette(Color newColor)
         {
-            if (ColorAlreadyExists(color)) return;
-
-            ColorsList[GetNextCustomColorIndex()].SetColor(color);
+            if (PaletteColors.Any(slot => slot.Color.Equals(newColor))) return;  
+            PaletteColors[GetNextCustomColorIndex()].SetColor(newColor);
         }
-
-        private bool ColorAlreadyExists(Color color) =>
-            ColorsList.Any(slot => slot.Color.Equals(color));
 
         private int GetNextCustomColorIndex()
-        { 
-            int index = CUSTOM_PALETTE_START_OFFSET_INDEX + (_nextCustomColorIndex % MAX_CUSTOM_COLORS);
-            _nextCustomColorIndex++;
-            return index;
-        }
-        #endregion
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string? propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            nextColorButtonIndex++;
+            return CUSTOM_PALETTE_START_OFFSET_INDEX + ((nextColorButtonIndex - 1) % MAX_CUSTOM_COLORS);
         }
-        #endregion
     }
 }

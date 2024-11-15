@@ -14,7 +14,7 @@
 
     <Grid>
         <uc:ColorPaletteControl x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="10,344,0,0" VerticalAlignment="Top"/>
-        <Border Background="{Binding DataContext.PaletteButtonColor,
+        <Border Background="{Binding DataContext.PrimaryColor,
             ElementName=MyColorPaletteControl, Mode=TwoWay,
             Converter={StaticResource BrushConverter}}"
             BorderThickness="1" Margin="132,49,132,141"/>
