@@ -2,6 +2,7 @@
 
 namespace MVVMPaintApp.Commands
 {
+    // TO BE DELETED // NO USE
     public class RelayCommand(Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand
     {
         private readonly Action<object?> _execute = execute ?? throw new ArgumentNullException(nameof(execute));

@@ -73,7 +73,6 @@ namespace MVVMPaintApp.ViewModels
             AddDummyProject("project4.ptd", 300, 400);
             AddDummyProject("project5.ptd", 800, 800);
             AddDummyProject("project6.ptd", 800, 600);
-
         }
     }
 }

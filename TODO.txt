@@ -1,4 +1,14 @@
 ﻿12/11/2024
- - Customize HomeView ListView Scrollbar to look like in Figma
+IT WILL IN LIGHT MODE - Customize HomeView ListView Scrollbar to look like in Figma
  - Justify HomeView ListView items
- - Add NewFileView
+DONE - Add NewFileView 
+
+17/11/2024
+- Add HomeViewModel
+- Add NewFileViewModel
+- Add Custom Canvas Control (Pan and zoomable canvas)
+
+---------------------------------------------------------
+
+- Use WriteableBitmapEx library to create classes for drawing
+- Add Tools

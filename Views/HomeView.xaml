@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
         Title="Home" Height="600" Width="900" Background="#F1F4F9" ResizeMode="NoResize">
     <Window.Resources>
-        <Style x:Key="NewFileButtonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="NewFileButtonStyle" TargetType="Button">
             <Setter Property="FrameworkElement.FocusVisualStyle" Value="{DynamicResource DefaultControlFocusVisualStyle}" />
             <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
             <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
@@ -46,7 +46,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="OpenButtonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="OpenButtonStyle" TargetType="Button">
             <Setter Property="FrameworkElement.FocusVisualStyle" Value="{DynamicResource DefaultControlFocusVisualStyle}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
@@ -96,17 +96,16 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Column="1" BorderBrush="#E3E6E9" BorderThickness="2" CornerRadius="20,0,0,0" Background="#FBFCFD" HorizontalAlignment="Left" Width="600" Height="525" VerticalAlignment="Bottom">
             <StackPanel>
-            <TextBlock Foreground="Black" Text="Recent" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
+                <TextBlock Foreground="Black" Text="Recent" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
                 <ListView ItemsSource="{Binding RecentProjects}"
                         Background="Transparent"
                         BorderThickness="0"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Visible"
                         VirtualizingPanel.ScrollUnit="Pixel"
                         ScrollViewer.CanContentScroll="True"
                         IsSynchronizedWithCurrentItem="False" 
                         Margin="25,0,25,20" Height="443">
-                    
+
 
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -146,7 +145,7 @@
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView> 
+                </ListView>
             </StackPanel>
         </Border>
         <StackPanel Grid.Column="0">

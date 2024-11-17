@@ -5,8 +5,189 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVMPaintApp.Views"
         mc:Ignorable="d"
-        Title="NewFileView" Height="450" Width="800">
+        Title="New file" Height="600" Width="900" Background="#F1F4F9" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style x:Key="NewFileButtonStyle" TargetType="Button">
+            <Setter Property="FrameworkElement.FocusVisualStyle" Value="{DynamicResource DefaultControlFocusVisualStyle}" />
+            <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentControlElevationBorderBrush}" />
+            <Setter Property="BorderThickness" Value="{StaticResource ButtonBorderThemeThickness}" />
+            <Setter Property="Padding" Value="45,9,45,11" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="{DynamicResource ControlContentThemeFontSize}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Border.CornerRadius" Value="24" />
+            <Setter Property="UIElement.SnapsToDevicePixels" Value="True" />
+            <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="ContentBorder" Width="{TemplateBinding FrameworkElement.Width}" Height="{TemplateBinding FrameworkElement.Height}" MinWidth="{TemplateBinding FrameworkElement.MinWidth}" MinHeight="{TemplateBinding FrameworkElement.MinHeight}" Padding="{TemplateBinding Control.Padding}" HorizontalAlignment="{TemplateBinding FrameworkElement.HorizontalAlignment}" VerticalAlignment="{TemplateBinding FrameworkElement.VerticalAlignment}" Background="{TemplateBinding Control.Background}" BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="{TemplateBinding Border.CornerRadius}">
+                            <ContentPresenter Name="ContentPresenter" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" Content="{TemplateBinding ContentControl.Content}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" TextElement.Foreground="{TemplateBinding Control.Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                <Setter TargetName="ContentBorder" Value="#31A8E8" Property="Border.Background" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ContentBorder" Value="#47B7F3" Property="Border.Background" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ContentBorder" Value="{DynamicResource ButtonBackgroundDisabled}" Property="Border.Background" />
+                                <Setter TargetName="ContentBorder" Value="{DynamicResource ButtonBorderBrushDisabled}" Property="Border.BorderBrush" />
+                                <Setter TargetName="ContentPresenter" Value="{DynamicResource ButtonForegroundDisabled}" Property="TextElement.Foreground" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="600" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Foreground="Black" Text="Presets" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
+        <Border BorderBrush="#E3E6E9" BorderThickness="2" CornerRadius="0,20,0,0" Background="#FBFCFD" HorizontalAlignment="Center" Width="600" Height="475" VerticalAlignment="Bottom" Margin="0,59,0,0">
+            <StackPanel VerticalAlignment="Bottom">
+                <ListView
+                Background="Transparent"
+                BorderThickness="0"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                VirtualizingPanel.ScrollUnit="Pixel"
+                ScrollViewer.CanContentScroll="True"
+                IsSynchronizedWithCurrentItem="False" 
+                Margin="25,0,25,20" Height="415">
+
+
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+                    <ListViewItem x:Name="LandscapePreset">
+                        <Grid Margin="0,0,20,20" 
+                            Cursor="Hand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Background="White" 
+                                CornerRadius="8"
+                                BorderThickness="2"
+                                BorderBrush="#D8D8D8">
+                                <Canvas
+                                Height="100"
+                                Width="178">
+                                </Canvas>
+                            </Border>
+
+                            <TextBlock Grid.Row="1"
+                            Text="Landscape"
+                            FontSize="21"
+                            Foreground="#323232"
+                            Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="2"
+                            Text="16 : 9"
+                            FontSize="15"
+                            Foreground="#7E7E7E"/>
+                        </Grid>
+                    </ListViewItem>
+                    <ListViewItem x:Name="PortraitPreset">
+                        <Grid Margin="0,0,20,20" 
+         Cursor="Hand">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Background="White" 
+             CornerRadius="8"
+             BorderThickness="2"
+             BorderBrush="#D8D8D8">
+                                <Canvas
+             Height="100"
+             Width="56">
+                                </Canvas>
+                            </Border>
+
+                            <TextBlock Grid.Row="1"
+         Text="Portrait"
+         FontSize="21"
+         Foreground="#323232"
+         Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="2"
+         Text="9 : 16"
+         FontSize="15"
+         Foreground="#7E7E7E"/>
+                        </Grid>
+                    </ListViewItem>
+                               <ListViewItem x:Name="SquarePreset">
+               <Grid Margin="0,0,20,20" 
+Cursor="Hand">
+                   <Grid.RowDefinitions>
+                       <RowDefinition Height="Auto"/>
+                       <RowDefinition Height="Auto"/>
+                       <RowDefinition Height="Auto"/>
+                   </Grid.RowDefinitions>
+
+                   <Border Background="White" 
+    CornerRadius="8"
+    BorderThickness="2"
+    BorderBrush="#D8D8D8">
+                       <Canvas
+    Height="100"
+    Width="100">
+                       </Canvas>
+                   </Border>
+
+                   <TextBlock Grid.Row="1"
+Text="Square"
+FontSize="21"
+Foreground="#323232"
+Margin="0,4,0,0"/>
+                   <TextBlock Grid.Row="2"
+Text="1 : 1"
+FontSize="15"
+Foreground="#7E7E7E"/>
+               </Grid>
+           </ListViewItem>
+                </ListView>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="85"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Foreground="Black" Text="Custom" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
+            <Button Grid.Row="7" Style="{StaticResource NewFileButtonStyle}" Content="Create"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI" Margin="0,0,35,30"/>
+
+            <TextBlock Grid.Row="1" Foreground="#313131" Text="Width" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
+            <TextBox x:Name="WidthTextBox" Grid.Row="2" Margin="40,0,90,0" FontSize="18"/>
+            <TextBlock Grid.Row="3" Foreground="#313131" Text="Height" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
+            <TextBox x:Name="HeightTextBox" Grid.Row="4" Margin="40,0,90,0" FontSize="18"/>
+            <TextBlock Grid.Row="5" Foreground="#313131" Text="Aspect ratio" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
+            <StackPanel Grid.Row="6" Orientation="Horizontal">
+                <TextBox x:Name="WidthRatioTextBox" Grid.Row="2" Margin="40,0,0,0" Width="60" HorizontalAlignment="Left" FontSize="18"/>
+                <TextBlock Foreground="#313131" Text=":" FontSize="21" VerticalAlignment="Center" Margin="15,0,15,5"/>
+                <TextBox x:Name="HeightRatioTextBox" Grid.Row="2" Margin="0,0,0,0" Width="60" FontSize="18"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
