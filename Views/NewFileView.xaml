@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVMPaintApp.Views"
+        xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
+        xmlns:val="clr-namespace:MVVMPaintApp.Models"
         mc:Ignorable="d"
         Title="New file" Height="600" Width="900" Background="#F1F4F9" ResizeMode="NoResize">
     <Window.Resources>
@@ -47,6 +49,9 @@
             </Setter>
         </Style>
     </Window.Resources>
+    <Window.DataContext>
+        <vm:NewFileViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="600" />
@@ -62,6 +67,8 @@
                 VirtualizingPanel.ScrollUnit="Pixel"
                 ScrollViewer.CanContentScroll="True"
                 IsSynchronizedWithCurrentItem="False" 
+                    ItemsSource="{Binding Presets}"
+                    SelectedItem="{Binding SelectedPreset}"
                 Margin="25,0,25,20" Height="415">
 
 
@@ -71,96 +78,38 @@
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
 
-                    <ListViewItem x:Name="LandscapePreset">
-                        <Grid Margin="0,0,20,20" 
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,20,20" 
                             Cursor="Hand">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <Border Background="White" 
+                                <Border Background="White" 
                                 CornerRadius="8"
                                 BorderThickness="2"
                                 BorderBrush="#D8D8D8">
-                                <Canvas
+                                    <Canvas
                                 Height="100"
-                                Width="178">
-                                </Canvas>
-                            </Border>
+                                Width="{Binding ThumbnailWidth}">
+                                    </Canvas>
+                                </Border>
 
-                            <TextBlock Grid.Row="1"
-                            Text="Landscape"
+                                <TextBlock Grid.Row="1"
+                            Text="{Binding PresetName}"
                             FontSize="21"
                             Foreground="#323232"
                             Margin="0,4,0,0"/>
-                            <TextBlock Grid.Row="2"
-                            Text="16 : 9"
+                                <TextBlock Grid.Row="2"
+                            Text="{Binding AspectRatioString}"
                             FontSize="15"
                             Foreground="#7E7E7E"/>
-                        </Grid>
-                    </ListViewItem>
-                    <ListViewItem x:Name="PortraitPreset">
-                        <Grid Margin="0,0,20,20" 
-         Cursor="Hand">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Border Background="White" 
-             CornerRadius="8"
-             BorderThickness="2"
-             BorderBrush="#D8D8D8">
-                                <Canvas
-             Height="100"
-             Width="56">
-                                </Canvas>
-                            </Border>
-
-                            <TextBlock Grid.Row="1"
-         Text="Portrait"
-         FontSize="21"
-         Foreground="#323232"
-         Margin="0,4,0,0"/>
-                            <TextBlock Grid.Row="2"
-         Text="9 : 16"
-         FontSize="15"
-         Foreground="#7E7E7E"/>
-                        </Grid>
-                    </ListViewItem>
-                               <ListViewItem x:Name="SquarePreset">
-               <Grid Margin="0,0,20,20" 
-Cursor="Hand">
-                   <Grid.RowDefinitions>
-                       <RowDefinition Height="Auto"/>
-                       <RowDefinition Height="Auto"/>
-                       <RowDefinition Height="Auto"/>
-                   </Grid.RowDefinitions>
-
-                   <Border Background="White" 
-    CornerRadius="8"
-    BorderThickness="2"
-    BorderBrush="#D8D8D8">
-                       <Canvas
-    Height="100"
-    Width="100">
-                       </Canvas>
-                   </Border>
-
-                   <TextBlock Grid.Row="1"
-Text="Square"
-FontSize="21"
-Foreground="#323232"
-Margin="0,4,0,0"/>
-                   <TextBlock Grid.Row="2"
-Text="1 : 1"
-FontSize="15"
-Foreground="#7E7E7E"/>
-               </Grid>
-           </ListViewItem>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </StackPanel>
         </Border>
@@ -179,14 +128,26 @@ Foreground="#7E7E7E"/>
             <Button Grid.Row="7" Style="{StaticResource NewFileButtonStyle}" Content="Create"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI" Margin="0,0,35,30"/>
 
             <TextBlock Grid.Row="1" Foreground="#313131" Text="Width" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
-            <TextBox x:Name="WidthTextBox" Grid.Row="2" Margin="40,0,90,0" FontSize="18"/>
+            <TextBox x:Name="WidthTextBox" Text="{Binding SelectedWidth, UpdateSourceTrigger=PropertyChanged}"
+                     val:NewFileTextBoxValidation.AllowDecimal="False"
+                     val:NewFileTextBoxValidation.IsNumeric="True"
+                     Grid.Row="2" Margin="40,0,90,0" FontSize="18"/>
             <TextBlock Grid.Row="3" Foreground="#313131" Text="Height" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
-            <TextBox x:Name="HeightTextBox" Grid.Row="4" Margin="40,0,90,0" FontSize="18"/>
+            <TextBox x:Name="HeightTextBox" Text="{Binding SelectedHeight, UpdateSourceTrigger=PropertyChanged}"
+                     val:NewFileTextBoxValidation.AllowDecimal="False"
+                     val:NewFileTextBoxValidation.IsNumeric="True"
+                     Grid.Row="4" Margin="40,0,90,0" FontSize="18"/>
             <TextBlock Grid.Row="5" Foreground="#313131" Text="Aspect ratio" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
             <StackPanel Grid.Row="6" Orientation="Horizontal">
-                <TextBox x:Name="WidthRatioTextBox" Grid.Row="2" Margin="40,0,0,0" Width="60" HorizontalAlignment="Left" FontSize="18"/>
+                <TextBox x:Name="WidthRatioTextBox" Text="{Binding SelectedAspectRatioW, UpdateSourceTrigger=PropertyChanged}"
+                         val:NewFileTextBoxValidation.AllowDecimal="True"
+                         val:NewFileTextBoxValidation.IsNumeric="True"
+                         Grid.Row="2" Margin="40,0,0,0" Width="60" HorizontalAlignment="Left" FontSize="18"/>
                 <TextBlock Foreground="#313131" Text=":" FontSize="21" VerticalAlignment="Center" Margin="15,0,15,5"/>
-                <TextBox x:Name="HeightRatioTextBox" Grid.Row="2" Margin="0,0,0,0" Width="60" FontSize="18"/>
+                <TextBox x:Name="HeightRatioTextBox" Text="{Binding SelectedAspectRatioH, UpdateSourceTrigger=PropertyChanged}"
+                         val:NewFileTextBoxValidation.AllowDecimal="True"
+                         val:NewFileTextBoxValidation.IsNumeric="True"
+                         Grid.Row="2" Margin="0,0,0,0" Width="60" FontSize="18"/>
             </StackPanel>
         </Grid>
     </Grid>
