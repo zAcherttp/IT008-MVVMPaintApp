@@ -52,7 +52,9 @@ namespace MVVMPaintApp.Models
             ColorsList = [];
 
             // Create the project directory
-            Directory.CreateDirectory(FilePath);
+            //
+            // Disabled for development purposes
+            //Directory.CreateDirectory(FilePath);
         }
 
         public static string GetDefaultProjectName(string baseFolder)

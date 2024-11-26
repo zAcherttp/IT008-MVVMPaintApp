@@ -7,41 +7,22 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using MVVMPaintApp.Commands;
+using MVVMPaintApp.Interfaces;
 
 namespace MVVMPaintApp.Models
 {
-    public partial class Layer(int index, int width, int height)
+    public partial class Layer(int _index, int width, int height) : ObservableObject
     {
-        private WriteableBitmap _content = BitmapFactory.New(width, height);
-        private bool _isVisible = true;
-        private int _index = index;
+        [ObservableProperty]
+        private WriteableBitmap content = BitmapFactory.New(width, height);
 
-        public WriteableBitmap Content
-        {
-            get => _content;
-            set => _content = value;
-        }
+        [ObservableProperty]
+        private bool isVisible = true;
 
-        public bool IsVisible
-        {
-            get => _isVisible;
-            set
-            {
-                if (_isVisible != value)
-                {
-                    var command = new LayerVisibilityCommand(this, _isVisible, value);
-                    _isVisible = value;
-                    UndoRedoManager?.AddCommand(command);
-                }
-            }
-        }
-
-        public int Index
-        {
-            get => _index;
-            set => _index = value;
-        }
+        [ObservableProperty]
+        private int index = _index;
 
         public UndoRedoManager? UndoRedoManager { get; set; }
 

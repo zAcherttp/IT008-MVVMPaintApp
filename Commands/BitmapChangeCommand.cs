@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows;
+using MVVMPaintApp.Interfaces;
 
 namespace MVVMPaintApp.Commands
 {
@@ -14,7 +15,8 @@ namespace MVVMPaintApp.Commands
         public byte[] PixelData { get; } = pixelData;
     }
 
-    public class BitmapChangeCommand(WriteableBitmap bitmap, Int32Rect region, byte[] beforePixels, byte[] afterPixels) : IUndoable
+    public class BitmapChangeCommand(WriteableBitmap bitmap, Int32Rect region, byte[] beforePixels, byte[] afterPixels)
+        : IUndoable
     {
         private readonly WriteableBitmap Bitmap = bitmap;
         private readonly BitmapChangeRegion BeforeState = new(region, beforePixels);

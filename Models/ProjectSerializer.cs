@@ -125,7 +125,7 @@ namespace MVVMPaintApp.Models
                 Width = serializableProject.Width,
                 Height = serializableProject.Height,
                 Background = serializableProject.Background,
-                ColorsList = new ObservableCollection<PaletteColorSlot>(serializableProject.ColorsList)
+                ColorsList = [.. serializableProject.ColorsList]
             };
 
             // Load layers
@@ -195,7 +195,7 @@ namespace MVVMPaintApp.Models
             // Create a render target bitmap with 1/10th the original width and height
             int thumbnailWidth = project.Width / 10;
             int thumbnailHeight = project.Height / 10;
-            RenderTargetBitmap renderBitmap = new(thumbnailWidth, thumbnailHeight, 96, 96, PixelFormats.Bgra32);
+            RenderTargetBitmap renderBitmap = new(thumbnailWidth, thumbnailHeight, 96, 96, PixelFormats.Pbgra32);
 
             // Create a drawing visual to compose the layers
             DrawingVisual drawingVisual = new();

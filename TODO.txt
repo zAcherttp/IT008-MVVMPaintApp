@@ -4,8 +4,8 @@ IT WILL IN LIGHT MODE - Customize HomeView ListView Scrollbar to look like in Fi
 DONE - Add NewFileView 
 
 17/11/2024
-- Add HomeViewModel
-- Add NewFileViewModel
+DONE - Add HomeViewModel
+DONE - Add NewFileViewModel
 - Add Custom Canvas Control (Pan and zoomable canvas)
 
 ---------------------------------------------------------

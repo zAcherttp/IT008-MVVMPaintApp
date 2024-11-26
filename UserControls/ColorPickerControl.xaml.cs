@@ -1,9 +1,8 @@
-﻿using System.Globalization;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using static MVVMPaintApp.Models.ColorHelper;
 
 namespace MVVMPaintApp.UserControls
 {
@@ -41,7 +40,7 @@ namespace MVVMPaintApp.UserControls
                 typeof(Color),
                 typeof(ColorPickerControl),
                 new PropertyMetadata(Colors.Transparent));
-        
+
         public event EventHandler<Color>? ColorChanged;
         #endregion
 
@@ -127,83 +126,6 @@ namespace MVVMPaintApp.UserControls
         }
         #endregion
 
-        #region Color Calculations
-        private static Color GetRainbowColor(double position)
-        {
-            var (r, g, b) = CalculateRainbowComponents(position * 6);
-            return Color.FromRgb(r, g, b);
-        }
-
-        private static (byte r, byte g, byte b) CalculateRainbowComponents(double position)
-        {
-            int index = (int)position;
-            double remainder = position - index;
-
-            return index switch
-            {
-                0 => (255, (byte)(255 * remainder), 0),                    // Red to Yellow
-                1 => ((byte)(255 * (1 - remainder)), 255, 0),             // Yellow to Green
-                2 => (0, 255, (byte)(255 * remainder)),                   // Green to Cyan
-                3 => (0, (byte)(255 * (1 - remainder)), 255),            // Cyan to Blue
-                4 => ((byte)(255 * remainder), 0, 255),                   // Blue to Magenta
-                _ => (255, 0, (byte)(255 * (1 - remainder)))             // Magenta to Red
-            };
-        }
-
-        private static Color MixColors(Color color1, Color color2, double amount)
-        {
-            return Color.FromRgb(
-                (byte)(color1.R * (1 - amount) + color2.R * amount),
-                (byte)(color1.G * (1 - amount) + color2.G * amount),
-                (byte)(color1.B * (1 - amount) + color2.B * amount)
-            );
-        }
-
-        private static double GetHue(Color color)
-        {
-            var (h, _, _) = RgbToHsv(color);
-            return h;
-        }
-
-        private static (double h, double s, double v) RgbToHsv(Color color)
-        {
-            double r = color.R / 255.0;
-            double g = color.G / 255.0;
-            double b = color.B / 255.0;
-
-            double max = Math.Max(r, Math.Max(g, b));
-            double min = Math.Min(r, Math.Min(g, b));
-            double delta = max - min;
-
-            double hue = delta == 0 ? 0 :
-                max == r ? 60 * ((g - b) / delta) :
-                max == g ? 60 * (2 + (b - r) / delta) :
-                          60 * (4 + (r - g) / delta);
-
-            if (hue < 0) hue += 360;
-
-            double saturation = max == 0 ? 0 : delta / max;
-            double value = max;
-
-            return (hue, saturation, value);
-        }
-
-        private static double GetRelativeBrightness(Color color, Color baseColor)
-        {
-            double colorBrightness = CalculateBrightness(color);
-            double baseBrightness = CalculateBrightness(baseColor);
-
-            if (colorBrightness < baseBrightness)
-                return (colorBrightness / baseBrightness) - 1;
-            if (colorBrightness > baseBrightness)
-                return (colorBrightness - baseBrightness) / (1.0 - baseBrightness);
-            return 0;
-        }
-
-        private static double CalculateBrightness(Color color) =>
-            (color.R * 0.299 + color.G * 0.587 + color.B * 0.114) / 255.0;
-        #endregion
-
         #region UI Updates
         private void UpdateControls()
         {
@@ -272,7 +194,7 @@ namespace MVVMPaintApp.UserControls
             double huePosition = Math.Min(x / ColorSpectrum.ActualWidth, 0.9999);
             Color baseColor = GetRainbowColor(huePosition);
 
-            _currentColor = CalculateColorFromPosition(y / ColorSpectrum.ActualHeight, baseColor);
+            _currentColor = CalculateColorFromPosition(baseColor, y / ColorSpectrum.ActualHeight, BlackToColorPoint, ColorToWhitePoint);
             _currentColor.A = (byte)AlphaSlider.Value;
 
             CurrentSpectrumColor = _currentColor;
@@ -287,28 +209,11 @@ namespace MVVMPaintApp.UserControls
             Math.Clamp(position.Y, 0, ColorSpectrum.ActualHeight)
         );
 
-        private static Color CalculateColorFromPosition(double normalizedY, Color baseColor)
-        {
-            if (normalizedY < BlackToColorPoint)
-            {
-                double blackAmount = 1.0 - (normalizedY / BlackToColorPoint);
-                return MixColors(baseColor, Colors.Black, blackAmount);
-            }
-
-            if (normalizedY > ColorToWhitePoint)
-            {
-                double whiteAmount = (normalizedY - ColorToWhitePoint) / (1.0 - ColorToWhitePoint);
-                return MixColors(baseColor, Colors.White, whiteAmount);
-            }
-
-            return baseColor;
-        }
-
         private void UpdateColorFromRgbTextBoxes()
         {
             if (_isDragging) return;
 
-            if (TryParseRgbValues(out var color))
+            if (TryParseRgbValues(RedTextBox.Text, GreenTextBox.Text, BlueTextBox.Text, out Color color))
             {
                 UpdateColorAndUI(color);
             }
@@ -316,19 +221,6 @@ namespace MVVMPaintApp.UserControls
             {
                 UpdateTextBoxes();
             }
-        }
-
-        private bool TryParseRgbValues(out Color color)
-        {
-            color = Colors.Black;
-            if (byte.TryParse(RedTextBox.Text, out byte r) &&
-                byte.TryParse(GreenTextBox.Text, out byte b) &&
-                byte.TryParse(BlueTextBox.Text, out byte g))
-            {
-                color = Color.FromRgb(r, g, b);
-                return true;
-            }
-            return false;
         }
 
         private void UpdateColorFromHexTextBox()
@@ -386,5 +278,7 @@ namespace MVVMPaintApp.UserControls
             }
         }
         #endregion
+
+
     }
 }

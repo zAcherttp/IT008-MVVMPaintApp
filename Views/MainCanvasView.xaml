@@ -7,16 +7,53 @@
         xmlns:uc="clr-namespace:MVVMPaintApp.UserControls" x:Class="MVVMPaintApp.Views.MainCanvasView"
         xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
         mc:Ignorable="d"
-        Title="Home" Height="450" Width="800">
+        Title="Home" Height="900" Width="1600">
     <Window.Resources>
         <conv:BrushConverter x:Key="BrushConverter"/>
     </Window.Resources>
 
-    <Grid>
-        <uc:ColorPaletteControl x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="10,344,0,0" VerticalAlignment="Top"/>
-        <Border Background="{Binding DataContext.PrimaryColor,
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" Panel.ZIndex="1">
+            <MenuItem Header="File">
+                <MenuItem Header="New"/>
+                <MenuItem Header="Open"/>
+                <MenuItem Header="Save"/>
+                <MenuItem Header="Save As"/>
+                <MenuItem Header="Exit"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Undo"/>
+                <MenuItem Header="Redo"/>
+                <MenuItem Header="Cut"/>
+                <MenuItem Header="Copy"/>
+                <MenuItem Header="Paste"/>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Zoom In"/>
+                <MenuItem Header="Zoom Out"/>
+                <MenuItem Header="Fit to Screen"/>
+            </MenuItem>
+            <Separator/>
+
+        </Menu>
+        <StatusBar Grid.Row="2" Panel.ZIndex="1">
+            <StatusBarItem>
+                <TextBlock Text="Primary Color: " />
+            </StatusBarItem>
+        </StatusBar>
+
+        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1"/>
+
+        <uc:ColorPaletteControl Panel.ZIndex="1" x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"/>
+        <!--<Border Background="{Binding DataContext.PrimaryColor,
             ElementName=MyColorPaletteControl, Mode=TwoWay,
             Converter={StaticResource BrushConverter}}"
-            BorderThickness="1" Margin="132,49,132,141"/>
+            BorderThickness="1" Width="100" Height="100" Margin="280,564,1220,220"/>-->
     </Grid>
 </Window>

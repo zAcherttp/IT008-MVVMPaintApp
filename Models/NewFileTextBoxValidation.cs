@@ -6,44 +6,41 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVVMPaintApp.Models
 {
-    internal class NewFileTextBoxValidation
+    internal class NumericTextBoxValidation
     {
         public static readonly DependencyProperty IsNumericProperty =
-            DependencyProperty.RegisterAttached(
-                "IsNumeric",
-                typeof(bool),
-                typeof(NewFileTextBoxValidation),
+            DependencyProperty.RegisterAttached("IsNumeric", typeof(bool), typeof(NumericTextBoxValidation),
                 new PropertyMetadata(false, OnIsNumericChanged));
 
-        public static bool GetIsNumeric(DependencyObject obj)
-        {
-            return (bool)obj.GetValue(IsNumericProperty);
-        }
-
-        public static void SetIsNumeric(DependencyObject obj, bool value)
-        {
-            obj.SetValue(IsNumericProperty, value);
-        }
-
         public static readonly DependencyProperty AllowDecimalProperty =
-            DependencyProperty.RegisterAttached(
-                "AllowDecimal",
-                typeof(bool),
-                typeof(NewFileTextBoxValidation),
+            DependencyProperty.RegisterAttached("AllowDecimal", typeof(bool), typeof(NumericTextBoxValidation),
                 new PropertyMetadata(false));
 
-        public static bool GetAllowDecimal(DependencyObject obj)
-        {
-            return (bool)obj.GetValue(AllowDecimalProperty);
-        }
+        public static readonly DependencyProperty MinValueProperty =
+            DependencyProperty.RegisterAttached("MinValue", typeof(double), typeof(NumericTextBoxValidation),
+                new PropertyMetadata(double.MinValue));
 
-        public static void SetAllowDecimal(DependencyObject obj, bool value)
-        {
-            obj.SetValue(AllowDecimalProperty, value);
-        }
+        public static readonly DependencyProperty MaxValueProperty =
+            DependencyProperty.RegisterAttached("MaxValue", typeof(double), typeof(NumericTextBoxValidation),
+                new PropertyMetadata(double.MaxValue));
+
+
+        public static bool GetIsNumeric(DependencyObject obj) => (bool)obj.GetValue(IsNumericProperty);
+        public static void SetIsNumeric(DependencyObject obj, bool value) => obj.SetValue(IsNumericProperty, value);
+
+        public static bool GetAllowDecimal(DependencyObject obj) => (bool)obj.GetValue(AllowDecimalProperty);
+        public static void SetAllowDecimal(DependencyObject obj, bool value) => obj.SetValue(AllowDecimalProperty, value);
+
+        public static double GetMinValue(DependencyObject obj) => (double)obj.GetValue(MinValueProperty);
+        public static void SetMinValue(DependencyObject obj, double value) => obj.SetValue(MinValueProperty, value);
+
+        public static double GetMaxValue(DependencyObject obj) => (double)obj.GetValue(MaxValueProperty);
+        public static void SetMaxValue(DependencyObject obj, double value) => obj.SetValue(MaxValueProperty, value);
 
         private static void OnIsNumericChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -53,13 +50,38 @@ namespace MVVMPaintApp.Models
                 {
                     textBox.PreviewTextInput += OnPreviewTextInput;
                     textBox.PreviewKeyDown += OnPreviewKeyDown;
+                    textBox.TextChanged += OnTextChanged;
                     DataObject.AddPastingHandler(textBox, OnPasting);
                 }
                 else
                 {
                     textBox.PreviewTextInput -= OnPreviewTextInput;
                     textBox.PreviewKeyDown -= OnPreviewKeyDown;
+                    textBox.TextChanged -= OnTextChanged;
                     DataObject.RemovePastingHandler(textBox, OnPasting);
+                }
+            }
+        }
+
+        private static void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox textBox && !string.IsNullOrEmpty(textBox.Text))
+            {
+                double minValue = GetMinValue(textBox);
+                double maxValue = GetMaxValue(textBox);
+
+                if (double.TryParse(textBox.Text, out double value))
+                {
+                    if (value < minValue)
+                    {
+                        textBox.Text = minValue.ToString();
+                        textBox.CaretIndex = textBox.Text.Length;
+                    }
+                    else if (value > maxValue)
+                    {
+                        textBox.Text = maxValue.ToString();
+                        textBox.CaretIndex = textBox.Text.Length;
+                    }
                 }
             }
         }
@@ -71,14 +93,12 @@ namespace MVVMPaintApp.Models
                 bool allowDecimal = GetAllowDecimal(textBox);
                 string newText = textBox.Text.Insert(textBox.CaretIndex, e.Text);
 
-                // Allow one decimal point if decimals are allowed
                 if (allowDecimal && e.Text == "." && !textBox.Text.Contains('.'))
                 {
                     e.Handled = false;
                     return;
                 }
 
-                // Check if the new text is a valid number
                 if (allowDecimal)
                 {
                     e.Handled = !double.TryParse(newText, out _);
@@ -92,7 +112,6 @@ namespace MVVMPaintApp.Models
 
         private static void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            // Allow control keys like Backspace, Delete, Arrow keys etc.
             if (e.Key == Key.Space)
             {
                 e.Handled = true;
@@ -107,20 +126,33 @@ namespace MVVMPaintApp.Models
                 {
                     string text = (string)e.DataObject.GetData(typeof(string));
                     bool allowDecimal = GetAllowDecimal(textBox);
+                    double minValue = GetMinValue(textBox);
+                    double maxValue = GetMaxValue(textBox);
 
-                    if (allowDecimal)
+                    if (double.TryParse(text, out double value))
                     {
-                        if (!double.TryParse(text, out _))
+                        if (value < minValue || value > maxValue)
                         {
                             e.CancelCommand();
+                        }
+                        else if (allowDecimal)
+                        {
+                            if (!double.TryParse(text, out _))
+                            {
+                                e.CancelCommand();
+                            }
+                        }
+                        else
+                        {
+                            if (!int.TryParse(text, out _))
+                            {
+                                e.CancelCommand();
+                            }
                         }
                     }
                     else
                     {
-                        if (!int.TryParse(text, out _))
-                        {
-                            e.CancelCommand();
-                        }
+                        e.CancelCommand();
                     }
                 }
                 else
