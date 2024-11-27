@@ -34,12 +34,25 @@ namespace MVVMPaintApp.UserControls
                     ? Cursors.Hand
                     : Cursors.Arrow;
             }
+            else if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                viewModel.HandleCtrlKeyPress(true);
+            }
+        }
+
+        private void UserControl_KeyUp(object sender, KeyEventArgs e)
+        {
+            var viewModel = (DrawingCanvasViewModel)DataContext;
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                viewModel.HandleCtrlKeyPress(false);
+            }
         }
 
         private void UserControl_MouseMove(object sender, MouseEventArgs e)
         {
             var viewModel = (DrawingCanvasViewModel)DataContext;
-            Point currentPoint = e.GetPosition(UserControl);
+            Point currentPoint = e.GetPosition(MainCanvasArea);
             viewModel.UpdateMouseInfo(currentPoint, isPressed);
             if ((viewModel.IsZoomMode || viewModel.IsPanMode) && lastMousePoint.HasValue)
             {
@@ -54,14 +67,14 @@ namespace MVVMPaintApp.UserControls
         private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             var viewModel = (DrawingCanvasViewModel)DataContext;
-            viewModel.HandleMouseWheel(e);
+            _ = viewModel.HandleMouseWheel(e);
         }
 
         private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Focus();
             var viewModel = (DrawingCanvasViewModel)DataContext;
-            Point currentPoint = e.GetPosition(UserControl);
+            Point currentPoint = e.GetPosition(MainCanvasArea);
             isPressed = true;
 
             if (viewModel.IsZoomMode || viewModel.IsPanMode)
@@ -82,7 +95,7 @@ namespace MVVMPaintApp.UserControls
                 ReleaseMouseCapture();
                 lastMousePoint = null;
             }
-            viewModel.UpdateMouseInfo(e.GetPosition(UserControl), isPressed);
+            viewModel.UpdateMouseInfo(e.GetPosition(MainCanvasArea), isPressed);
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -94,6 +107,12 @@ namespace MVVMPaintApp.UserControls
         {
             var viewModel = (DrawingCanvasViewModel)DataContext;
             viewModel.ResetCommand.Execute(null);
+        }
+
+        private void FitToWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (DrawingCanvasViewModel)DataContext;
+            viewModel.FitToWindowCommand.Execute(null);
         }
     }
 }

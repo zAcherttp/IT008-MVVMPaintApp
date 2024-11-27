@@ -87,7 +87,7 @@
         </Style>
     </Window.Resources>
     <Window.DataContext>
-        <vm:HomeViewModel/>
+        <Binding Source="{StaticResource Locator}" Path="HomeViewModel"/>
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>

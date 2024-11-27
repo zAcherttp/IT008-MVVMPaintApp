@@ -22,15 +22,21 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private WriteableBitmap canvasRenderTarget;
 
+        [ObservableProperty]
+        private int viewPortWidth;
+
+        [ObservableProperty]
+        private int viewPortHeight;
+
         // Canvas properties
         [ObservableProperty]
-        private double panOffsetX;
+        private Easing panOffsetX = new(0.0);
 
         [ObservableProperty]
-        private double panOffsetY;
+        private Easing panOffsetY = new (0.0);
 
         [ObservableProperty]
-        private double zoomFactor = 1.0;
+        private Easing zoomFactor = new(1.0);
 
         // Mode properties
         // to be changed to Tools class using enum tool types
@@ -40,6 +46,9 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private bool isPanMode;
 
+        [ObservableProperty]
+        private bool isCtrlPressed;
+
 
         // Debugging properties
         [ObservableProperty]
@@ -47,11 +56,11 @@ namespace MVVMPaintApp.ViewModels
 
         [ObservableProperty]
         private string mouseInfo = "0, 0";
-
+        
 
         public DrawingCanvasViewModel()//Project project)
         {
-            this.currentProject = new Project();
+            currentProject = new Project();
             canvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
 
             RenderProject();
@@ -70,7 +79,9 @@ namespace MVVMPaintApp.ViewModels
             {
                 if (layer.IsVisible)
                 {
-                    CanvasRenderTarget.Blit(new Rect(0, 0, layer.Content.PixelWidth, layer.Content.PixelHeight), layer.Content, new Rect(0, 0, layer.Content.PixelWidth, layer.Content.PixelHeight), WriteableBitmapExtensions.BlendMode.Alpha);
+                    Rect rect = new(0, 0, layer.Content.PixelWidth, layer.Content.PixelHeight);
+                    CanvasRenderTarget.Blit(rect, layer.Content, rect,
+                        WriteableBitmapExtensions.BlendMode.Alpha);
                 }
             }
         }
@@ -108,36 +119,21 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         private async Task Reset()
         {
-            const double duration = 300; // duration in milliseconds
-            const double frameRate = 240; // frames per second
-            const double totalFrames = duration / (1000.0 / frameRate);
-
-            double startZoomFactor = ZoomFactor;
-            double startPanOffsetX = PanOffsetX;
-            double startPanOffsetY = PanOffsetY;
-
-            double targetZoomFactor = 1.0;
-            double targetPanOffsetX = 0.0;
-            double targetPanOffsetY = 0.0;
-
-            for (int i = 0; i <= totalFrames; i++)
+            var tasks = new[]
             {
-                double t = i / totalFrames; // normalized time (0.0 to 1.0)
-
-                // Apply easing (ease-in-out cubic)
-                t = t < 0.5 ? 4 * t * t * t : 1 - Math.Pow(-2 * t + 2, 3) / 2;
-
-                ZoomFactor = Lerp(startZoomFactor, targetZoomFactor, t);
-                PanOffsetX = Lerp(startPanOffsetX, targetPanOffsetX, t);
-                PanOffsetY = Lerp(startPanOffsetY, targetPanOffsetY, t);
-
-                await Task.Delay((int)(1000 / frameRate)); // delay for frame rate
-            }
+                PanOffsetX.EaseDeltaAsync(-PanOffsetX.Value, Easing.EasingType.EaseInOutCubic , 300),
+                PanOffsetY.EaseDeltaAsync(-PanOffsetY.Value, Easing.EasingType.EaseInOutCubic, 300),
+                ZoomFactor.EaseDeltaAsync(-ZoomFactor.Value + 1f, Easing.EasingType.EaseInOutCubic, 300)
+            };
+            await Task.WhenAll(tasks);
         }
-            
-        private static double Lerp(double start, double end, double t)
+
+        [RelayCommand]
+        private async Task FitToWindow()
         {
-            return start + (end - start) * t;
+            double newZoomFactor = Math.Min((double)CanvasRenderTarget.PixelWidth / CurrentProject.Width,
+                (double)CanvasRenderTarget.PixelHeight / CurrentProject.Height);
+            await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 300);
         }
 
         public void UpdateMouseInfo(Point position, bool isPressed)
@@ -145,14 +141,23 @@ namespace MVVMPaintApp.ViewModels
             MouseInfo = $"{position.X:F0}, {position.Y:F0}" + (isPressed ? " [DOWN]" : "");
         }
 
-        public void HandleMouseWheel(MouseWheelEventArgs e)
+        public void HandleCtrlKeyPress(bool isPressed)
+        {
+            IsCtrlPressed = isPressed;
+        }
+
+        public async Task HandleMouseWheel(MouseWheelEventArgs e)
+        {
+            await HandleMouseZoom(e);
+        }
+
+        public async Task HandleMouseZoom(MouseWheelEventArgs e)
         {
             if (!IsZoomMode) return;
 
-            double zoomStep = e.Delta > 0 ? (ZOOM_STEP_PERCENTAGE + 1f) : (1f / (ZOOM_STEP_PERCENTAGE + 1f));
-            double newZoomFactor = ZoomFactor * zoomStep;
-
-            ZoomFactor = Math.Max(0.1, Math.Min(newZoomFactor, 10.0));
+            double delta = e.Delta / 120.0;
+            double newZoomFactor = Math.Clamp(ZoomFactor.Value + (delta * ZOOM_STEP_PERCENTAGE), 0.1, 10); 
+            await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 30);
         }
 
         public void HandleMousePan(Point startPoint, Point currentPoint)
@@ -162,8 +167,8 @@ namespace MVVMPaintApp.ViewModels
             double deltaX = currentPoint.X - startPoint.X;
             double deltaY = currentPoint.Y - startPoint.Y;
 
-            PanOffsetX += deltaX;
-            PanOffsetY += deltaY;
+            PanOffsetX.Value += deltaX;
+            PanOffsetY.Value += deltaY;
         }
     }
 }

@@ -48,11 +48,10 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="NoClearButtonTextBox" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxBaseStyle}">
-        </Style>
+        <Style x:Key="NoClearButtonTextBox" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxBaseStyle}"/>
     </Window.Resources>
     <Window.DataContext>
-        <vm:NewFileViewModel/>
+        <Binding Source="{StaticResource Locator}" Path="NewFileViewModel"/>
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>

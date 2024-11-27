@@ -7,9 +7,9 @@
         xmlns:uc="clr-namespace:MVVMPaintApp.UserControls" x:Class="MVVMPaintApp.Views.MainCanvasView"
         xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
         mc:Ignorable="d"
-        Title="Home" Height="900" Width="1600">
+        DataContext="{Binding MainCanvasViewModel, Source={StaticResource Locator}}"
+        Title="Home" Height="{Binding ViewPortHeight, Mode=TwoWay}" Width="{Binding ViewPortWidth, Mode=TwoWay}">
     <Window.Resources>
-        <conv:BrushConverter x:Key="BrushConverter"/>
     </Window.Resources>
 
     <Grid ShowGridLines="True">
@@ -48,12 +48,17 @@
             </StatusBarItem>
         </StatusBar>
 
-        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1"/>
+        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1">
+            <uc:DrawingCanvas.DataContext>
+                <Binding Source="{StaticResource Locator}" Path="DrawingCanvasViewModel"/>
+            </uc:DrawingCanvas.DataContext>
+        </uc:DrawingCanvas>
 
-        <uc:ColorPaletteControl Panel.ZIndex="1" x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-        <!--<Border Background="{Binding DataContext.PrimaryColor,
-            ElementName=MyColorPaletteControl, Mode=TwoWay,
-            Converter={StaticResource BrushConverter}}"
-            BorderThickness="1" Width="100" Height="100" Margin="280,564,1220,220"/>-->
+        <uc:ColorPaletteControl Panel.ZIndex="1" x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1">
+            <uc:ColorPaletteControl.DataContext>
+                <Binding Source="{StaticResource Locator}" Path="ColorPaletteViewModel"/>
+            </uc:ColorPaletteControl.DataContext>
+        </uc:ColorPaletteControl>
+
     </Grid>
 </Window>
