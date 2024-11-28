@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MVVMPaintApp.Views"
         xmlns:uc="clr-namespace:MVVMPaintApp.UserControls" x:Class="MVVMPaintApp.Views.MainCanvasView"
         xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         DataContext="{Binding MainCanvasViewModel, Source={StaticResource Locator}}"
         Title="Home" Height="{Binding ViewPortHeight, Mode=TwoWay}" Width="{Binding ViewPortWidth, Mode=TwoWay}">

@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Models;
+using MVVMPaintApp.Views;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -18,6 +19,25 @@ namespace MVVMPaintApp.ViewModels
     {
         [ObservableProperty]
         private ObservableCollection<Project> recentProjects;
+
+        /// <summary>
+        /// Open the selected project from listview
+        /// </summary>
+        /// <param name="project"></param>
+        [RelayCommand]
+        public void OpenProject(Project project)
+        {
+        }
+
+        /// <summary>
+        /// Open NewFileView.xaml
+        /// </summary>
+        [RelayCommand]
+        public void OpenNewFileView()
+        {
+            var NewFileView = new NewFileView();
+            NewFileView.Show();
+        }
 
         public HomeViewModel()
         {

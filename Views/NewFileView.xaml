@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MVVMPaintApp.Views"
         xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
         xmlns:val="clr-namespace:MVVMPaintApp.Models"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="New file" Height="600" Width="900" Background="#F1F4F9" ResizeMode="NoResize">
     <Window.Resources>

@@ -1,14 +1,16 @@
-﻿12/11/2024
-IT WILL IN LIGHT MODE - Customize HomeView ListView Scrollbar to look like in Figma
- - Justify HomeView ListView items
-DONE - Add NewFileView 
-
-17/11/2024
+﻿- Justify HomeView ListView items
+DONE - Add NewFileView
 DONE - Add HomeViewModel
 DONE - Add NewFileViewModel
-- Add Custom Canvas Control (Pan and zoomable canvas)
-
----------------------------------------------------------
-
+DONE - Add Custom Canvas Control (Pan and zoomable canvas)
+- Implement Views Navigation
+- Implement Project create/ load/ save
+- Layers View / VM
+- ToolStrip View / VM
+- ToolBox View / VM
 - Use WriteableBitmapEx library to create classes for drawing
-- Add Tools
+- Drawing Brushes using WriteableBitmapEx
+- Add Pencil, Eraser, Line, Rectangle, Ellipse, Fill, Text, Select, Move, Zoom tools
+- Implement Undo/Redo
+- Use proper dynamic color resources for light and dark mode (current colors are hardcoded)
+- Add documentation for all classes and methods

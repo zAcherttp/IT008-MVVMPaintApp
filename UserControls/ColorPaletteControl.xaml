@@ -210,7 +210,7 @@
         </Style>
     </UserControl.Resources>
     <UserControl.DataContext>
-        <vm:ColorPaletteViewModel/>
+        <Binding Source="{StaticResource Locator}" Path="ColorPaletteViewModel"/>
     </UserControl.DataContext>
     <Grid>
         <StackPanel>

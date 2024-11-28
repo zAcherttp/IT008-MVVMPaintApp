@@ -102,17 +102,5 @@ namespace MVVMPaintApp.UserControls
         {
             Focus();
         }
-
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            viewModel.ResetCommand.Execute(null);
-        }
-
-        private void FitToWindowButton_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            viewModel.FitToWindowCommand.Execute(null);
-        }
     }
 }

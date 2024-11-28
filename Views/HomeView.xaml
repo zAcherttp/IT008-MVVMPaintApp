@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVMPaintApp.Views"
         xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
+        WindowStartupLocation="CenterScreen"
         Title="Home" Height="600" Width="900" Background="#F1F4F9" ResizeMode="NoResize">
     <Window.Resources>
         <Style x:Key="NewFileButtonStyle" TargetType="Button">
@@ -150,8 +151,8 @@
         </Border>
         <StackPanel Grid.Column="0">
             <Image Source="pack://application:,,,/Resources/MyPaintAppIcon.png" Width="80" Height="80" HorizontalAlignment="left" Margin="80,40,0,40"/>
-            <Button Style="{StaticResource NewFileButtonStyle}" Content="New File"  VerticalAlignment="Top" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI" Margin="40,0,40,10"/>
-            <Button Style="{StaticResource OpenButtonStyle}" Content="Open"  VerticalAlignment="Top" FontSize="21" FontFamily="Segoe UI" Margin="40,0,40,10"/>
+            <Button Style="{StaticResource NewFileButtonStyle}" Command="{Binding OpenNewFileViewCommand}"  Content="New File" VerticalAlignment="Top" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI" Margin="40,0,40,10"/>
+            <Button Style="{StaticResource OpenButtonStyle}" Command="{Binding OpenProjectCommand}" Content="Open" VerticalAlignment="Top" FontSize="21" FontFamily="Segoe UI" Margin="40,0,40,10"/>
         </StackPanel>
     </Grid>
 </Window>
