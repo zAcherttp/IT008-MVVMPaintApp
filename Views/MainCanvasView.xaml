@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVMPaintApp.Views"
         xmlns:uc="clr-namespace:MVVMPaintApp.UserControls" x:Class="MVVMPaintApp.Views.MainCanvasView"
-        xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
-        WindowStartupLocation="CenterScreen"
+        xmlns:conv="clr-namespace:MVVMPaintApp.Converters" xmlns:viewmodels="clr-namespace:MVVMPaintApp.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainCanvasViewModel}"
+    WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         DataContext="{Binding MainCanvasViewModel, Source={StaticResource Locator}}"
         Title="Home" Height="{Binding ViewPortHeight, Mode=TwoWay}" Width="{Binding ViewPortWidth, Mode=TwoWay}">
@@ -49,16 +49,15 @@
             </StatusBarItem>
         </StatusBar>
 
-        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1">
-            <uc:DrawingCanvas.DataContext>
+        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1" x:Name ="Canva">
+            <!--<uc:DrawingCanvas.DataContext>
                 <Binding Source="{StaticResource Locator}" Path="DrawingCanvasViewModel"/>
-            </uc:DrawingCanvas.DataContext>
+                
+            </uc:DrawingCanvas.DataContext>-->
         </uc:DrawingCanvas>
 
-        <uc:ColorPaletteControl Panel.ZIndex="1" x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1">
-            <uc:ColorPaletteControl.DataContext>
-                <Binding Source="{StaticResource Locator}" Path="ColorPaletteViewModel"/>
-            </uc:ColorPaletteControl.DataContext>
+        <uc:ColorPaletteControl Panel.ZIndex="1" x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"   DataContext="{x:Null}">
+
         </uc:ColorPaletteControl>
 
     </Grid>

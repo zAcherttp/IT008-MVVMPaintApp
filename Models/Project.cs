@@ -57,6 +57,29 @@ namespace MVVMPaintApp.Models
             //Directory.CreateDirectory(FilePath);
         }
 
+        public Project(int width, int height)
+        {
+            string defaultFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "MyPaint"
+            );
+
+            Name = GetDefaultProjectName(defaultFolder);
+            FilePath = Path.Combine(defaultFolder, Name);
+            Thumbnail = new BitmapImage();
+
+            Width = width;
+            Height = height;
+            Layers = [new(0, Width, Height)];
+            Background = Colors.White;
+            ColorsList = [];
+
+            // Create the project directory
+            //
+            // Disabled for development purposes
+            //Directory.CreateDirectory(FilePath);
+        }
+
         public static string GetDefaultProjectName(string baseFolder)
         {
             Directory.CreateDirectory(baseFolder);

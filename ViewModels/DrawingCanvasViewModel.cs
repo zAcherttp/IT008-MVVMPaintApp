@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.ViewModels
 {
-    internal partial class DrawingCanvasViewModel : ObservableObject
+    public partial class DrawingCanvasViewModel : ObservableObject
     {
         private const double ZOOM_STEP_PERCENTAGE = 0.1;
 
@@ -23,10 +23,10 @@ namespace MVVMPaintApp.ViewModels
         private WriteableBitmap canvasRenderTarget;
 
         [ObservableProperty]
-        private int viewPortWidth;
+        public int canvasWidth;
 
         [ObservableProperty]
-        private int viewPortHeight;
+        public int canvasHeight;
 
         // Canvas properties
         [ObservableProperty]
@@ -60,11 +60,24 @@ namespace MVVMPaintApp.ViewModels
 
         public DrawingCanvasViewModel()//Project project)
         {
-            currentProject = new Project();
+            if(currentProject == null)
+            {
+                currentProject = new Project();
+            }
             canvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
 
             RenderProject();
         }
+
+        public DrawingCanvasViewModel(Project project)//Project project)
+        {
+            currentProject = project;
+
+            canvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
+
+            RenderProject();
+        }
+
 
         public void RenderProject()
         {

@@ -16,11 +16,12 @@ namespace MVVMPaintApp.Models
         {
             var services = new ServiceCollection();
 
-            services.AddTransient<DrawingCanvasViewModel>();
+            services.AddSingleton<DrawingCanvasViewModel>();
             services.AddTransient<ColorPaletteViewModel>();
             services.AddTransient<MainCanvasViewModel>();
             services.AddTransient<HomeViewModel>();
             services.AddTransient<NewFileViewModel>();
+           
 
             serviceProvider = services.BuildServiceProvider();
         }

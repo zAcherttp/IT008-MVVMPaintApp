@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MVVMPaintApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,21 @@ namespace MVVMPaintApp.Views
         public NewFileView()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+            int width = int.Parse(WidthTextBox.Text);
+            int height = int.Parse(HeightTextBox.Text);
+            Project project = new Project(width,height);
+            MainCanvasView mainCanvasView = new MainCanvasView(project);
+            this.Close();
+            mainCanvasView.Show();
         }
     }
 }

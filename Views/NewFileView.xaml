@@ -126,7 +126,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Foreground="Black" Text="Custom" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
-            <Button Grid.Row="7" Style="{StaticResource NewFileButtonStyle}" Content="Create"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI" Margin="0,0,35,30"/>
+            <Button Grid.Row="7" Style="{StaticResource NewFileButtonStyle}" Content="Create"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI" Margin="0,0,35,30" Click="CreateButton_Click"/>
 
             <TextBlock Grid.Row="1" Foreground="#313131" Text="Width" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
             <TextBox x:Name="WidthTextBox" Text="{Binding SelectedWidth, UpdateSourceTrigger=PropertyChanged}"

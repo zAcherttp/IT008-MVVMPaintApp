@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MVVMPaintApp.Models;
+using MVVMPaintApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MVVMPaintApp.UserControls;
 
 namespace MVVMPaintApp.Views
 {
@@ -19,9 +22,17 @@ namespace MVVMPaintApp.Views
     /// </summary>
     public partial class MainCanvasView : Window
     {
-        public MainCanvasView()
+        public MainCanvasView(Project project)
         {
             InitializeComponent();
+
+            this.WindowState = WindowState.Maximized;
+
+            DrawingCanvasViewModel drawingCanvasViewModel = new DrawingCanvasViewModel(project);
+
+            Canva.DataContext = drawingCanvasViewModel;
+
+
         }
     }
 }

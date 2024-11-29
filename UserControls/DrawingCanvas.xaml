@@ -4,10 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
-             xmlns:local="clr-namespace:MVVMPaintApp.UserControls"
+             xmlns:local="clr-namespace:MVVMPaintApp.UserControls" d:DataContext="{d:DesignInstance Type=vm:DrawingCanvasViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="1200"
-             
+             d:DesignHeight="{Binding CanvasHeight}" d:DesignWidth="{Binding CanvasWidth}"
              KeyDown="UserControl_KeyDown"
              KeyUp="UserControl_KeyUp"
              MouseMove="UserControl_MouseMove"
@@ -18,9 +17,7 @@
              Focusable="True"
             >
 
-    <UserControl.DataContext>
-        <Binding Source="{StaticResource Locator}" Path="DrawingCanvasViewModel"/>
-    </UserControl.DataContext>
+
 
     <Grid x:Name="MainCanvasGrid"
           Background="Transparent">
