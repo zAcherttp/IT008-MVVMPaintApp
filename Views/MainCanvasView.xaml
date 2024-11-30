@@ -1,15 +1,19 @@
 ﻿<Window
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MVVMPaintApp.Views"
-        xmlns:uc="clr-namespace:MVVMPaintApp.UserControls" x:Class="MVVMPaintApp.Views.MainCanvasView"
-        xmlns:conv="clr-namespace:MVVMPaintApp.Converters" xmlns:viewmodels="clr-namespace:MVVMPaintApp.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainCanvasViewModel}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:MVVMPaintApp.Views"
+    xmlns:uc="clr-namespace:MVVMPaintApp.UserControls"
+    x:Class="MVVMPaintApp.Views.MainCanvasView"
+    xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
+    xmlns:viewmodels="clr-namespace:MVVMPaintApp.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MainCanvasViewModel}"
     WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d"
-        DataContext="{Binding MainCanvasViewModel, Source={StaticResource Locator}}"
-        Title="Home" Height="{Binding ViewPortHeight, Mode=TwoWay}" Width="{Binding ViewPortWidth, Mode=TwoWay}">
+    mc:Ignorable="d"
+    DataContext="{Binding MainCanvasViewModel, Source={StaticResource Locator}}"
+    Title="Home" Height="{Binding ViewPortHeight, Mode=TwoWay}" Width="{Binding ViewPortWidth, Mode=TwoWay}">
+
     <Window.Resources>
     </Window.Resources>
 
@@ -41,24 +45,26 @@
                 <MenuItem Header="Fit to Screen"/>
             </MenuItem>
             <Separator/>
-
         </Menu>
-        <StatusBar Grid.Row="2" Panel.ZIndex="1">
+
+        <StatusBar Grid.Row="2" Panel.ZIndex="1" VerticalAlignment="Bottom">
             <StatusBarItem>
                 <TextBlock Text="Primary Color: " />
             </StatusBarItem>
         </StatusBar>
 
-        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1" x:Name ="Canva">
-            <!--<uc:DrawingCanvas.DataContext>
-                <Binding Source="{StaticResource Locator}" Path="DrawingCanvasViewModel"/>
-                
-            </uc:DrawingCanvas.DataContext>-->
-        </uc:DrawingCanvas>
+        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1" x:Name="Canva" />
 
-        <uc:ColorPaletteControl Panel.ZIndex="1" x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"   DataContext="{x:Null}">
-
-        </uc:ColorPaletteControl>
-
+        <!-- Use a DockPanel for better layout handling -->
+        <DockPanel Grid.Row="1">
+            <!-- This ColorPaletteControl stays docked to the bottom -->
+            <uc:ColorPaletteControl 
+                Panel.ZIndex="1"
+                DockPanel.Dock="Bottom"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Margin="10"
+                DataContext="{Binding ColorPaletteViewModel, Source={StaticResource Locator}}" />
+        </DockPanel>
     </Grid>
 </Window>
