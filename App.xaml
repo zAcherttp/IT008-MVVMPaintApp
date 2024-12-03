@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:MVVMPaintApp"
              xmlns:model="clr-namespace:MVVMPaintApp.Models" 
-             StartupUri="Views/HomeView.xaml">
+             StartupUri="Views/DashboardView.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

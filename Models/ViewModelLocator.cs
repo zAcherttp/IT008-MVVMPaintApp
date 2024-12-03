@@ -19,7 +19,7 @@ namespace MVVMPaintApp.Models
             services.AddTransient<DrawingCanvasViewModel>();
             services.AddTransient<ColorPaletteViewModel>();
             services.AddTransient<MainCanvasViewModel>();
-            services.AddTransient<HomeViewModel>();
+            services.AddTransient<DashboardViewModel>();
             services.AddTransient<NewFileViewModel>();
 
             serviceProvider = services.BuildServiceProvider();
@@ -28,7 +28,7 @@ namespace MVVMPaintApp.Models
         public DrawingCanvasViewModel DrawingCanvasViewModel => serviceProvider.GetRequiredService<DrawingCanvasViewModel>();
         public ColorPaletteViewModel ColorPaletteViewModel => serviceProvider.GetRequiredService<ColorPaletteViewModel>();
         public MainCanvasViewModel MainCanvasViewModel => serviceProvider.GetRequiredService<MainCanvasViewModel>();
-        public HomeViewModel HomeViewModel => serviceProvider.GetRequiredService<HomeViewModel>();
+        public DashboardViewModel HomeViewModel => serviceProvider.GetRequiredService<DashboardViewModel>();
         public NewFileViewModel NewFileViewModel => serviceProvider.GetRequiredService<NewFileViewModel>();
     }
 }

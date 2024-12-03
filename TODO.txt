@@ -1,8 +1,12 @@
-﻿- Justify HomeView ListView items
+﻿Tasks:
+
+- Justify HomeView ListView items
 DONE - Add NewFileView
 DONE - Add HomeViewModel
 DONE - Add NewFileViewModel
 DONE - Add Custom Canvas Control (Pan and zoomable canvas)
+- Separate project serialization and deserialization
+- Serialize project into .mpp (my paint project) file
 - Implement Views Navigation
 - Implement Project create/ load/ save
 - Layers View / VM
@@ -14,3 +18,6 @@ DONE - Add Custom Canvas Control (Pan and zoomable canvas)
 - Implement Undo/Redo
 - Use proper dynamic color resources for light and dark mode (current colors are hardcoded)
 - Add documentation for all classes and methods
+
+In progress:
+- Merge HomeView and NewFileView into one HomeView, rename HomeView to DashboardView

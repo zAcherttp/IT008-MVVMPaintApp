@@ -15,7 +15,7 @@ using MVVMPaintApp.Views;
 
 namespace MVVMPaintApp.ViewModels
 {
-    internal partial class HomeViewModel : ObservableObject
+    internal partial class DashboardViewModel : ObservableObject
     {
         [ObservableProperty]
         private ObservableCollection<Project> recentProjects;
@@ -39,7 +39,7 @@ namespace MVVMPaintApp.ViewModels
             NewFileView.Show();
         }
 
-        public HomeViewModel()
+        public DashboardViewModel()
         {
             //to do: check default folder for available projects
             recentProjects = [];
