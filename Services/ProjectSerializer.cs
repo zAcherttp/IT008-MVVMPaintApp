@@ -8,8 +8,9 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using System.Windows.Media;
 using System.Windows;
+using MVVMPaintApp.Models;
 
-namespace MVVMPaintApp.Models
+namespace MVVMPaintApp.Services
 {
     // Serializable version of Layer that excludes WritableBitmap
     [Serializable]
@@ -28,7 +29,7 @@ namespace MVVMPaintApp.Models
         public required int Height { get; set; }
         public required List<SerializableLayer> Layers { get; set; }
         public required Color Background { get; set; }
-        public required List<PaletteColorSlot> ColorsList { get; set; }
+        public required List<Color> ColorsList { get; set; }
     }
 
     public class ProjectSerializer
@@ -94,7 +95,7 @@ namespace MVVMPaintApp.Models
                 Height = project.Height,
                 Layers = serializableLayers,
                 Background = project.Background,
-                ColorsList = new List<PaletteColorSlot>(project.ColorsList)
+                ColorsList = [.. project.ColorsList]
             };
 
             // Serialize project data to JSON

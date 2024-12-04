@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Models;
+using MVVMPaintApp.Services;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -12,9 +13,10 @@ using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.ViewModels
 {
-    internal partial class DrawingCanvasViewModel : ObservableObject
+    public partial class DrawingCanvasViewModel : ObservableObject
     {
         private const double ZOOM_STEP_PERCENTAGE = 0.1;
+        private readonly ViewModelLocator viewModelLocator;
 
         [ObservableProperty]
         private Project currentProject;
@@ -56,14 +58,34 @@ namespace MVVMPaintApp.ViewModels
 
         [ObservableProperty]
         private string mouseInfo = "0, 0";
-        
 
-        public DrawingCanvasViewModel()//Project project)
+        //public DrawingCanvasViewModel(Project project, MainCanvasViewModel mainCanvasViewModel)
+        //{
+        //    CurrentProject = project;
+        //    CanvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
+
+        //    RenderProject();
+        //}
+
+        public DrawingCanvasViewModel(ViewModelLocator viewModelLocator)
         {
-            currentProject = new Project();
-            canvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
-
+            this.viewModelLocator = viewModelLocator;
+            CurrentProject = new Project(false);
+            CanvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
             RenderProject();
+        }
+
+        public void SetProject(Project project)
+        {
+            CurrentProject = project;
+            CanvasRenderTarget = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
+            RenderProject();
+        }
+
+        public void SetViewPortSize(int width, int height)
+        {
+            ViewPortWidth = width;
+            ViewPortHeight = height;
         }
 
         public void RenderProject()
@@ -85,8 +107,6 @@ namespace MVVMPaintApp.ViewModels
                 }
             }
         }
-
-
         partial void OnIsZoomModeChanged(bool value)
         {
             UpdateModeText();

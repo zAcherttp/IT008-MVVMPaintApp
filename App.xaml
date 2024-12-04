@@ -1,15 +1,14 @@
 ﻿<Application x:Class="MVVMPaintApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MVVMPaintApp"
-             xmlns:model="clr-namespace:MVVMPaintApp.Models" 
-             StartupUri="Views/DashboardView.xaml">
+             xmlns:services="clr-namespace:MVVMPaintApp.Services"
+             xmlns:local="clr-namespace:MVVMPaintApp">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <model:ViewModelLocator x:Key="Locator"/>
+            <services:ViewModelLocator x:Key="Locator"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

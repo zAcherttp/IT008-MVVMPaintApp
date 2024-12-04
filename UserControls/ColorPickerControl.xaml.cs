@@ -278,7 +278,5 @@ namespace MVVMPaintApp.UserControls
             }
         }
         #endregion
-
-
     }
 }

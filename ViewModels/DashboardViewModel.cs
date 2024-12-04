@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Collections.ObjectModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Models;
-using MVVMPaintApp.Views;
+using MVVMPaintApp.Interfaces;
+using MVVMPaintApp.Services;
+using System.Security.Principal;
 
 namespace MVVMPaintApp.ViewModels
 {
-    internal partial class DashboardViewModel : ObservableObject
+    public partial class DashboardViewModel : ObservableObject
     {
+        private readonly IWindowManager windowManager;
+        private readonly ViewModelLocator viewModelLocator;
+
         [ObservableProperty]
         private ObservableCollection<Project> recentProjects;
 
@@ -29,19 +27,19 @@ namespace MVVMPaintApp.ViewModels
         {
         }
 
-        /// <summary>
-        /// Open NewFileView.xaml
-        /// </summary>
         [RelayCommand]
-        public void OpenNewFileView()
+        public void OpenNewFileWindow()
         {
-            var NewFileView = new NewFileView();
-            NewFileView.Show();
+            windowManager.ShowWindow(viewModelLocator.NewFileViewModel);
+            windowManager.CloseWindow(this);
         }
 
-        public DashboardViewModel()
+        public DashboardViewModel(IWindowManager windowManager, ViewModelLocator viewModelLocator)
         {
             //to do: check default folder for available projects
+            this.windowManager = windowManager;
+            this.viewModelLocator = viewModelLocator;
+
             recentProjects = [];
             LoadDummyProjects();
         }

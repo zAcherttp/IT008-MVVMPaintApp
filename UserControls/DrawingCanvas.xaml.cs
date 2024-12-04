@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using MVVMPaintApp.ViewModels;
+using MVVMPaintApp.Models;  
 
 namespace MVVMPaintApp.UserControls
 {

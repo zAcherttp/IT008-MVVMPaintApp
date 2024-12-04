@@ -7,7 +7,7 @@ using System.Windows.Media.Media3D;
 
 namespace MVVMPaintApp.Models
 {
-    internal class ProjectPreset
+    public class ProjectPreset
     {
         private const int THUMBNAIL_HEIGHT = 100;
 

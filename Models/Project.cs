@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.IO;
+using MVVMPaintApp.Interfaces;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
-using System.Dynamic;
-using MVVMPaintApp.Models;
 using Microsoft.Win32;
-using System.ComponentModel;
-using System.Windows;
+using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.Models
 {
-    public class Project
+    public class Project : IProject
     {
         private const int THUMBNAIL_HEIGHT = 100;
 
@@ -26,7 +19,7 @@ namespace MVVMPaintApp.Models
         public BitmapImage Thumbnail { get; set; }
         public ObservableCollection<Layer> Layers { get; set; }
         public Color Background { get; set; }
-        public ObservableCollection<PaletteColorSlot> ColorsList { get; set; }
+        public List<Color> ColorsList { get; set; }
         public double HomeViewCanvasWidth
         {
             get
@@ -34,54 +27,58 @@ namespace MVVMPaintApp.Models
                 return (double)Width / Height * THUMBNAIL_HEIGHT;
             }
         }
-        public Project()
+        public Project(bool createDefault = false)
+        {
+            if (createDefault)
+            {
+                string defaultFolder = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "MyPaint");
+                Name = GetDefaultProjectName(defaultFolder);
+                FilePath = Path.Combine(defaultFolder, Name);
+                Thumbnail = new BitmapImage();
+                Width = 1152;
+                Height = 648;
+                Layers = [new(0, Width, Height)];
+                Background = Colors.White;
+                ColorsList = [];
+                // Create the project directory
+                //
+                // Disabled for development purposes
+                //
+                //Directory.CreateDirectory(FilePath);
+            }
+            else
+            {
+                Name = "";
+                FilePath = "";
+                Thumbnail = new BitmapImage();
+                Width = 1152;
+                Height = 648;
+                Layers = [];
+                Background = Colors.Transparent;
+                ColorsList = [];
+            }
+        }
+
+        public Project(int width, int height)
         {
             string defaultFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "MyPaint"
-            );
-
+                "MyPaint");
             Name = GetDefaultProjectName(defaultFolder);
             FilePath = Path.Combine(defaultFolder, Name);
             Thumbnail = new BitmapImage();
-
-            Width = 1152;
-            Height = 648;
+            Width = width;
+            Height = height;
             Layers = [new(0, Width, Height)];
             Background = Colors.White;
             ColorsList = [];
-
-            // Create the project directory
-            //
-            // Disabled for development purposes
-            //Directory.CreateDirectory(FilePath);
         }
 
-        public static string GetDefaultProjectName(string baseFolder)
+        public void LoadProject(string filePath)
         {
-            Directory.CreateDirectory(baseFolder);
-
-            var existingDirs = Directory.GetDirectories(baseFolder)
-                                      .Select(Path.GetFileName)
-                                      .ToList();
-
-            string projectName = "Untitled";
-            if (!existingDirs.Contains(projectName))
-            {
-                return projectName;
-            }
-
-            int counter = 1;
-            while (existingDirs.Contains($"Untitled{counter}"))
-            {
-                counter++;
-            }
-            return $"Untitled{counter}";
-        }
-
-        public void Load(string path)
-        {
-            Project result = ProjectSerializer.Deserialize(path);
+            Project result = ProjectSerializer.Deserialize(filePath);
             Name = result.Name;
             FilePath = result.FilePath;
             Width = result.Width;
@@ -90,47 +87,35 @@ namespace MVVMPaintApp.Models
             Layers = result.Layers;
             Background = result.Background;
             ColorsList = result.ColorsList;
-            Directory.CreateDirectory(FilePath);
         }
 
-        public void Save()
+        public void SaveProject()
         {
-            // Prompt the user to select a folder for saving
-            var saveFileDialog = new SaveFileDialog
+            if (string.IsNullOrEmpty(FilePath))
             {
-                Filter = "MyPaint Project files (*.mpproj)|*.mpproj|All files (*.*)|*.*",
-                DefaultExt = ".mpproj",
-                FileName = Name
-            };
-
-            if (saveFileDialog.ShowDialog() == true)
+                SaveProjectAs();
+            }
+            else
             {
-                // Get the path chosen by the user and create a folder for the project
-                string projectRootPath = Path.Combine(Path.GetDirectoryName(saveFileDialog.FileName) ?? "", Name);
-                Directory.CreateDirectory(projectRootPath);
-
-                // Serialize the main project file (e.g., in JSON format)
-                ProjectSerializer.Serialize(this, projectRootPath);
+                ProjectSerializer.Serialize(this, FilePath);
             }
         }
 
-        public void SaveAs()
+        public void SaveProjectAs()
         {
             SaveFileDialog saveFileDialog = new()
             {
-                Filter = "Portable Network Graphics files (*.png)|*.png|All files (*.*)|*.*",
-                DefaultExt = ".png",
+                Filter = "MyPaint Project (*.mpproj)|*.mpproj",
                 FileName = Name
             };
-
             if (saveFileDialog.ShowDialog() == true)
             {
-                string path = saveFileDialog.FileName;
-                RenderAndSaveAsPng(path);
+                FilePath = saveFileDialog.FileName;
+                ProjectSerializer.Serialize(this, FilePath);
             }
         }
 
-        public void RenderAndSaveAsPng(string outputPath)
+        public void ExportProject(string outputPath)
         {
             // Create a render target
             RenderTargetBitmap renderTarget = new RenderTargetBitmap(Width, Height, 96, 96, PixelFormats.Pbgra32);
@@ -164,19 +149,18 @@ namespace MVVMPaintApp.Models
             encoder.Save(fileStream);
         }
 
-        public void GenerateThumbnail(BitmapImage originalBitmap)
+        public void GenerateThumbnail(BitmapImage toBitmap)
         {
-            if (originalBitmap == null)
-                throw new ArgumentNullException(nameof(originalBitmap));
+            ArgumentNullException.ThrowIfNull(toBitmap);
 
             // Calculate scaled dimensions while maintaining aspect ratio
-            double scaleFactor = (double)THUMBNAIL_HEIGHT / originalBitmap.Height;
-            int scaledWidth = (int)(originalBitmap.Width * scaleFactor);
+            double scaleFactor = (double)THUMBNAIL_HEIGHT / toBitmap.Height;
+            int scaledWidth = (int)(toBitmap.Width * scaleFactor);
 
             // Create a new TransformedBitmap for scaling
             TransformedBitmap transformedBitmap = new TransformedBitmap();
             transformedBitmap.BeginInit();
-            transformedBitmap.Source = originalBitmap;
+            transformedBitmap.Source = toBitmap;
             transformedBitmap.Transform = new ScaleTransform(scaleFactor, scaleFactor);
             transformedBitmap.EndInit();
 
@@ -199,6 +183,28 @@ namespace MVVMPaintApp.Models
 
                 Thumbnail = thumbnailImage;
             }
+        }
+
+        public string GetDefaultProjectName(string defaultFolder)
+        {
+            Directory.CreateDirectory(defaultFolder);
+
+            var existingDirs = Directory.GetDirectories(defaultFolder)
+                                      .Select(Path.GetFileName)
+                                      .ToList();
+
+            string projectName = "Untitled";
+            if (!existingDirs.Contains(projectName))
+            {
+                return projectName;
+            }
+
+            int counter = 1;
+            while (existingDirs.Contains($"Untitled{counter}"))
+            {
+                counter++;
+            }
+            return $"Untitled{counter}";
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using MVVMPaintApp.Services;
+using Microsoft.Extensions.DependencyInjection;
+using MVVMPaintApp.ViewModels;
+using MVVMPaintApp.Interfaces;
 
 namespace MVVMPaintApp
 {
@@ -9,6 +11,36 @@ namespace MVVMPaintApp
     /// </summary>
     public partial class App : Application
     {
+        private readonly ServiceCollection serviceCollection = [];
+        public readonly ServiceProvider serviceProvider;
+
+        public App()
+        {
+            ConfigureServices(serviceCollection);
+            serviceProvider = serviceCollection.BuildServiceProvider();
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<DashboardViewModel>();
+            services.AddSingleton<NewFileViewModel>();
+            services.AddSingleton<MainCanvasViewModel>();
+            services.AddSingleton<DrawingCanvasViewModel>();
+            services.AddSingleton<ColorPaletteViewModel>();;
+
+            services.AddSingleton<WindowMapper>();
+            services.AddSingleton<UserControlMapper>();
+            services.AddSingleton<ViewModelLocator>();
+            services.AddSingleton<IWindowManager,  WindowManager>();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            var windowManager = serviceProvider.GetRequiredService<IWindowManager>();
+            windowManager.ShowWindow(serviceProvider.GetRequiredService<DashboardViewModel>());
+            
+            base.OnStartup(e);
+        }
     }
 
 }

@@ -9,11 +9,15 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics.Eventing.Reader;
 using System.DirectoryServices;
+using MVVMPaintApp.Interfaces;
+using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.ViewModels
 {
-    internal partial class ColorPaletteViewModel : ObservableObject
+    public partial class ColorPaletteViewModel : ObservableObject
     {
+        private readonly ViewModelLocator viewModelLocator;
+
         #region Constants
         private const int DEFAULT_PALETTE_ROWS = 3;
         private const int DEFAULT_PALETTE_COLUMNS = 9;
@@ -90,16 +94,26 @@ namespace MVVMPaintApp.ViewModels
             PaletteButtonColor = PrimaryColor;
         }
 
-        public ColorPaletteViewModel()
+        public ColorPaletteViewModel(ViewModelLocator viewModelLocator)
         {
+            this.viewModelLocator = viewModelLocator;
             paletteColors = [];
-            InitializePalette();
+            CreateEmptyPalette();
         }
 
-        private void InitializePalette()
+        public void SetProjectColors(List<Color> colorsList)
         {
-            CreateEmptyPalette();
-            PopulatePaletteWithDefaultColors();
+            if (colorsList.Count == 0)
+            {
+                PopulatePaletteWithDefaultColors();
+            }
+            else
+            {
+                foreach (Color color in colorsList)
+                {
+                    AddColorToPalette(color);
+                }
+            }
         }
 
         private void CreateEmptyPalette()

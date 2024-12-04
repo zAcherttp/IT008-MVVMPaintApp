@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using MVVMPaintApp.Commands;
 using MVVMPaintApp.Interfaces;
+using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.Models
 {

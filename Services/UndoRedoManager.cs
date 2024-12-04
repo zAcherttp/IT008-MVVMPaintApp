@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MVVMPaintApp.Interfaces;
 
-namespace MVVMPaintApp.Models
+namespace MVVMPaintApp.Services
 {
     public class UndoRedoManager
     {

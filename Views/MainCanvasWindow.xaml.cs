@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MVVMPaintApp.Models;
+using MVVMPaintApp.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +17,17 @@ using System.Windows.Shapes;
 namespace MVVMPaintApp.Views
 {
     /// <summary>
-    /// Interaction logic for NewFileView.xaml
+    /// Interaction logic for MainCanvasView.xaml
     /// </summary>
-    public partial class NewFileView : Window
+    public partial class MainCanvasWindow : Window
     {
-        public NewFileView()
+        public MainCanvasWindow(MainCanvasViewModel vm)
+        {
+            InitializeComponent();
+            DataContext = vm;
+        }
+
+        public MainCanvasWindow()
         {
             InitializeComponent();
         }

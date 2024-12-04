@@ -6,12 +6,19 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MVVMPaintApp.Interfaces;
 using MVVMPaintApp.Models;
+using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.ViewModels
 {
-    internal partial class NewFileViewModel : ObservableObject
+    public partial class NewFileViewModel : ObservableObject
     {
+        private bool isChanging = false;
+        private readonly IWindowManager windowManager;
+        private readonly ViewModelLocator viewModelLocator;
+
         [ObservableProperty]
         private int selectedWidth;
 
@@ -30,10 +37,23 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private ObservableCollection<ProjectPreset> presets = [];
 
-        private bool isChanging = false;
-
-        public NewFileViewModel()
+        [RelayCommand]
+        public void CreateNewFileAndOpenMainWindow()
         {
+            if (SelectedWidth > 0 && SelectedHeight > 0)
+            {
+                var project = new Project(SelectedWidth, SelectedHeight);
+                windowManager.ShowWindow(viewModelLocator.MainCanvasViewModel);
+                viewModelLocator.MainCanvasViewModel.SetProject(project);
+                windowManager.CloseWindow(this);
+            }
+        }
+
+        public NewFileViewModel(IWindowManager windowManager, ViewModelLocator viewModelLocator)
+        {
+            this.windowManager = windowManager;
+            this.viewModelLocator = viewModelLocator;
+
             PopulateDefaultPresets();
             SelectedPreset = Presets[0];
         }

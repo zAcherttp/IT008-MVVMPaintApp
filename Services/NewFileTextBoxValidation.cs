@@ -9,7 +9,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace MVVMPaintApp.Models
+namespace MVVMPaintApp.Services
 {
     internal class NumericTextBoxValidation
     {

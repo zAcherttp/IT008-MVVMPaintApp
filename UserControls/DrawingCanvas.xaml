@@ -6,6 +6,7 @@
              xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
              xmlns:local="clr-namespace:MVVMPaintApp.UserControls"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance vm:DrawingCanvasViewModel, IsDesignTimeCreatable=True}"
              d:DesignHeight="600" d:DesignWidth="1200"
              
              KeyDown="UserControl_KeyDown"
@@ -15,13 +16,7 @@
              MouseUp="UserControl_MouseUp"
              MouseWheel="UserControl_MouseWheel"
              Loaded="UserControl_Loaded"
-             Focusable="True"
-            >
-
-    <UserControl.DataContext>
-        <Binding Source="{StaticResource Locator}" Path="DrawingCanvasViewModel"/>
-    </UserControl.DataContext>
-
+             Focusable="True">
     <Grid x:Name="MainCanvasGrid"
           Background="Transparent">
         <Grid.RowDefinitions>
