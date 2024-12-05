@@ -50,13 +50,11 @@
         </StatusBar>
 
         <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1"
-                          DataContext="{Binding Source={StaticResource Locator}, Path=DrawingCanvasViewModel}">
-        </uc:DrawingCanvas>
+                          DataContext="{Binding DrawingCanvasViewModel}"/>
 
-        <uc:ColorPaletteControl Panel.ZIndex="1" x:Name="MyColorPaletteControl" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"
-                                DataContext="{Binding Source={StaticResource Locator}, Path=ColorPaletteViewModel}">
-            
-        </uc:ColorPaletteControl>
+
+        <uc:ColorPaletteControl Panel.ZIndex="1" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"
+                                DataContext="{Binding ColorPaletteViewModel}"/>
 
     </Grid>
 </Window>

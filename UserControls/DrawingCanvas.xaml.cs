@@ -16,6 +16,12 @@ namespace MVVMPaintApp.UserControls
             InitializeComponent();
         }
 
+        public DrawingCanvas(DrawingCanvasViewModel drawingCanvasViewModel)
+        {
+            InitializeComponent();
+            DataContext = drawingCanvasViewModel;
+        }
+
         private void UserControl_KeyDown(object sender, KeyEventArgs e)
         {
             Focus();

@@ -18,5 +18,11 @@ namespace MVVMPaintApp.UserControls
         {
             InitializeComponent();
         }
+
+        public ColorPaletteControl(ColorPaletteViewModel colorPaletteViewModel)
+        {
+            InitializeComponent();
+            DataContext = colorPaletteViewModel;
+        }
     }
 }

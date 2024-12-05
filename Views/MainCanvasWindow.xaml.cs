@@ -1,4 +1,5 @@
 ﻿using MVVMPaintApp.Models;
+using MVVMPaintApp.Services;
 using MVVMPaintApp.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -21,15 +22,16 @@ namespace MVVMPaintApp.Views
     /// </summary>
     public partial class MainCanvasWindow : Window
     {
-        public MainCanvasWindow(MainCanvasViewModel vm)
-        {
-            InitializeComponent();
-            DataContext = vm;
-        }
 
         public MainCanvasWindow()
         {
             InitializeComponent();
+        }
+
+        public MainCanvasWindow(MainCanvasViewModel mainCanvasViewModel)
+        {
+            InitializeComponent();
+            DataContext = mainCanvasViewModel;
         }
     }
 }

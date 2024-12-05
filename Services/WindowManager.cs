@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 using MVVMPaintApp.Interfaces;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace MVVMPaintApp.Services
 {
@@ -14,13 +16,11 @@ namespace MVVMPaintApp.Services
             var windowType = windowMapper.GetWindowType(viewModel.GetType());
             if (windowType != null)
             {
-                if (Activator.CreateInstance(windowType) is Window window)
-                {
-                    window.DataContext = viewModel;
-                    window.Show();
-                }
+                var window = Activator.CreateInstance(windowType, viewModel) as Window;
+                window?.Show();
             }
         }
+
         public void CloseWindow(ObservableObject viewModel)
         {
             var window = Application.Current.Windows.Cast<Window>().FirstOrDefault(w => w.DataContext == viewModel);

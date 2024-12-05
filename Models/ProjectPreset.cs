@@ -19,10 +19,11 @@ namespace MVVMPaintApp.Models
         private double aspectRatioH;
 
         public string PresetName { get => presetName; set => presetName = value; }
-        public double ThumbnailWidth {
+        public double ThumbnailWidth
+        {
             get
             {
-                return (double) AspectRatioW / AspectRatioH * THUMBNAIL_HEIGHT;
+                return (double)AspectRatioW / AspectRatioH * THUMBNAIL_HEIGHT;
             }
         }
         public string AspectRatioString { get => aspectRatioString; set => aspectRatioString = value; }

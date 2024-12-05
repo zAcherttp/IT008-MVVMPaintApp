@@ -38,6 +38,13 @@ namespace MVVMPaintApp.ViewModels
         private ObservableCollection<ProjectPreset> presets = [];
 
         [RelayCommand]
+        public void OpenDashboardWindow()
+        {
+            windowManager.ShowWindow(viewModelLocator.DashboardViewModel);
+            windowManager.CloseWindow(this);
+        }
+
+        [RelayCommand]
         public void CreateNewFileAndOpenMainWindow()
         {
             if (SelectedWidth > 0 && SelectedHeight > 0)
@@ -45,7 +52,7 @@ namespace MVVMPaintApp.ViewModels
                 var project = new Project(SelectedWidth, SelectedHeight);
                 windowManager.ShowWindow(viewModelLocator.MainCanvasViewModel);
                 viewModelLocator.MainCanvasViewModel.SetProject(project);
-                windowManager.CloseWindow(this);
+                //windowManager.CloseWindow(this);
             }
         }
 

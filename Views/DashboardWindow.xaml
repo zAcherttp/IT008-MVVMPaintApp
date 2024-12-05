@@ -114,7 +114,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="{Binding HomeViewCanvasWidth}" 
+                            <Grid Width="{Binding DashboardViewListViewItemWidth}" 
                                 Margin="0,0,20,20" 
                                 Cursor="Hand">
                                 <Grid.RowDefinitions>
@@ -125,11 +125,10 @@
                                 <Border Background="White" 
                                     CornerRadius="8"
                                     BorderThickness="2"
-                                    BorderBrush="#D8D8D8"
+                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                                     ClipToBounds="True">
                                     <Canvas x:Name="ThumbnailCanvas" 
-                                    Height="100"
-                                    Width="{Binding CanvasWidth}">
+                                    Height="100">
                                         <Image Source="{Binding Thumbnail}"
                                         Stretch="UniformToFill"/>
                                     </Canvas>

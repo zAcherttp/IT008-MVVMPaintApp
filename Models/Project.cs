@@ -20,7 +20,7 @@ namespace MVVMPaintApp.Models
         public ObservableCollection<Layer> Layers { get; set; }
         public Color Background { get; set; }
         public List<Color> ColorsList { get; set; }
-        public double HomeViewCanvasWidth
+        public double DashboardViewListViewItemWidth
         {
             get
             {

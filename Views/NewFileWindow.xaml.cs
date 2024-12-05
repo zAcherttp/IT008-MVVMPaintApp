@@ -8,15 +8,15 @@ namespace MVVMPaintApp.Views
     /// </summary>
     public partial class NewFileWindow : Window
     {
-        public NewFileWindow(NewFileViewModel vm)
-        {
-            InitializeComponent();
-            DataContext = vm;
-        }
-
         public NewFileWindow()
         {
             InitializeComponent();
+        }
+
+        public NewFileWindow(NewFileViewModel newFileViewModel)
+        {
+            InitializeComponent();
+            DataContext = newFileViewModel;
         }
     }
 }

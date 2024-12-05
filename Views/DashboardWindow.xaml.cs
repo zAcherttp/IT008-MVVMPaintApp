@@ -8,15 +8,15 @@ namespace MVVMPaintApp.Views
     /// </summary>
     public partial class DashboardWindow : Window
     {
-        public DashboardWindow(DashboardViewModel vm)
-        {
-            InitializeComponent();
-            DataContext = vm;
-        }
-
         public DashboardWindow()
         {
             InitializeComponent();
+        }
+
+        public DashboardWindow(DashboardViewModel dashboardViewModel)
+        {
+            InitializeComponent();
+            DataContext = dashboardViewModel;
         }
     }
 }
