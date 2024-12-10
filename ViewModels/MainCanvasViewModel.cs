@@ -18,7 +18,10 @@ namespace MVVMPaintApp.ViewModels
 
         [ObservableProperty]
         private Project currentProject;
-        
+
+        [ObservableProperty]
+        private string windowTitle = "Home";
+
         [ObservableProperty]
         private bool hasUnsavedChanges;
 
@@ -38,6 +41,7 @@ namespace MVVMPaintApp.ViewModels
         public void SetProject(Project project)
         {
             CurrentProject = project;
+            WindowTitle = "Home - " + project.Name;
             DrawingCanvasViewModel.SetProject(project);
             DrawingCanvasViewModel.SetViewPortSize(ViewPortWidth, ViewPortHeight);
 

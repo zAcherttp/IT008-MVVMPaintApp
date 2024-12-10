@@ -10,7 +10,7 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Closing="MainCanvasWindow_Closing"
-        Title="Home" Height="{Binding ViewPortHeight, Mode=TwoWay}" Width="{Binding ViewPortWidth, Mode=TwoWay}">
+        Title="{Binding WindowTitle}" Height="{Binding ViewPortHeight, Mode=TwoWay}" Width="{Binding ViewPortWidth, Mode=TwoWay}">
     <Window.Resources>
     </Window.Resources>
 
