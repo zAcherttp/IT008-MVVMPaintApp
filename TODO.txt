@@ -1,22 +1,19 @@
 ﻿Tasks:
 
+IN PROGRESS - Add documentation for all classes and methods
+IN PROGRESS - Use proper dynamic color resources for light and dark mode (current colors are hardcoded)
 DONE - Add NewFileView
 DONE - Add HomeViewModel
 DONE - Add NewFileViewModel
 DONE - Add Custom Canvas Control (Pan and zoomable canvas)
-- Separate project serialization and deserialization
-- Serialize project into .mpp (my paint project) file
-- Implement Views Navigation
-- Implement Project create/ load/ save
-- Layers View / VM
+DONE - Separate project serialization and deserialization
+DONE - Implement Views Navigation
+DONE - Implement Project create/ load/ save
+DONE - Merge HomeView and NewFileView into one HomeView, rename HomeView to DashboardView
+- LayersPanel View / VM
 - ToolStrip View / VM
 - ToolBox View / VM
 - Use WriteableBitmapEx library to create classes for drawing
 - Drawing Brushes using WriteableBitmapEx
 - Add Pencil, Eraser, Line, Rectangle, Ellipse, Fill, Text, Select, Move, Zoom tools
 - Implement Undo/Redo
-- Use proper dynamic color resources for light and dark mode (current colors are hardcoded)
-- Add documentation for all classes and methods
-
-In progress:
-- Merge HomeView and NewFileView into one HomeView, rename HomeView to DashboardView
