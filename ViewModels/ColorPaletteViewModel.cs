@@ -103,11 +103,8 @@ namespace MVVMPaintApp.ViewModels
 
         public void SetProjectColors(List<Color> colorsList)
         {
-            if (colorsList.Count == 0)
-            {
-                PopulatePaletteWithDefaultColors();
-            }
-            else
+            PopulatePaletteWithDefaultColors();
+            if(colorsList.Count != 0)
             {
                 foreach (Color color in colorsList)
                 {

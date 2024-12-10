@@ -1,12 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Models;
 using MVVMPaintApp.Interfaces;
 using MVVMPaintApp.Services;
-using System.Security.Principal;
+using Newtonsoft.Json;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -16,16 +14,10 @@ namespace MVVMPaintApp.ViewModels
         private readonly ViewModelLocator viewModelLocator;
 
         [ObservableProperty]
-        private ObservableCollection<Project> recentProjects;
+        private List<SerializableProject> recentProjects = [];
 
-        /// <summary>
-        /// Open the selected project from listview
-        /// </summary>
-        /// <param name="project"></param>
-        [RelayCommand]
-        public void OpenProject(Project project)
-        {
-        }
+        [ObservableProperty]
+        private SerializableProject? selectedProject;
 
         [RelayCommand]
         public void OpenNewFileWindow()
@@ -34,63 +26,45 @@ namespace MVVMPaintApp.ViewModels
             windowManager.CloseWindow(this);
         }
 
-        public DashboardViewModel(IWindowManager windowManager, ViewModelLocator viewModelLocator)
+        [RelayCommand]
+        public void OpenProject()
         {
-            //to do: check default folder for available projects
-            this.windowManager = windowManager;
-            this.viewModelLocator = viewModelLocator;
-
-            recentProjects = [];
-            LoadDummyProjects();
+            if(SelectedProject == null)
+            {
+                return;
+            }
+            var project = SelectedProject.ToProject();
+            windowManager.ShowWindow(viewModelLocator.MainCanvasViewModel);
+            viewModelLocator.MainCanvasViewModel.SetProject(project);
+            //windowManager.CloseWindow(this);
         }
 
-        private void LoadDummyProjects()
+        public DashboardViewModel(IWindowManager windowManager, ViewModelLocator viewModelLocator)
         {
-            var dummyBitmap = new BitmapImage();
-            try
-            {
-                dummyBitmap.BeginInit();
-                dummyBitmap.UriSource = new Uri("pack://application:,,,/Resources/placeholder.png");
-                dummyBitmap.EndInit();
-            }
-            catch { }
+            this.windowManager = windowManager;
+            this.viewModelLocator = viewModelLocator;
+            LoadProjects();
+        }
 
-            void AddDummyProject(string name, int width, int height)
+        private void LoadProjects()
+        {
+            string myPaintPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MyPaint");
+            if (Directory.Exists(myPaintPath))
             {
-                var project = new Project
+                foreach (var projectFolder in Directory.GetDirectories(myPaintPath))
                 {
-                    Name = name,
-                    FilePath = $"C:\\Users\\User\\Documents\\MyPaint\\{name}",
-                    Width = width,
-                    Height = height,
-                    Layers = [new Layer(0, width, height)],
-                    Background = Colors.White,
-                    ColorsList = []
-                };
-                // Generate the thumbnail from this bitmap
-                project.GenerateThumbnail(dummyBitmap);
-
-                RecentProjects.Add(project);
+                    string projectFilePath = Path.Combine(projectFolder, "project.json");
+                    if (File.Exists(projectFilePath))
+                    {
+                        string json = File.ReadAllText(projectFilePath);
+                        SerializableProject? project = JsonConvert.DeserializeObject<SerializableProject>(json);
+                        if (project != null)
+                        {
+                            RecentProjects.Add(project);
+                        }
+                    }
+                }
             }
-
-            AddDummyProject("project1.ptd", 800, 600);
-            AddDummyProject("project2.ptd", 1920, 1080);
-            AddDummyProject("project3.ptd", 2100, 900);
-            AddDummyProject("project4.ptd", 300, 400);
-            AddDummyProject("project5.ptd", 800, 800);
-            AddDummyProject("project6.ptd", 800, 600);
-            AddDummyProject("project1.ptd", 800, 600);
-            AddDummyProject("project2.ptd", 1920, 1080);
-            AddDummyProject("project3.ptd", 2100, 900);
-            AddDummyProject("project4.ptd", 300, 400);
-            AddDummyProject("project5.ptd", 800, 800);
-            AddDummyProject("project6.ptd", 800, 600);
-            AddDummyProject("project1.ptd", 800, 600);
-            AddDummyProject("project2.ptd", 1920, 1080);
-            AddDummyProject("project3.ptd", 2100, 900);
-            AddDummyProject("project4.ptd", 300, 400);
-            AddDummyProject("project5.ptd", 800, 800);
-            AddDummyProject("project6.ptd", 800, 600);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿Tasks:
 
-- Justify HomeView ListView items
 DONE - Add NewFileView
 DONE - Add HomeViewModel
 DONE - Add NewFileViewModel

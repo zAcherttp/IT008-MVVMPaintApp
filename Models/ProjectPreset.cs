@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,18 +8,28 @@ using System.Windows.Media.Media3D;
 
 namespace MVVMPaintApp.Models
 {
-    public class ProjectPreset
+    public partial class ProjectPreset : ObservableObject
     {
         private const int THUMBNAIL_HEIGHT = 100;
 
+        [ObservableProperty]
         private string presetName = "Preset";
-        private int defaultWidth;
-        private int defaultHeight;
+
+        [ObservableProperty]
+        private int width;
+
+        [ObservableProperty]
+        private int height;
+        
+        [ObservableProperty]
         private string aspectRatioString = "W : H";
+
+        [ObservableProperty]
         private double aspectRatioW;
+
+        [ObservableProperty]
         private double aspectRatioH;
 
-        public string PresetName { get => presetName; set => presetName = value; }
         public double ThumbnailWidth
         {
             get
@@ -26,18 +37,13 @@ namespace MVVMPaintApp.Models
                 return (double)AspectRatioW / AspectRatioH * THUMBNAIL_HEIGHT;
             }
         }
-        public string AspectRatioString { get => aspectRatioString; set => aspectRatioString = value; }
-        public double AspectRatioW { get => aspectRatioW; set => aspectRatioW = value; }
-        public double AspectRatioH { get => aspectRatioH; set => aspectRatioH = value; }
-        public int DefaultWidth { get => defaultWidth; set => defaultWidth = value; }
-        public int DefaultHeight { get => defaultHeight; set => defaultHeight = value; }
 
-        public ProjectPreset(string name, string aspectRatio, int defaultWidth, int defaultHeight)
+        public ProjectPreset(string name, string aspectRatio, int width, int height)
         {
             PresetName = name;
 
-            DefaultWidth = defaultWidth;
-            DefaultHeight = defaultHeight;
+            Width = width;
+            Height = height;
 
             AspectRatioString = aspectRatio;
             string[] aspectRatioParts = aspectRatio.Split(':');

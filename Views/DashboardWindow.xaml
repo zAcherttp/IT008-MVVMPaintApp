@@ -3,12 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MVVMPaintApp.Views"
         xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
+        xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
+        xmlns:local="clr-namespace:MVVMPaintApp.Views"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Home" Height="600" Width="900" Background="{DynamicResource ControlFillColorSecondaryBrush}" ResizeMode="NoResize">
     <Window.Resources>
+        <conv:BrushConverter x:Key="BrushConverter"/>
         <Style x:Key="NewFileButtonStyle" TargetType="Button">
             <Setter Property="FrameworkElement.FocusVisualStyle" Value="{DynamicResource DefaultControlFocusVisualStyle}" />
             <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
@@ -87,6 +89,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="EmptyListViewStyle" TargetType="{x:Type ListView}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RecentProjects.Count}" Value="0">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListView}">
+                                <Grid>
+                                    <TextBlock Text="Nothing here, create one!"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                       Margin="0,0,0,30"
+                                       FontSize="20"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -95,16 +117,19 @@
         </Grid.ColumnDefinitions>
         <Border Grid.Column="1" BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="2" CornerRadius="20,0,0,0" Background="{DynamicResource ControlFillColorDefaultBrush}" HorizontalAlignment="Left" Width="600" Height="525" VerticalAlignment="Bottom">
             <StackPanel>
-                <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Recent" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
-                <ListView ItemsSource="{Binding RecentProjects}"
+                <Label Foreground="{DynamicResource TextFillColorPrimaryBrush}" Content="Recent" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
+                <ListView
+                        SelectionChanged="ListView_SelectionChanged"
+                        ItemsSource="{Binding RecentProjects}"
+                        SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
                         Background="Transparent"
+                        Style="{StaticResource EmptyListViewStyle}"  
                         BorderThickness="0"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         VirtualizingPanel.ScrollUnit="Pixel"
                         ScrollViewer.CanContentScroll="True"
                         IsSynchronizedWithCurrentItem="False" 
                         Margin="25,0,25,20" Height="443">
-
 
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -115,21 +140,21 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid Width="{Binding DashboardViewListViewItemWidth}" 
-                                Margin="0,0,20,20" 
+                                Margin="0,20,10,20" 
                                 Cursor="Hand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Border Background="White" 
+                                <Border Background="Transparent"
                                     CornerRadius="8"
                                     BorderThickness="2"
                                     BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                    ClipToBounds="True">
+                                        ClipToBounds="True">
                                     <Canvas x:Name="ThumbnailCanvas" 
-                                    Height="100">
-                                        <Image Source="{Binding Thumbnail}"
+                                    Height="{Binding ThumbnailHeight}" Width="{Binding ThumbnailWidth}" ClipToBounds="True">
+                                        <Image Source="{Binding ThumbnailPath}" ClipToBounds="True"
                                         Stretch="UniformToFill"/>
                                     </Canvas>
                                 </Border>

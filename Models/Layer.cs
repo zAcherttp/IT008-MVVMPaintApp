@@ -14,7 +14,7 @@ using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.Models
 {
-    public partial class Layer(int _index, int width, int height) : ObservableObject
+    public partial class Layer(int index, int width, int height) : ObservableObject
     {
         [ObservableProperty]
         private WriteableBitmap content = BitmapFactory.New(width, height);
@@ -23,7 +23,13 @@ namespace MVVMPaintApp.Models
         private bool isVisible = true;
 
         [ObservableProperty]
-        private int index = _index;
+        private int index = index;
+
+        [ObservableProperty]
+        private int width = width;
+
+        [ObservableProperty]
+        private int height = height;
 
         public UndoRedoManager? UndoRedoManager { get; set; }
 

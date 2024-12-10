@@ -14,8 +14,13 @@ namespace MVVMPaintApp.ViewModels
 {
     public partial class MainCanvasViewModel : ObservableObject
     {
-        private Project? currentProject;
         private readonly IWindowManager windowManager;
+
+        [ObservableProperty]
+        private Project currentProject;
+        
+        [ObservableProperty]
+        private bool hasUnsavedChanges;
 
         [ObservableProperty]
         private DrawingCanvasViewModel drawingCanvasViewModel;
@@ -32,7 +37,7 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         public void SetProject(Project project)
         {
-            currentProject = project;
+            CurrentProject = project;
             DrawingCanvasViewModel.SetProject(project);
             DrawingCanvasViewModel.SetViewPortSize(ViewPortWidth, ViewPortHeight);
 
@@ -47,6 +52,8 @@ namespace MVVMPaintApp.ViewModels
             this.windowManager = windowManager;
             this.drawingCanvasViewModel = drawingCanvasViewModel;
             this.colorPaletteViewModel = colorPaletteViewModel;
+
+            currentProject = new Project();
         }
     }
 }

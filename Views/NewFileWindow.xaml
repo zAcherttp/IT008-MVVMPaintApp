@@ -88,14 +88,17 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="NoClearButtonTextBox" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxBaseStyle}"/>
+        
+        <Style x:Key="NoClearButtonTextBox" TargetType="TextBox" BasedOn="{StaticResource DefaultTextBoxBaseStyle}">
+
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="600" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Presets" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
+        <Label Foreground="{DynamicResource TextFillColorPrimaryBrush}" Content="Presets" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
         <Border BorderBrush="{DynamicResource ControlElevationBorderBrush}"
                 BorderThickness="2" CornerRadius="0,20,0,0"
                 Background="{DynamicResource ControlFillColorDefaultBrush}" HorizontalAlignment="Center" Width="600" Height="475" VerticalAlignment="Bottom" Margin="0,59,0,0">
@@ -119,7 +122,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="0,0,20,20" 
+                            <Grid Margin="0,20,10,20" 
                             Cursor="Hand">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -132,18 +135,18 @@
                                 BorderThickness="2"
                                 BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
                                     <Canvas
-                                Height="100"
-                                Width="{Binding ThumbnailWidth}">
+                                    Height="100"
+                                    Width="{Binding ThumbnailWidth}">
                                     </Canvas>
                                 </Border>
 
-                                <TextBlock Grid.Row="1"
-                            Text="{Binding PresetName}"
+                                <Label Grid.Row="1"
+                            Content="{Binding PresetName}"
                             FontSize="21"
                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                             Margin="0,4,0,0"/>
-                                <TextBlock Grid.Row="2"
-                            Text="{Binding AspectRatioString}"
+                                <Label Grid.Row="2"
+                            Content="{Binding AspectRatioString}"
                             FontSize="15"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
                             </Grid>
@@ -161,48 +164,42 @@
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Custom" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
-            <StackPanel Grid.Row="7" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,35,30">
-                <Button Style="{StaticResource OpenButtonStyle}" Command="{Binding OpenDashboardWindowCommand}"
-                    Content="Back" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                    FontSize="21" FontFamily="Segoe UI" Margin="0,0,0,10"
-                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-                <Button Style="{StaticResource NewFileButtonStyle}" Command="{Binding CreateNewFileAndOpenMainWindowCommand}" Content="Create"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI"/>
-            </StackPanel>
+            <Label Grid.Row="0" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Content="Custom" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="36" Margin="40,15,0,15"/>
 
-            <TextBlock Grid.Row="1" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Width" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
-            <TextBox x:Name="WidthTextBox" Text="{Binding SelectedWidth, UpdateSourceTrigger=PropertyChanged}"
-                     val:NumericTextBoxValidation.AllowDecimal="False"
-                     val:NumericTextBoxValidation.IsNumeric="True"
-                     val:NumericTextBoxValidation.MinValue="1"
-                     val:NumericTextBoxValidation.MaxValue="7680"
+            <Label Grid.Row="1" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Content="Name" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
+            <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                     
                      Grid.Row="2" Margin="40,0,90,0" FontSize="18"/>
-            <TextBlock Grid.Row="3" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Height" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
-            <TextBox x:Name="HeightTextBox" Text="{Binding SelectedHeight, UpdateSourceTrigger=PropertyChanged}"
-                     val:NumericTextBoxValidation.AllowDecimal="False"
-                     val:NumericTextBoxValidation.IsNumeric="True"
-                     val:NumericTextBoxValidation.MinValue="1"
-                     val:NumericTextBoxValidation.MaxValue="7680"
+            <Label Grid.Row="3" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Content="Width" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
+            <TextBox Text="{Binding SelectedWidth, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                     TextChanged="Dimensions_PreviewTextInput"
                      Grid.Row="4" Margin="40,0,90,0" FontSize="18"/>
-            <TextBlock Grid.Row="5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="Aspect ratio" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
-            <StackPanel Grid.Row="6" Orientation="Horizontal">
-                <TextBox x:Name="WidthRatioTextBox" Text="{Binding SelectedAspectRatioW, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource NoClearButtonTextBox}"
-                         val:NumericTextBoxValidation.AllowDecimal="True"
-                         val:NumericTextBoxValidation.IsNumeric="True"
-                         val:NumericTextBoxValidation.MinValue="0.1"
-                         val:NumericTextBoxValidation.MaxValue="100"
+            <Label Grid.Row="5" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Content="Height" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
+            <TextBox Text="{Binding SelectedHeight, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                     TextChanged="Dimensions_PreviewTextInput"
+                     Grid.Row="6" Margin="40,0,90,0" FontSize="18"/>
+            <Label Grid.Row="7" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Content="Aspect ratio" FontSize="21" VerticalAlignment="Bottom" Margin="40,5,5,5"/>
+            <StackPanel Grid.Row="8" Orientation="Horizontal">
+                <TextBox Text="{Binding SelectedAspectRatioW, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Style="{StaticResource NoClearButtonTextBox}" TextChanged="AspectRatioDimensions_PreviewTextInput"
                          Grid.Row="2" Margin="40,0,0,0" Width="60" HorizontalAlignment="Left" FontSize="18"/>
-                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text=":" FontSize="21" VerticalAlignment="Center" Margin="15,0,15,5"/>
-                <TextBox x:Name="HeightRatioTextBox" Text="{Binding SelectedAspectRatioH, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource NoClearButtonTextBox}"
-                         val:NumericTextBoxValidation.AllowDecimal="True"
-                         val:NumericTextBoxValidation.IsNumeric="True"
-                         val:NumericTextBoxValidation.MinValue="0.1"
-                         val:NumericTextBoxValidation.MaxValue="100"
+                <Label Foreground="{DynamicResource TextFillColorSecondaryBrush}" Content=":" FontSize="21" VerticalAlignment="Center" Margin="15,0,15,5"/>
+                <TextBox Text="{Binding SelectedAspectRatioH, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Style="{StaticResource NoClearButtonTextBox}" TextChanged="AspectRatioDimensions_PreviewTextInput"
                          Grid.Row="2" Margin="0,0,0,0" Width="60" FontSize="18"/>
+            </StackPanel>
+            <StackPanel Grid.Row="9" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,35,30">
+                <Button Style="{StaticResource OpenButtonStyle}" Command="{Binding OpenDashboardWindowCommand}"
+                        Content="Back" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                        FontSize="21" FontFamily="Segoe UI" Margin="0,0,0,10"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Button Style="{StaticResource NewFileButtonStyle}" Command="{Binding CreateNewFileAndOpenMainWindowCommand}"
+                        Content="Create"  VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                        Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI"/>
             </StackPanel>
         </Grid>
     </Grid>

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using MVVMPaintApp.Interfaces;
+using MVVMPaintApp.ViewModels;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +27,7 @@ namespace MVVMPaintApp.Services
             var window = Application.Current.Windows.Cast<Window>().FirstOrDefault(w => w.DataContext == viewModel);
             window?.Close();
         }
+        
 
         public void CloseAll()
         {

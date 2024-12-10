@@ -56,6 +56,13 @@ namespace MVVMPaintApp.Models
             };
         }
 
+        /// <summary>
+        /// Mix two colors together
+        /// </summary>
+        /// <param name="color1">first color</param>
+        /// <param name="color2">second color</param>
+        /// <param name="amount">Similar to gradient stop position, from 0 - 1</param>
+        /// <returns></returns>
         public static Color MixColors(Color color1, Color color2, double amount)
         {
             return Color.FromRgb(
@@ -108,5 +115,46 @@ namespace MVVMPaintApp.Models
 
         public static double CalculateBrightness(Color color) =>
             (color.R * 0.299 + color.G * 0.587 + color.B * 0.114) / 255.0;
+
+        public static Color GetRandomColor(double saturation)
+        {
+            Random random = new();
+            double hue = random.NextDouble() * 360;
+            double value = random.NextDouble();
+
+            return HsvToRgb(hue, saturation, value);
+        }
+
+        public static Color HsvToRgb(double h, double s, double v)
+        {
+            int hi = Convert.ToInt32(Math.Floor(h / 60)) % 6;
+            double f = h / 60 - Math.Floor(h / 60);
+
+            v *= 255;
+            byte v_ = Convert.ToByte(v);
+            byte p_ = Convert.ToByte(v * (1 - s));
+            byte q_ = Convert.ToByte(v * (1 - f * s));
+            byte t_ = Convert.ToByte(v * (1 - (1 - f) * s));
+
+            return hi switch
+            {
+                0 => Color.FromRgb(v_, t_, p_),
+                1 => Color.FromRgb(q_, v_, p_),
+                2 => Color.FromRgb(p_, v_, t_),
+                3 => Color.FromRgb(p_, q_, v_),
+                4 => Color.FromRgb(t_, p_, v_),
+                _ => Color.FromRgb(v_, p_, q_),
+            };
+        }
+
+        public static byte[] ToByteArray(Color color)
+        {
+            return [color.R, color.G, color.B];
+        }
+
+        public static Color FromByteArray(byte[] bytes)
+        {
+            return Color.FromRgb(bytes[0], bytes[1], bytes[2]);
+        }
     }
 }
