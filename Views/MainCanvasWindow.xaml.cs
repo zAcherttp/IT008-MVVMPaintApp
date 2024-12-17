@@ -30,7 +30,7 @@ namespace MVVMPaintApp.Views
                 var result = MessageBox.Show("Do you want to save changes?", "Unsaved changes", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes)
                 {
-                    ProjectManager.SaveProject(mainCanvasViewModel.CurrentProject);
+                    mainCanvasViewModel.ProjectManager.SaveProject();
                 }
                 else if (result == MessageBoxResult.Cancel)
                 {

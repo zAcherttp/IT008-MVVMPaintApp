@@ -21,7 +21,7 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Panel.ZIndex="1">
+        <Menu Grid.Row="0" Panel.ZIndex="10">
             <MenuItem Header="File">
                 <MenuItem Header="New"/>
                 <MenuItem Header="Open"/>
@@ -50,11 +50,10 @@
             </StatusBarItem>
         </StatusBar>
 
-        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1"
-                          DataContext="{Binding DrawingCanvasViewModel}"/>
+        <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1" DataContext="{Binding DrawingCanvasViewModel}"/>
 
 
-        <uc:ColorPaletteControl Panel.ZIndex="1" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"
+        <uc:ColorPaletteControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="55,644,0,0" VerticalAlignment="Top" Grid.Row="1"
                                 DataContext="{Binding ColorPaletteViewModel}"/>
 
     </Grid>

@@ -39,7 +39,7 @@ namespace MVVMPaintApp.Models
         private double thumbnailHeight = 100;
 
         [ObservableProperty]
-        private List<Layer> layers;
+        private ObservableCollection<Layer> layers;
 
         [ObservableProperty]
         private Color background;

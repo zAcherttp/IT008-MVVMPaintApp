@@ -7,9 +7,7 @@
              xmlns:uc="clr-namespace:MVVMPaintApp.UserControls"
              xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance vm:ColorPaletteViewModel, IsDesignTimeCreatable=True}"
-             >
-
+             d:DataContext="{d:DesignInstance vm:ColorPaletteViewModel, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <conv:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <conv:BrushConverter x:Key="BrushConverter"/>
@@ -76,8 +74,8 @@
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Name="ContentBorder" Width="{TemplateBinding FrameworkElement.Width}" Height="{TemplateBinding FrameworkElement.Height}" MinWidth="{TemplateBinding FrameworkElement.MinWidth}" MinHeight="{TemplateBinding FrameworkElement.MinHeight}" Padding="{TemplateBinding Control.Padding}" HorizontalAlignment="{TemplateBinding FrameworkElement.HorizontalAlignment}" VerticalAlignment="{TemplateBinding FrameworkElement.VerticalAlignment}" Background="{TemplateBinding Control.Background}" BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="{TemplateBinding Border.CornerRadius}">
                             <Grid>
-                                <Ellipse Stroke="#6F6F6F" StrokeThickness="1" Width="14" Height="14"
-                                Fill="#212121" 
+                                <Ellipse Stroke="{DynamicResource SurfaceStrokeColorDefaultBrush}" StrokeThickness="1" Width="14" Height="14"
+                                Fill="{DynamicResource CardBackgroundFillColorSecondaryBrush}" 
                                 Visibility="{Binding IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 <Ellipse Fill="{Binding Color, Converter={StaticResource BrushConverter}}"  Width="14" Height="14"
                                 Visibility="{Binding IsEmpty, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
@@ -216,7 +214,7 @@
     <Grid>
         <StackPanel>
             <Border x:Name="ColorPaletteControlBorder"
-                    CornerRadius="10" Background="#212121"
+                    CornerRadius="10" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                     Width="325" Height="80">
                 <StackPanel Orientation="Horizontal">
                     <!-- Color Spectrum -->
@@ -229,7 +227,7 @@
                         </Button.Content>
                     </Button>
 
-                    <Line Stroke="#CC6F6F6F" X1="0" Y1="0" X2="0" Y2="60" StrokeThickness="0.5" VerticalAlignment="Center"/>
+                    <Line Stroke="{DynamicResource SurfaceStrokeColorDefaultBrush}" X1="0" Y1="0" X2="0" Y2="60" StrokeThickness="1" VerticalAlignment="Center"/>
 
                     <!-- Color List -->
                     <ItemsControl x:Name="ColorList" Margin="12,0,12,0" Width="174" Height="60" 
@@ -258,7 +256,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <Line Stroke="#CC6F6F6F" X1="0" Y1="0" X2="0" Y2="60" StrokeThickness="0.5" VerticalAlignment="Center"/>
+                    <Line Stroke="{DynamicResource SurfaceStrokeColorDefaultBrush}" X1="0" Y1="0" X2="0" Y2="60" StrokeThickness="1" VerticalAlignment="Center"/>
 
                     <!-- Active Color -->
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Width="50">

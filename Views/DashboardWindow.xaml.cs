@@ -32,5 +32,13 @@ namespace MVVMPaintApp.Views
                 }
             }
         }
+
+        private void ListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (DataContext is DashboardViewModel dashboardViewModel)
+            {
+                dashboardViewModel.OpenProject();
+            }
+        }
     }
 }

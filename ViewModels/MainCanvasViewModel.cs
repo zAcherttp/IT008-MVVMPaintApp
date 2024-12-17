@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Interfaces;
-using MVVMPaintApp.Models;
 using MVVMPaintApp.Services;
-using MVVMPaintApp.UserControls;
+using MVVMPaintApp.Models;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -17,7 +11,7 @@ namespace MVVMPaintApp.ViewModels
         private readonly IWindowManager windowManager;
 
         [ObservableProperty]
-        private Project currentProject;
+        private ProjectManager projectManager;
 
         [ObservableProperty]
         private string windowTitle = "Home";
@@ -40,7 +34,7 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         public void SetProject(Project project)
         {
-            CurrentProject = project;
+            ProjectManager.SetProject(project);
             WindowTitle = "Home - " + project.Name;
             DrawingCanvasViewModel.SetProject(project);
             DrawingCanvasViewModel.SetViewPortSize(ViewPortWidth, ViewPortHeight);
@@ -57,7 +51,7 @@ namespace MVVMPaintApp.ViewModels
             this.drawingCanvasViewModel = drawingCanvasViewModel;
             this.colorPaletteViewModel = colorPaletteViewModel;
 
-            currentProject = new Project();
+            ProjectManager = new ProjectManager();
         }
     }
 }

@@ -1,27 +1,52 @@
 ﻿using MVVMPaintApp.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Newtonsoft.Json;
 using System.IO;
 
 namespace MVVMPaintApp.Services
 {
-    public class ProjectManager
+    public partial class ProjectManager : ObservableObject
     {
         private const string PROJECT_JSON_FILENAME = "project.json";
 
-        public static void SaveProject(Project project)
+        [ObservableProperty]
+        private Project currentProject;
+
+        public ProjectManager()
         {
-            Directory.CreateDirectory(project.ProjectFolderPath);
-            project.GenerateThumbnail();
+            CurrentProject = new Project();
+        }
+
+        public ProjectManager(Project project)
+        {
+            CurrentProject = project;
+        }
+
+        public void SetProject(Project project)
+        {
+            CurrentProject = project;
+        }
+
+        public void AddLayer(Layer newLayer)
+        {
+            CurrentProject.Layers.Add(newLayer);
+        }
+
+        public void SaveProject()
+        {
+            Directory.CreateDirectory(CurrentProject.ProjectFolderPath);
+            CurrentProject.GenerateThumbnail();
             try
             {
-                string projectJson = JsonConvert.SerializeObject(new SerializableProject(project), Formatting.Indented);
-                File.WriteAllText(Path.Combine(project.ProjectFolderPath, PROJECT_JSON_FILENAME), projectJson);
+                string projectJson = JsonConvert.SerializeObject(new SerializableProject(CurrentProject), Formatting.Indented);
+                File.WriteAllText(Path.Combine(CurrentProject.ProjectFolderPath, PROJECT_JSON_FILENAME), projectJson);
             }
             catch
             {
                 throw new ApplicationException("Failed to save project.");
             }
         }
+
         public static void SaveProjectAs(Project project)
         {
             //to be changed to save as Png/Jpeg/Bmp/Gif/Tiff
@@ -42,7 +67,6 @@ namespace MVVMPaintApp.Services
                 throw new ApplicationException("Failed to load project.", ex);
             }
         }
-
 
         public static string GetDefaultProjectName()
         {

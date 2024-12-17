@@ -1,5 +1,4 @@
-﻿using MVVMPaintApp.Services;
-using System.IO;
+﻿using System.IO;
 
 namespace MVVMPaintApp.Models
 {
@@ -41,7 +40,7 @@ namespace MVVMPaintApp.Models
                 ProjectFolderPath = ProjectFolderPath,
                 Width = Width,
                 Height = Height,
-                Layers = Layers.Select(layer => layer.ToLayer()).ToList(),
+                Layers = [.. Layers.Select(layer => layer.ToLayer())],
                 Background = ColorHelper.FromByteArray(Background),
                 ColorsList = ColorsList.Select(color => ColorHelper.FromByteArray(color)).ToList()
             };

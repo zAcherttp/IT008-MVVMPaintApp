@@ -129,7 +129,7 @@
                         VirtualizingPanel.ScrollUnit="Pixel"
                         ScrollViewer.CanContentScroll="True"
                         IsSynchronizedWithCurrentItem="False" 
-                        Margin="25,0,25,20" Height="443">
+                        Margin="25,0,25,20" Height="443" MouseDoubleClick="ListView_MouseDoubleClick">
 
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -139,7 +139,7 @@
 
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="{Binding DashboardViewListViewItemWidth}" 
+                            <Grid Width="{Binding ThumbnailWidth}" 
                                 Margin="0,20,10,20" 
                                 Cursor="Hand">
                                 <Grid.RowDefinitions>

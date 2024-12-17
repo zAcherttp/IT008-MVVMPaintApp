@@ -23,9 +23,9 @@ namespace MVVMPaintApp
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<DashboardViewModel>();
+            services.AddTransient<DashboardViewModel>();
             services.AddTransient<NewFileViewModel>();
-            services.AddSingleton<MainCanvasViewModel>();
+            services.AddTransient<MainCanvasViewModel>();
 
             services.AddSingleton<DrawingCanvasViewModel>();
             services.AddSingleton<ColorPaletteViewModel>();

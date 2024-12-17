@@ -16,8 +16,6 @@ namespace MVVMPaintApp.ViewModels
 {
     public partial class ColorPaletteViewModel : ObservableObject
     {
-        private readonly ViewModelLocator viewModelLocator;
-
         #region Constants
         private const int DEFAULT_PALETTE_ROWS = 3;
         private const int DEFAULT_PALETTE_COLUMNS = 9;
@@ -94,9 +92,8 @@ namespace MVVMPaintApp.ViewModels
             PaletteButtonColor = PrimaryColor;
         }
 
-        public ColorPaletteViewModel(ViewModelLocator viewModelLocator)
+        public ColorPaletteViewModel()
         {
-            this.viewModelLocator = viewModelLocator;
             paletteColors = [];
             CreateEmptyPalette();
         }
