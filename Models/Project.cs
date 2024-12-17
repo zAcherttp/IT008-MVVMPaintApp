@@ -66,7 +66,7 @@ namespace MVVMPaintApp.Models
                 ProjectFolderPath = Path.Combine(defaultFolder, Name);
                 Layers = [new(0, Width, Height)];
                 Background = Colors.White;
-                ColorsList = [];
+                ColorsList = Enumerable.Repeat(Colors.Transparent, 18).ToList();
             }
             else
             {
@@ -76,7 +76,7 @@ namespace MVVMPaintApp.Models
                 ProjectFolderPath = "";
                 Layers = [];
                 Background = Colors.Transparent;
-                ColorsList = [];
+                ColorsList = Enumerable.Repeat(Colors.Transparent, 18).ToList();
             }
         }
 
@@ -89,7 +89,7 @@ namespace MVVMPaintApp.Models
             ProjectFolderPath = Path.Combine(defaultFolder, Name);
             Layers = [new(0, Width, Height), new(1, Width, Height)];
             Background = Colors.White;
-            ColorsList = [];
+            ColorsList = Enumerable.Repeat(Colors.Transparent, 18).ToList();
         }
 
         public void GenerateThumbnail()

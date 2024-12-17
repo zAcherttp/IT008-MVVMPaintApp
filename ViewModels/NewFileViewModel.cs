@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -68,7 +69,7 @@ namespace MVVMPaintApp.ViewModels
                 var project = new Project(ProjectName, SelectedWidth, SelectedHeight);
                 windowManager.ShowWindow(viewModelLocator.MainCanvasViewModel);
                 viewModelLocator.MainCanvasViewModel.SetProject(project);
-                viewModelLocator.MainCanvasViewModel.HasUnsavedChanges = true;
+                viewModelLocator.MainCanvasViewModel.ProjectManager.HasUnsavedChanges = true;
                 //windowManager.CloseWindow(this);
             }
         }

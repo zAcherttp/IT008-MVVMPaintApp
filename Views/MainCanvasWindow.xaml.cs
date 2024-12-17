@@ -25,7 +25,7 @@ namespace MVVMPaintApp.Views
         private void MainCanvasWindow_Closing(object sender, CancelEventArgs e)
         {
             var mainCanvasViewModel = (MainCanvasViewModel)DataContext;
-            if (mainCanvasViewModel.HasUnsavedChanges)
+            if (mainCanvasViewModel.ProjectManager.HasUnsavedChanges)
             {
                 var result = MessageBox.Show("Do you want to save changes?", "Unsaved changes", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes)

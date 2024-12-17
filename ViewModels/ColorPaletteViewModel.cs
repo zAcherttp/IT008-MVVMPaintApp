@@ -1,15 +1,9 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows.Media;
-using System.Windows.Input;
 using MVVMPaintApp.Commands;
-using MVVMPaintApp.UserControls;
 using MVVMPaintApp.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Diagnostics.Eventing.Reader;
-using System.DirectoryServices;
-using MVVMPaintApp.Interfaces;
 using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.ViewModels
@@ -22,6 +16,9 @@ namespace MVVMPaintApp.ViewModels
         private const int CUSTOM_PALETTE_START_OFFSET_INDEX = 9;
         private const int MAX_CUSTOM_COLORS = 18;
         #endregion
+
+        [ObservableProperty]
+        private ProjectManager projectManager;
 
         [ObservableProperty]
         private Color primaryColor = Colors.White;
@@ -41,7 +38,7 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private bool isColorPickerOpen;
 
-        private int nextColorButtonIndex;
+        private int nextColorButtonIndex = 0;
         private bool isPrimaryColorSelected;
 
         [RelayCommand]
@@ -92,27 +89,30 @@ namespace MVVMPaintApp.ViewModels
             PaletteButtonColor = PrimaryColor;
         }
 
-        public ColorPaletteViewModel()
+        public ColorPaletteViewModel(ProjectManager projectManager)
         {
-            paletteColors = [];
+            this.projectManager = projectManager;
             CreateEmptyPalette();
         }
 
         public void SetProjectColors(List<Color> colorsList)
         {
             PopulatePaletteWithDefaultColors();
-            if(colorsList.Count != 0)
+            int startIndexOffset = 0;
+            for (int i = 0; i < colorsList.Count; i++)
             {
-                foreach (Color color in colorsList)
+                PaletteColors[CUSTOM_PALETTE_START_OFFSET_INDEX + i].SetColor(colorsList[i]);
+                if (!colorsList[i].Equals(Colors.Transparent))
                 {
-                    AddColorToPalette(color);
+                    startIndexOffset++;
                 }
             }
+            nextColorButtonIndex = startIndexOffset;
         }
 
         private void CreateEmptyPalette()
         {
-            PaletteColors.Clear();
+            PaletteColors = [];
             int totalSlots = DEFAULT_PALETTE_ROWS * DEFAULT_PALETTE_COLUMNS;
             for (int i = 0; i < totalSlots; i++)
             {
@@ -133,14 +133,14 @@ namespace MVVMPaintApp.ViewModels
             {
                 PaletteColors[i].SetColor(defaults[i]);
             }
-
-            nextColorButtonIndex = 0;
         }
 
         private void AddColorToPalette(Color newColor)
         {
-            if (PaletteColors.Any(slot => slot.Color.Equals(newColor))) return;  
-            PaletteColors[GetNextCustomColorIndex()].SetColor(newColor);
+            if (PaletteColors.Any(slot => slot.Color.Equals(newColor))) return;
+            int index = GetNextCustomColorIndex();
+            PaletteColors[index].SetColor(newColor);
+            ProjectManager.SetColorListColorAtIndex(index - 9, newColor);
         }
 
         private int GetNextCustomColorIndex()

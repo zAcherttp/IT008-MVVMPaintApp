@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 using MVVMPaintApp.Services;
-using Microsoft.Extensions.DependencyInjection;
 using MVVMPaintApp.ViewModels;
 using MVVMPaintApp.Interfaces;
-using MVVMPaintApp.UserControls;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MVVMPaintApp
 {
@@ -25,7 +24,7 @@ namespace MVVMPaintApp
         {
             services.AddTransient<DashboardViewModel>();
             services.AddTransient<NewFileViewModel>();
-            services.AddTransient<MainCanvasViewModel>();
+            services.AddSingleton<MainCanvasViewModel>();
 
             services.AddSingleton<DrawingCanvasViewModel>();
             services.AddSingleton<ColorPaletteViewModel>();
@@ -33,6 +32,7 @@ namespace MVVMPaintApp
             services.AddSingleton<WindowMapper>();
             services.AddSingleton<UserControlMapper>();
             services.AddSingleton<ViewModelLocator>();
+            services.AddSingleton<ProjectManager>();
             services.AddSingleton<IWindowManager,  WindowManager>();
         }
 

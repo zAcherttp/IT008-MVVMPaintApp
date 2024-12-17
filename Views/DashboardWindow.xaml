@@ -154,7 +154,7 @@
                                         ClipToBounds="True">
                                     <Canvas x:Name="ThumbnailCanvas" 
                                     Height="{Binding ThumbnailHeight}" Width="{Binding ThumbnailWidth}" ClipToBounds="True">
-                                        <Image Source="{Binding ThumbnailPath}" ClipToBounds="True"
+                                        <Image Source="{Binding Thumbnail}" ClipToBounds="True"
                                         Stretch="UniformToFill"/>
                                     </Canvas>
                                 </Border>

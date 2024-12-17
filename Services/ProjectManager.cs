@@ -1,7 +1,9 @@
 ﻿using MVVMPaintApp.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Media;
 using Newtonsoft.Json;
 using System.IO;
+using System.Diagnostics;
 
 namespace MVVMPaintApp.Services
 {
@@ -11,6 +13,9 @@ namespace MVVMPaintApp.Services
 
         [ObservableProperty]
         private Project currentProject;
+
+        [ObservableProperty]
+        private bool hasUnsavedChanges;
 
         public ProjectManager()
         {
@@ -27,23 +32,40 @@ namespace MVVMPaintApp.Services
             CurrentProject = project;
         }
 
-        public void AddLayer(Layer newLayer)
+        public void AddLayer(int index)
         {
-            CurrentProject.Layers.Add(newLayer);
+            HasUnsavedChanges = true;
+            Layer layer = new(index, CurrentProject.Width, CurrentProject.Height);
+            CurrentProject.Layers.Insert(index, layer);
+        }
+
+        public void RemoveLayer(int index)
+        {
+            HasUnsavedChanges = true;
+            CurrentProject.Layers.RemoveAt(index);
+        }
+
+        public void SetColorListColorAtIndex(int index, Color color)
+        {
+            HasUnsavedChanges = true;
+            CurrentProject.ColorsList[index] = color;
         }
 
         public void SaveProject()
         {
+            Debug.WriteLine("Saving project...");
             Directory.CreateDirectory(CurrentProject.ProjectFolderPath);
             CurrentProject.GenerateThumbnail();
             try
             {
                 string projectJson = JsonConvert.SerializeObject(new SerializableProject(CurrentProject), Formatting.Indented);
                 File.WriteAllText(Path.Combine(CurrentProject.ProjectFolderPath, PROJECT_JSON_FILENAME), projectJson);
+                Debug.WriteLine("Project saved successfully.");
             }
-            catch
+            catch (Exception ex)
             {
-                throw new ApplicationException("Failed to save project.");
+                Debug.WriteLine("Failed to save project.");
+                throw new ApplicationException("Failed to save project.", ex);
             }
         }
 
@@ -54,12 +76,14 @@ namespace MVVMPaintApp.Services
 
         public static Project LoadProject(string projectFolder)
         {
+            Debug.WriteLine("Loading project...");
             try
             {
                 string projectJson = File.ReadAllText(Path.Combine(projectFolder, PROJECT_JSON_FILENAME));
                 SerializableProject? serializableProject =
                     JsonConvert.DeserializeObject<SerializableProject>(projectJson) ?? throw new InvalidDataException("Deserialized project is null.");
                 Project project = serializableProject.ToProject();
+                Debug.WriteLine("Project loaded successfully.");
                 return project;
             }
             catch (Exception ex)

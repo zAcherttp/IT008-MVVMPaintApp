@@ -17,9 +17,6 @@ namespace MVVMPaintApp.ViewModels
         private string windowTitle = "Home";
 
         [ObservableProperty]
-        private bool hasUnsavedChanges;
-
-        [ObservableProperty]
         private DrawingCanvasViewModel drawingCanvasViewModel;
 
         [ObservableProperty]
@@ -44,6 +41,7 @@ namespace MVVMPaintApp.ViewModels
 
         public MainCanvasViewModel(
             IWindowManager windowManager,
+            ProjectManager projectManager,
             DrawingCanvasViewModel drawingCanvasViewModel,
             ColorPaletteViewModel colorPaletteViewModel)
         {
@@ -51,7 +49,7 @@ namespace MVVMPaintApp.ViewModels
             this.drawingCanvasViewModel = drawingCanvasViewModel;
             this.colorPaletteViewModel = colorPaletteViewModel;
 
-            ProjectManager = new ProjectManager();
+            ProjectManager = projectManager;
         }
     }
 }

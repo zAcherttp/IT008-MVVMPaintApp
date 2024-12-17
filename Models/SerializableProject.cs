@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System.Windows.Media;
+using System.IO;
+using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
 
 namespace MVVMPaintApp.Models
 {
@@ -10,11 +13,13 @@ namespace MVVMPaintApp.Models
         public int Width { get; set; } = 0;
         public int Height { get; set; } = 0;
         public string ThumbnailPath { get; set; } = "";
+        [JsonIgnore]
+        public BitmapImage? Thumbnail { get; set; } = null;
         public double ThumbnailWidth { get; set; } = 0;
         public double ThumbnailHeight { get; set; } = 0;
         public List<SerializableLayer> Layers { get; set; } = [];
-        public byte[] Background { get; set; } = [];
-        public List<byte[]> ColorsList { get; set; } = [];
+        public Color Background { get; set; } = Colors.Transparent;
+        public List<Color> ColorsList { get; set; } = [];
 
         public SerializableProject(Project project)
         {
@@ -26,8 +31,8 @@ namespace MVVMPaintApp.Models
             ThumbnailWidth = project.ThumbnailWidth;
             ThumbnailHeight = project.ThumbnailHeight;
             Layers = project.Layers.Select(layer => new SerializableLayer(layer, ProjectFolderPath)).ToList();
-            Background = ColorHelper.ToByteArray(project.Background);
-            ColorsList = project.ColorsList.Select(color => ColorHelper.ToByteArray(color)).ToList();
+            Background = project.Background;
+            ColorsList = project.ColorsList;
         }
 
         public SerializableProject() { }
@@ -41,8 +46,8 @@ namespace MVVMPaintApp.Models
                 Width = Width,
                 Height = Height,
                 Layers = [.. Layers.Select(layer => layer.ToLayer())],
-                Background = ColorHelper.FromByteArray(Background),
-                ColorsList = ColorsList.Select(color => ColorHelper.FromByteArray(color)).ToList()
+                Background = Background,
+                ColorsList = ColorsList
             };
             return newProject;
         }
