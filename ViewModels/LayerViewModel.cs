@@ -25,10 +25,7 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         private void ToggleVisibility()
         {
-            if (SelectedLayer != null)
-            {
-                SelectedLayer.IsVisible ^= true;
-            }
+            ProjectManager.ToggleLayerVisibility(SelectedLayer);
         }
 
         [RelayCommand]
@@ -83,6 +80,14 @@ namespace MVVMPaintApp.ViewModels
             }
         }
         private bool CanMergeLayerDown() => SelectedLayer != null && ProjectManager.CurrentProject.Layers.IndexOf(SelectedLayer) < ProjectManager.CurrentProject.Layers.Count - 1;
+
+        [RelayCommand]
+        private void SelectionChanged()
+        {
+            MoveLayerUpCommand.NotifyCanExecuteChanged();
+            MoveLayerDownCommand.NotifyCanExecuteChanged();
+            MergeLayerDownCommand.NotifyCanExecuteChanged();
+        }
 
         [ObservableProperty]
         public WriteableBitmap? backgroundLayer;

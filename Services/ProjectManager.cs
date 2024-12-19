@@ -24,6 +24,15 @@ namespace MVVMPaintApp.Services
             CurrentProject = projectFactory.CreateDefault();
         }
 
+        public void ToggleLayerVisibility(Layer? layer)
+        {
+            if (layer != null)
+            {
+                HasUnsavedChanges = true;
+                CurrentProject.Layers[CurrentProject.Layers.IndexOf(layer)].IsVisible ^= true;
+            }
+        }
+
         public void AddLayer()
         {
             HasUnsavedChanges = true;
@@ -36,18 +45,29 @@ namespace MVVMPaintApp.Services
         {
             HasUnsavedChanges = true;
             CurrentProject.Layers.RemoveAt(index);
+            for (int i = 0; i < CurrentProject.Layers.Count; i++)
+            {
+                CurrentProject.Layers[i].Index = i;
+            }
         }
 
         public void RemoveLayer(Layer layer)
         {
             HasUnsavedChanges = true;
             CurrentProject.Layers.Remove(layer);
+            for (int i = 0; i < CurrentProject.Layers.Count; i++)
+            {
+                CurrentProject.Layers[i].Index = i;
+            }
         }
 
         public void Move(int oldIndex, int newIndex)
         {
             HasUnsavedChanges = true;
+            CurrentProject.Layers[oldIndex].Index = newIndex;
+            CurrentProject.Layers[newIndex].Index = oldIndex;
             CurrentProject.Layers.Move(oldIndex, newIndex);
+
         }
 
         public void SetColorListColorAtIndex(int index, Color color)

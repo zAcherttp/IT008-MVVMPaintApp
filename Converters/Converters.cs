@@ -2,6 +2,10 @@
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows;
+using MVVMPaintApp.Models;
+using MVVMPaintApp.Services;
+using MVVMPaintApp.ViewModels;
+using System.Collections.ObjectModel;
 
 namespace MVVMPaintApp.Converters
 {
