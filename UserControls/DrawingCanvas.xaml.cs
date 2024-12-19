@@ -109,5 +109,16 @@ namespace MVVMPaintApp.UserControls
         {
             Focus();
         }
+    
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var viewModel = (DrawingCanvasViewModel)DataContext;
+
+            if (viewModel != null)
+            {
+                viewModel.UserControlWidth = e.NewSize.Width;
+                viewModel.UserControlHeight = e.NewSize.Height;
+            }
+        }
     }
 }

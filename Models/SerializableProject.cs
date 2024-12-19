@@ -19,6 +19,7 @@ namespace MVVMPaintApp.Models
         public double ThumbnailHeight { get; set; } = 0;
         public List<SerializableLayer> Layers { get; set; } = [];
         public Color Background { get; set; } = Colors.Transparent;
+        public bool IsBackgroundVisible { get; set; } = true;
         public List<Color> ColorsList { get; set; } = [];
 
         public SerializableProject(Project project)
@@ -33,6 +34,7 @@ namespace MVVMPaintApp.Models
             Layers = project.Layers.Select(layer => new SerializableLayer(layer, ProjectFolderPath)).ToList();
             Background = project.Background;
             ColorsList = project.ColorsList;
+            IsBackgroundVisible = project.IsBackgroundVisible;
         }
 
         public SerializableProject() { }
@@ -47,7 +49,8 @@ namespace MVVMPaintApp.Models
                 Height = Height,
                 Layers = [.. Layers.Select(layer => layer.ToLayer())],
                 Background = Background,
-                ColorsList = ColorsList
+                ColorsList = ColorsList,
+                IsBackgroundVisible = IsBackgroundVisible
             };
             return newProject;
         }

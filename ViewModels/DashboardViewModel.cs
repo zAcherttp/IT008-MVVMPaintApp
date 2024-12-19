@@ -38,7 +38,7 @@ namespace MVVMPaintApp.ViewModels
             var project = SelectedProject.ToProject();
             windowManager.ShowWindow(viewModelLocator.MainCanvasViewModel);
             viewModelLocator.MainCanvasViewModel.SetProject(project);
-            //windowManager.CloseWindow(this);
+            windowManager.CloseWindow(this);
         }
 
         public DashboardViewModel(IWindowManager windowManager, ViewModelLocator viewModelLocator)

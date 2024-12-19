@@ -24,28 +24,33 @@ namespace MVVMPaintApp.Models
         private const string THUMBNAIL_FILE_NAME = "thumbnail.png";
 
         [ObservableProperty]
-        private string name;
+        private string name = "";
 
         [ObservableProperty]
-        private string projectFolderPath;
+        private string projectFolderPath = "";
 
         [ObservableProperty]
-        private int width;
+        private int width = 0;
 
         [ObservableProperty]
-        private int height;
+        private int height = 0;
 
         [ObservableProperty]
         private double thumbnailHeight = 100;
 
         [ObservableProperty]
-        private ObservableCollection<Layer> layers;
+        private ObservableCollection<Layer> layers = [];
 
         [ObservableProperty]
-        private Color background;
+        private Color background = Colors.Transparent;
 
         [ObservableProperty]
-        private List<Color> colorsList;
+        private bool isBackgroundVisible = true;
+
+        [ObservableProperty]
+        private List<Color> colorsList = [];
+
+        internal string defaultFolder = "";
 
         public double ThumbnailWidth
         {
@@ -54,42 +59,21 @@ namespace MVVMPaintApp.Models
                 return (double)Width / Height * ThumbnailHeight;
             }
         }
-        
-        public Project(bool createDefault = false)
-        {
-            if (createDefault)
-            {
-                Width = 1152;
-                Height = 648;
-                string defaultFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MyPaint");
-                Name = ProjectManager.GetDefaultProjectName();
-                ProjectFolderPath = Path.Combine(defaultFolder, Name);
-                Layers = [new(0, Width, Height)];
-                Background = Colors.White;
-                ColorsList = Enumerable.Repeat(Colors.Transparent, 18).ToList();
-            }
-            else
-            {
-                Width = 1152;
-                Height = 648;
-                Name = "";
-                ProjectFolderPath = "";
-                Layers = [];
-                Background = Colors.Transparent;
-                ColorsList = Enumerable.Repeat(Colors.Transparent, 18).ToList();
-            }
-        }
 
         public Project(string projectName, int width, int height)
         {
             Width = width;
             Height = height;
-            string defaultFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MyPaint");
+            defaultFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MyPaint");
             Name = projectName;
             ProjectFolderPath = Path.Combine(defaultFolder, Name);
             Layers = [new(0, Width, Height), new(1, Width, Height)];
             Background = Colors.White;
             ColorsList = Enumerable.Repeat(Colors.Transparent, 18).ToList();
+        }
+
+        public Project()
+        {
         }
 
         public void GenerateThumbnail()

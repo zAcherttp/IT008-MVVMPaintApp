@@ -16,7 +16,9 @@ namespace MVVMPaintApp.ViewModels
     public partial class DrawingCanvasViewModel : ObservableObject
     {
         private const double ZOOM_STEP_PERCENTAGE = 0.1;
-        private readonly ViewModelLocator viewModelLocator;
+
+        [ObservableProperty]
+        private ProjectManager projectManager;
 
         [ObservableProperty]
         private Project currentProject;
@@ -25,10 +27,10 @@ namespace MVVMPaintApp.ViewModels
         private WriteableBitmap canvasRenderTarget;
 
         [ObservableProperty]
-        private int viewPortWidth;
+        private double userControlWidth = 1600;
 
         [ObservableProperty]
-        private int viewPortHeight;
+        private double userControlHeight = 700;
 
         // Canvas properties
         [ObservableProperty]
@@ -59,18 +61,10 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private string mouseInfo = "0, 0";
 
-        //public DrawingCanvasViewModel(Project project, MainCanvasViewModel mainCanvasViewModel)
-        //{
-        //    CurrentProject = project;
-        //    CanvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
-
-        //    RenderProject();
-        //}
-
-        public DrawingCanvasViewModel(ViewModelLocator viewModelLocator)
+        public DrawingCanvasViewModel(ProjectManager projectManager)
         {
-            this.viewModelLocator = viewModelLocator;
-            CurrentProject = new Project(false);
+            ProjectManager = projectManager;
+            CurrentProject = projectManager.CurrentProject;
             CanvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
             RenderProject();
         }
@@ -82,10 +76,10 @@ namespace MVVMPaintApp.ViewModels
             RenderProject();
         }
 
-        public void SetViewPortSize(int width, int height)
+        public void SetUserControlSize(int width, int height)
         {
-            ViewPortWidth = width;
-            ViewPortHeight = height;
+            UserControlWidth = width;
+            UserControlHeight = height;
         }
 
         public void RenderProject()
@@ -107,6 +101,7 @@ namespace MVVMPaintApp.ViewModels
                 }
             }
         }
+        
         partial void OnIsZoomModeChanged(bool value)
         {
             UpdateModeText();
@@ -151,9 +146,15 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         private async Task FitToWindow()
         {
-            double newZoomFactor = Math.Min((double)CanvasRenderTarget.PixelWidth / CurrentProject.Width,
-                (double)CanvasRenderTarget.PixelHeight / CurrentProject.Height);
-            await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 300);
+            double newZoomFactor = Math.Min(UserControlWidth / CurrentProject.Width, UserControlHeight / CurrentProject.Height);
+            double newPanOffsetY = (UserControlHeight - CurrentProject.Height) / 2;
+            var tasks = new[]
+            {
+                PanOffsetX.EaseToAsync(0, Easing.EasingType.EaseInOutCubic , 300),
+                PanOffsetY.EaseToAsync(newPanOffsetY, Easing.EasingType.EaseInOutCubic, 300),
+                ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 300)
+            };
+            await Task.WhenAll(tasks);
         }
 
         public void UpdateMouseInfo(Point position, bool isPressed)

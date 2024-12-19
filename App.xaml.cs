@@ -3,6 +3,7 @@ using MVVMPaintApp.Services;
 using MVVMPaintApp.ViewModels;
 using MVVMPaintApp.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using MVVMPaintApp.Models;
 
 namespace MVVMPaintApp
 {
@@ -24,16 +25,18 @@ namespace MVVMPaintApp
         {
             services.AddTransient<DashboardViewModel>();
             services.AddTransient<NewFileViewModel>();
-            services.AddSingleton<MainCanvasViewModel>();
 
+            services.AddSingleton<MainCanvasViewModel>();
             services.AddSingleton<DrawingCanvasViewModel>();
             services.AddSingleton<ColorPaletteViewModel>();
+            services.AddSingleton<LayerViewModel>();
 
             services.AddSingleton<WindowMapper>();
             services.AddSingleton<UserControlMapper>();
             services.AddSingleton<ViewModelLocator>();
             services.AddSingleton<ProjectManager>();
-            services.AddSingleton<IWindowManager,  WindowManager>();
+            services.AddSingleton<IProjectFactory, ProjectFactory>();
+            services.AddSingleton<IWindowManager, WindowManager>();
         }
 
         protected override void OnStartup(StartupEventArgs e)

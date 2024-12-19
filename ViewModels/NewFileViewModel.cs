@@ -14,6 +14,7 @@ namespace MVVMPaintApp.ViewModels
     {
         private bool isChanging = false;
         private readonly IWindowManager windowManager;
+        private readonly IProjectFactory projectFactory;
         private readonly ViewModelLocator viewModelLocator;
 
         [ObservableProperty]
@@ -70,18 +71,19 @@ namespace MVVMPaintApp.ViewModels
                 windowManager.ShowWindow(viewModelLocator.MainCanvasViewModel);
                 viewModelLocator.MainCanvasViewModel.SetProject(project);
                 viewModelLocator.MainCanvasViewModel.ProjectManager.HasUnsavedChanges = true;
-                //windowManager.CloseWindow(this);
+                windowManager.CloseWindow(this);
             }
         }
 
-        public NewFileViewModel(IWindowManager windowManager, ViewModelLocator viewModelLocator)
+        public NewFileViewModel(IWindowManager windowManager, IProjectFactory projectFactory, ViewModelLocator viewModelLocator)
         {
             this.windowManager = windowManager;
             this.viewModelLocator = viewModelLocator;
+            this.projectFactory = projectFactory;
 
             PopulateDefaultPresets();
             SelectedPreset = Presets[0];
-            ProjectName = ProjectManager.GetDefaultProjectName();
+            ProjectName = projectFactory.GetDefaultProjectName();
         }
 
         private void PopulateDefaultPresets()

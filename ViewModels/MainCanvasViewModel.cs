@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Interfaces;
 using MVVMPaintApp.Services;
 using MVVMPaintApp.Models;
+using System.Diagnostics;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -23,32 +24,36 @@ namespace MVVMPaintApp.ViewModels
         private ColorPaletteViewModel colorPaletteViewModel;
 
         [ObservableProperty]
-        private int viewPortWidth = 1600;
+        private LayerViewModel layerViewModel;
 
         [ObservableProperty]
-        private int viewPortHeight = 900;
+        private int windowWidth = 1600;
+
+        [ObservableProperty]
+        private int windowHeight = 900;
 
         [RelayCommand]
         public void SetProject(Project project)
         {
-            ProjectManager.SetProject(project);
+            ProjectManager.CurrentProject = project;
             WindowTitle = "Home - " + project.Name;
-            DrawingCanvasViewModel.SetProject(project);
-            DrawingCanvasViewModel.SetViewPortSize(ViewPortWidth, ViewPortHeight);
 
+            DrawingCanvasViewModel.SetProject(project);
             ColorPaletteViewModel.SetProjectColors(project.ColorsList);
+            LayerViewModel.ProjectManager = ProjectManager;
         }
 
         public MainCanvasViewModel(
             IWindowManager windowManager,
             ProjectManager projectManager,
             DrawingCanvasViewModel drawingCanvasViewModel,
-            ColorPaletteViewModel colorPaletteViewModel)
+            ColorPaletteViewModel colorPaletteViewModel,
+            LayerViewModel layerViewModel)
         {
             this.windowManager = windowManager;
-            this.drawingCanvasViewModel = drawingCanvasViewModel;
-            this.colorPaletteViewModel = colorPaletteViewModel;
-
+            DrawingCanvasViewModel = drawingCanvasViewModel;
+            ColorPaletteViewModel = colorPaletteViewModel;
+            LayerViewModel = layerViewModel;
             ProjectManager = projectManager;
         }
     }
