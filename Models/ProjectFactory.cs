@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace MVVMPaintApp.Models
 {
-    class ProjectFactory : IProjectFactory
+    public class ProjectFactory : IProjectFactory
     {
         public Project CreateDefault()
         {

@@ -15,10 +15,19 @@ namespace MVVMPaintApp.UserControls
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var viewModel = (LayerViewModel)DataContext;
-            if (viewModel != null)
+            var vm = (LayerViewModel)DataContext;
+            vm?.SelectionChangedCommand.Execute(null);
+        }
+
+        private void LayerContextMenu_Opened(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var vm = (LayerViewModel)DataContext;
+            if (vm != null)
             {
-                viewModel.SelectionChangedCommand.Execute(null);
+                vm.MoveLayerUpCommand.NotifyCanExecuteChanged();
+                vm.MoveLayerDownCommand.NotifyCanExecuteChanged();
+                vm.DeleteLayerCommand.NotifyCanExecuteChanged();
+                vm.MergeLayerDownCommand.NotifyCanExecuteChanged();
             }
         }
     }

@@ -34,7 +34,7 @@ namespace MVVMPaintApp.ViewModels
             ProjectManager.AddLayer();
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanDeleteLayer))]
         private void DeleteLayer()
         {
             if (SelectedLayer != null)
@@ -42,6 +42,7 @@ namespace MVVMPaintApp.ViewModels
                 ProjectManager.RemoveLayer(SelectedLayer);
             }
         }
+        private bool CanDeleteLayer() => SelectedLayer != null && ProjectManager.CurrentProject.Layers.Count > 1;
 
         [RelayCommand(CanExecute = nameof(CanMoveLayerUp))]
         private void MoveLayerUp()
@@ -84,9 +85,11 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         private void SelectionChanged()
         {
-            MoveLayerUpCommand.NotifyCanExecuteChanged();
-            MoveLayerDownCommand.NotifyCanExecuteChanged();
-            MergeLayerDownCommand.NotifyCanExecuteChanged();
+            if (SelectedLayer != null)
+            {
+                ProjectManager.SelectedLayer = SelectedLayer;
+                Debug.WriteLine("Selected layer: " + SelectedLayer.Index);
+            }
         }
 
         [ObservableProperty]
@@ -95,7 +98,7 @@ namespace MVVMPaintApp.ViewModels
         public LayerViewModel(ProjectManager projectManager)
         {
             ProjectManager = projectManager;
-            projectManager.PropertyChanged += (s, e) =>
+            ProjectManager.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ProjectManager.CurrentProject))
                 {
@@ -108,8 +111,20 @@ namespace MVVMPaintApp.ViewModels
                 }
             };
 
+            Layers = ProjectManager.CurrentProject.Layers;
+            UpdateBackgroundLayer();
+        }
+
+        public void SetProjectManager(ProjectManager projectManager)
+        {
+            ProjectManager = projectManager;
             Layers = projectManager.CurrentProject.Layers;
             UpdateBackgroundLayer();
+
+            foreach (var layer in Layers)
+            {
+                layer.RenderThumbnail();
+            }
         }
 
         public void UpdateBackgroundLayer()

@@ -1,12 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MVVMPaintApp.Models;
+using MVVMPaintApp.Models.Tools;
 using MVVMPaintApp.Services;
-using System;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -24,7 +22,7 @@ namespace MVVMPaintApp.ViewModels
         private Project currentProject;
 
         [ObservableProperty]
-        private WriteableBitmap canvasRenderTarget;
+        private ToolBase selectedTool;
 
         [ObservableProperty]
         private double userControlWidth = 1600;
@@ -65,41 +63,34 @@ namespace MVVMPaintApp.ViewModels
         {
             ProjectManager = projectManager;
             CurrentProject = projectManager.CurrentProject;
-            CanvasRenderTarget = new WriteableBitmap(currentProject.Width, currentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
-            RenderProject();
+            SelectedTool = new Pencil(projectManager);
+
+            ProjectManager.Render();
         }
 
-        public void SetProject(Project project)
+        public void SetProjectManager(ProjectManager projectManager)
         {
-            CurrentProject = project;
-            CanvasRenderTarget = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Pbgra32, null);
-            RenderProject();
+            ProjectManager = projectManager;
+            CurrentProject = projectManager.CurrentProject;
+            SelectedTool = new Pencil(projectManager);
+            ProjectManager.Render();
+        }
+
+        public void SetTool(ToolType tool)
+        {
+            SelectedTool = tool switch
+            {
+                ToolType.Pencil => new Pencil(ProjectManager),
+                
+                _ => new Pencil(ProjectManager),
+            };
+            Debug.WriteLine("Selected tool: " + SelectedTool.GetType().Name + " - Layer: " + ProjectManager.SelectedLayer.Index);
         }
 
         public void SetUserControlSize(int width, int height)
         {
             UserControlWidth = width;
             UserControlHeight = height;
-        }
-
-        public void RenderProject()
-        {
-            if (CurrentProject == null || CanvasRenderTarget == null) return;
-
-            using var context = CanvasRenderTarget.GetBitmapContext();
-            // Clear the canvas
-            CanvasRenderTarget.Clear(CurrentProject.Background);
-
-            // Render each layer
-            foreach (var layer in CurrentProject.Layers)
-            {
-                if (layer.IsVisible)
-                {
-                    Rect rect = new(0, 0, layer.Content.PixelWidth, layer.Content.PixelHeight);
-                    CanvasRenderTarget.Blit(rect, layer.Content, rect,
-                        WriteableBitmapExtensions.BlendMode.Alpha);
-                }
-            }
         }
         
         partial void OnIsZoomModeChanged(bool value)
@@ -190,6 +181,45 @@ namespace MVVMPaintApp.ViewModels
 
             PanOffsetX.Value += deltaX;
             PanOffsetY.Value += deltaY;
+        }
+
+        public void HandleMouseDown(object sender, MouseButtonEventArgs e, FrameworkElement canvas)
+        {
+            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
+            {
+                Point hitCheck = HitCheck(e.GetPosition(canvas));
+                SelectedTool.OnMouseDown(sender, hitCheck);
+                ProjectManager.Render();
+            }
+        }
+
+        public void HandleMouseUp(object sender, MouseButtonEventArgs e, FrameworkElement canvas)
+        {
+            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
+            {
+                Point hitCheck = HitCheck(e.GetPosition(canvas));
+                SelectedTool.OnMouseUp(sender, hitCheck);
+                ProjectManager.Render();
+            }
+        }
+
+        public void HandleMouseMove(object sender, MouseEventArgs e, FrameworkElement canvas)
+        {
+            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
+            {
+                Point hitCheck = HitCheck(e.GetPosition(canvas));
+                SelectedTool.OnMouseMove(sender, hitCheck);
+                ProjectManager.Render();
+            }
+        }
+
+        public Point HitCheck(Point hitCheck)
+        {
+            if (hitCheck.X < 0) hitCheck.X = 0;
+            if (hitCheck.Y < 0) hitCheck.Y = 0;
+            if (hitCheck.X > ProjectManager.CurrentProject.Width) hitCheck.X = ProjectManager.CurrentProject.Width;
+            if (hitCheck.Y > ProjectManager.CurrentProject.Height) hitCheck.Y = ProjectManager.CurrentProject.Height;
+            return hitCheck;
         }
     }
 }

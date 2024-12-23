@@ -27,6 +27,9 @@ namespace MVVMPaintApp.ViewModels
         private LayerViewModel layerViewModel;
 
         [ObservableProperty]
+        private ToolboxViewModel toolboxViewModel;
+
+        [ObservableProperty]
         private int windowWidth = 1600;
 
         [ObservableProperty]
@@ -35,12 +38,13 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         public void SetProject(Project project)
         {
-            ProjectManager.CurrentProject = project;
+            ProjectManager.LoadProject(project);
             WindowTitle = "Home - " + project.Name;
 
-            DrawingCanvasViewModel.SetProject(project);
+            DrawingCanvasViewModel.SetProjectManager(ProjectManager);
             ColorPaletteViewModel.SetProjectColors(project.ColorsList);
-            LayerViewModel.ProjectManager = ProjectManager;
+            LayerViewModel.SetProjectManager(ProjectManager);
+            ToolboxViewModel.SetProjectManager(ProjectManager);
         }
 
         public MainCanvasViewModel(
@@ -48,12 +52,14 @@ namespace MVVMPaintApp.ViewModels
             ProjectManager projectManager,
             DrawingCanvasViewModel drawingCanvasViewModel,
             ColorPaletteViewModel colorPaletteViewModel,
-            LayerViewModel layerViewModel)
+            LayerViewModel layerViewModel,
+            ToolboxViewModel toolboxViewModel)
         {
             this.windowManager = windowManager;
             DrawingCanvasViewModel = drawingCanvasViewModel;
             ColorPaletteViewModel = colorPaletteViewModel;
             LayerViewModel = layerViewModel;
+            ToolboxViewModel = toolboxViewModel;
             ProjectManager = projectManager;
         }
     }

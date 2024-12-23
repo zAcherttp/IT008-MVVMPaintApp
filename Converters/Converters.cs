@@ -79,4 +79,25 @@ namespace MVVMPaintApp.Converters
             return false;
         }
     }
+
+    public class ZoomToScalingModeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double zoomFactor)
+            {
+                // Use NearestNeighbor when zoomed in for pixel-perfect view
+                // Use Bilinear when zoomed out for smoother appearance
+                return zoomFactor >= 1.0 ?
+                    BitmapScalingMode.NearestNeighbor :
+                    BitmapScalingMode.HighQuality;
+            }
+            return BitmapScalingMode.NearestNeighbor;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
+        }
+    }
 }

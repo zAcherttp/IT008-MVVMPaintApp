@@ -4,6 +4,8 @@ using MVVMPaintApp.ViewModels;
 using MVVMPaintApp.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using MVVMPaintApp.Models;
+using MVVMPaintApp.Models.Tools;
+using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp
 {
@@ -30,11 +32,13 @@ namespace MVVMPaintApp
             services.AddSingleton<DrawingCanvasViewModel>();
             services.AddSingleton<ColorPaletteViewModel>();
             services.AddSingleton<LayerViewModel>();
+            services.AddSingleton<ToolboxViewModel>();
 
             services.AddSingleton<WindowMapper>();
             services.AddSingleton<UserControlMapper>();
             services.AddSingleton<ViewModelLocator>();
             services.AddSingleton<ProjectManager>();
+            services.AddSingleton<ITool, Pencil>();
             services.AddSingleton<IProjectFactory, ProjectFactory>();
             services.AddSingleton<IWindowManager, WindowManager>();
         }

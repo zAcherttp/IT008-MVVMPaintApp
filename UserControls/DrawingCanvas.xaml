@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
+             xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
              xmlns:local="clr-namespace:MVVMPaintApp.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1200"
@@ -16,8 +17,12 @@
              MouseWheel="UserControl_MouseWheel"
              Loaded="UserControl_Loaded"
              SizeChanged="UserControl_SizeChanged"
+             
              Focusable="True">
-    <Grid x:Name="MainCanvasGrid"
+    <UserControl.Resources>
+        <conv:ZoomToScalingModeConverter x:Key="ZoomToScalingModeConverter"/>
+    </UserControl.Resources>
+        <Grid x:Name="MainCanvasGrid"
           Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -68,8 +73,10 @@
                                             Y="{Binding PanOffsetY.Value}"/>
                     </TransformGroup>
                 </Canvas.RenderTransform>
-                <Image Source="{Binding CanvasRenderTarget}" 
+                <Image Source="{Binding ProjectManager.RenderTarget}" 
                        Stretch="None"
+                       RenderOptions.BitmapScalingMode="{Binding ZoomFactor.Value, 
+                        Converter={StaticResource ZoomToScalingModeConverter}}"
                        x:Name="MainImage"/>
             </Canvas>
         </Grid>

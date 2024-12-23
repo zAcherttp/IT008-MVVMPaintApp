@@ -1,11 +1,16 @@
-﻿using System.Windows.Input;
+﻿using MVVMPaintApp.Services;
+using MVVMPaintApp.ViewModels;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.Interfaces
 {
     public interface ITool
     {
-        void OnMouseDown(object o, MouseEventArgs e);
-        void OnMouseUp(object o, MouseEventArgs e);
-        void OnMouseMove(object o, MouseEventArgs e);
+        public ProjectManager ProjectManager { get; set; }
+        void OnMouseDown(object o, Point imagePoint);
+        void OnMouseUp(object o, Point imagePoint);
+        void OnMouseMove(object o, Point imagePoint);
     }
 }

@@ -83,13 +83,13 @@
                     <DataTemplate>
                         <Grid>
                             <Border Width="80" Height="80" MaxHeight="80" MaxWidth="80" BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="1" Margin="0,10,5,10" CornerRadius="10">
-                                <Image Source="{Binding LayerThumbnail}" Margin="2" />
+                                <Image Source="{Binding LayerThumbnail}" Margin="2" RenderOptions.BitmapScalingMode="HighQuality"/>
                             </Border>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.ContextMenu>
-                    <ContextMenu>
+                    <ContextMenu Opened="LayerContextMenu_Opened">
                         <MenuItem Command="{Binding ToggleVisibilityCommand}">
                             <MenuItem.Style>
                                 <Style TargetType="MenuItem">
@@ -117,7 +117,7 @@
             </ListView>
             <Line Grid.Row="2" Stroke="{DynamicResource ControlElevationBorderBrush}" X1="0" Y1="0" X2="120" Y2="0" StrokeThickness="1"/>
             <Border Grid.Row="2" Margin="0,15,0,20" Width="80" Height="80" MaxHeight="80" MaxWidth="80" BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="center" CornerRadius="10">
-                <Image Source="{Binding BackgroundLayer}" Margin="2" />
+                <Image Source="{Binding BackgroundLayer}" Margin="2"/>
             </Border>
         </Grid>
     </Border>

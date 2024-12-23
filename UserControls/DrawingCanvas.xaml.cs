@@ -55,6 +55,47 @@ namespace MVVMPaintApp.UserControls
                 viewModel.HandleCtrlKeyPress(false);
             }
         }
+  
+        private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var viewModel = (DrawingCanvasViewModel)DataContext;
+            _ = viewModel.HandleMouseWheel(e);
+        }
+
+        private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Focus();
+            var viewModel = (DrawingCanvasViewModel)DataContext;
+            Point currentPoint = e.GetPosition(MainCanvasArea);
+            isPressed = true;
+
+            CaptureMouse();
+            if (viewModel.IsZoomMode || viewModel.IsPanMode)
+            {
+                lastMousePoint = currentPoint;
+            } else
+            {
+                viewModel.HandleMouseDown(sender, e, MainCanvas);
+            }
+            viewModel.UpdateMouseInfo(currentPoint, isPressed);
+        }
+
+        private void UserControl_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var viewModel = (DrawingCanvasViewModel)DataContext;
+            isPressed = false;
+
+            if (lastMousePoint.HasValue)
+            {
+                ReleaseMouseCapture();
+                lastMousePoint = null;
+            } else
+            {
+                viewModel.HandleMouseUp(sender, e, MainCanvas);
+                viewModel.ProjectManager.HasUnsavedChanges = true;
+            }
+            viewModel.UpdateMouseInfo(e.GetPosition(MainCanvasArea), isPressed);
+        }
 
         private void UserControl_MouseMove(object sender, MouseEventArgs e)
         {
@@ -69,42 +110,12 @@ namespace MVVMPaintApp.UserControls
                     lastMousePoint = currentPoint;
                 }
             }
-        }
-
-        private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            _ = viewModel.HandleMouseWheel(e);
-        }
-
-        private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Focus();
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            Point currentPoint = e.GetPosition(MainCanvasArea);
-            isPressed = true;
-
-            if (viewModel.IsZoomMode || viewModel.IsPanMode)
+            else
             {
-                lastMousePoint = currentPoint;
-                CaptureMouse();
+                viewModel.HandleMouseMove(sender, e, MainCanvas);
             }
-            viewModel.UpdateMouseInfo(currentPoint, isPressed);
         }
-
-        private void UserControl_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            isPressed = false;
-
-            if (lastMousePoint.HasValue)
-            {
-                ReleaseMouseCapture();
-                lastMousePoint = null;
-            }
-            viewModel.UpdateMouseInfo(e.GetPosition(MainCanvasArea), isPressed);
-        }
-
+       
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             Focus();
