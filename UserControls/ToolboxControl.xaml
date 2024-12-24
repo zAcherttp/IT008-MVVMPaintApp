@@ -11,6 +11,9 @@
             <StackPanel>
                 <Button x:Name="Button_PencilTool" Content="Pencil" Click="Button_PencilTool_Click"/>
                 <Button x:Name="Button_BrushTool" Content="Brush" Click="Button_BrushTool_Click"/>
+                <Button x:Name="Button_EraserTool" Content="Eraser" Click="Button_EraserTool_Click"/>
+                <Button x:Name="Button_FillTool" Content="Fill" Click="Button_FillTool_Click"/>
+                <Button x:Name="Button_ColorPickerTool" Content="Color picker" Click="Button_ColorPickerTool_Click"/>
             </StackPanel>
         </Border>
     </Grid>

@@ -80,6 +80,9 @@ namespace MVVMPaintApp.ViewModels
             {
                 ToolType.Pencil => new Pencil(ProjectManager),
                 ToolType.Brush => new Brush(ProjectManager),
+                ToolType.Eraser => new Eraser(ProjectManager),
+                ToolType.Fill => new Fill(ProjectManager),
+                ToolType.ColorPicker => new ColorPicker(ProjectManager),
 
                 _ => new Pencil(ProjectManager),
             };

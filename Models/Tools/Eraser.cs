@@ -6,19 +6,16 @@ using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.Models.Tools
 {
-    public class Brush(ProjectManager projectManager) : ToolBase(projectManager)
+    public class Eraser(ProjectManager projectManager) : ToolBase(projectManager)
     {
-        public int BrushSize { get; set; } = 20;
-        public Color Color { get; set; } = Colors.Black;
-
+        private int BrushSize { get; set; } = 30;
         private const float MinDistance = 1f;
 
         public override void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
         {
             IsDrawing = true;
             LastPoint = imagePoint;
-            var Color = e.LeftButton == MouseButtonState.Pressed ? ProjectManager.PrimaryColor : ProjectManager.SecondaryColor;
-            ProjectManager.SelectedLayer.Content.FillEllipseCentered((int)imagePoint.X, (int)imagePoint.Y, BrushSize, BrushSize, Color);
+            ProjectManager.SelectedLayer.Content.FillRectangle((int)imagePoint.X - BrushSize / 2, (int)imagePoint.Y - BrushSize / 2, (int)imagePoint.X + BrushSize / 2, (int)imagePoint.Y + BrushSize / 2, Colors.Transparent);
             ProjectManager.SelectedLayer.RenderThumbnail();
         }
 
@@ -35,17 +32,15 @@ namespace MVVMPaintApp.Models.Tools
             if (distance < MinDistance)
                 return;
 
-            var Color = e.LeftButton == MouseButtonState.Pressed ? ProjectManager.PrimaryColor : ProjectManager.SecondaryColor;
-
             int steps = Math.Max(1, (int)(distance / (BrushSize * 0.3)));
 
-                for (int i = 0; i <= steps; i++)
-                {
-                    float t = i / (float)steps;
-                    int x = (int)Math.Round(LastPoint.X + (hitCheck.X - LastPoint.X) * t);
-                    int y = (int)Math.Round(LastPoint.Y + (hitCheck.Y - LastPoint.Y) * t);
+            for (int i = 0; i <= steps; i++)
+            {
+                float t = i / (float)steps;
+                int x = (int)Math.Round(LastPoint.X + (hitCheck.X - LastPoint.X) * t);
+                int y = (int)Math.Round(LastPoint.Y + (hitCheck.Y - LastPoint.Y) * t);
 
-                    ProjectManager.SelectedLayer.Content.FillEllipseCentered(x, y, BrushSize, BrushSize, Color);
+                ProjectManager.SelectedLayer.Content.FillRectangle(x - BrushSize / 2, y - BrushSize / 2, x + BrushSize / 2, y + BrushSize / 2, Colors.Transparent);
             }
 
             LastPoint = hitCheck;

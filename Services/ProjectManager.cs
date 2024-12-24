@@ -68,13 +68,13 @@ namespace MVVMPaintApp.Services
             using var context = RenderTarget.GetBitmapContext();
             RenderTarget.Clear(CurrentProject.Background);
 
-            foreach (var layer in CurrentProject.Layers)
+            for (int i = CurrentProject.Layers.Count - 1; i >= 0; i--)
             {
+                var layer = CurrentProject.Layers[i];
                 if (layer.IsVisible)
                 {
                     Rect rect = new(0, 0, layer.Content.PixelWidth, layer.Content.PixelHeight);
-                    RenderTarget.Blit(rect, layer.Content, rect,
-                        WriteableBitmapExtensions.BlendMode.Alpha);
+                    RenderTarget.Blit(rect, layer.Content, rect, WriteableBitmapExtensions.BlendMode.Alpha);
                 }
             }
         }

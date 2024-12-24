@@ -32,5 +32,29 @@ namespace MVVMPaintApp.UserControls
                 vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Brush);
             }
         }
+
+        public void Button_EraserTool_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
+            {
+                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Eraser);
+            }
+        }
+
+        public void Button_FillTool_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
+            {
+                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Fill);
+            }
+        }
+
+        public void Button_ColorPickerTool_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
+            {
+                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.ColorPicker);
+            }
+        }
     }
 }
