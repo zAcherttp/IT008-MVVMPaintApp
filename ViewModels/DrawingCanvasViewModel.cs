@@ -79,7 +79,8 @@ namespace MVVMPaintApp.ViewModels
             SelectedTool = tool switch
             {
                 ToolType.Pencil => new Pencil(ProjectManager),
-                
+                ToolType.Brush => new Brush(ProjectManager),
+
                 _ => new Pencil(ProjectManager),
             };
             Debug.WriteLine("Selected tool: " + SelectedTool.GetType().Name + " - Layer: " + ProjectManager.SelectedLayer.Index);
@@ -186,7 +187,7 @@ namespace MVVMPaintApp.ViewModels
             if (SelectedTool != null && !IsZoomMode && !IsPanMode)
             {
                 Point hitCheck = HitCheck(e.GetPosition(canvas));
-                SelectedTool.OnMouseDown(sender, hitCheck);
+                SelectedTool.OnMouseDown(sender, e, hitCheck);
                 ProjectManager.Render();
             }
         }
@@ -196,7 +197,7 @@ namespace MVVMPaintApp.ViewModels
             if (SelectedTool != null && !IsZoomMode && !IsPanMode)
             {
                 Point hitCheck = HitCheck(e.GetPosition(canvas));
-                SelectedTool.OnMouseUp(sender, hitCheck);
+                SelectedTool.OnMouseUp(sender, e, hitCheck);
                 ProjectManager.Render();
             }
         }
@@ -206,7 +207,7 @@ namespace MVVMPaintApp.ViewModels
             if (SelectedTool != null && !IsZoomMode && !IsPanMode)
             {
                 Point hitCheck = HitCheck(e.GetPosition(canvas));
-                SelectedTool.OnMouseMove(sender, hitCheck);
+                SelectedTool.OnMouseMove(sender, e, hitCheck);
                 ProjectManager.Render();
             }
         }

@@ -1,5 +1,6 @@
 ﻿using MVVMPaintApp.Services;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -12,14 +13,15 @@ namespace MVVMPaintApp.Models.Tools
 
         private const float MinDistance = 1f;
 
-        public override void OnMouseDown(object sender, Point imagePoint)
+        public override void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
         {
             IsDrawing = true;
             LastPoint = imagePoint;
+            var Color = e.LeftButton == MouseButtonState.Pressed ? ProjectManager.PrimaryColor : ProjectManager.SecondaryColor;
             ProjectManager.SelectedLayer.Content.FillEllipseCentered((int)imagePoint.X, (int)imagePoint.Y, BrushSize, BrushSize, Color);
         }
 
-        public override void OnMouseMove(object sender, Point hitCheck)
+        public override void OnMouseMove(object sender, MouseEventArgs e, Point hitCheck)
         {
             if (!IsDrawing || ProjectManager.SelectedLayer == null)
                 return;
@@ -31,6 +33,8 @@ namespace MVVMPaintApp.Models.Tools
 
             if (distance < MinDistance)
                 return;
+
+            var Color = e.LeftButton == MouseButtonState.Pressed ? ProjectManager.PrimaryColor : ProjectManager.SecondaryColor;
 
             int steps = Math.Max(1, (int)(distance / (BrushSize * 0.3)));
 
@@ -44,6 +48,7 @@ namespace MVVMPaintApp.Models.Tools
             }
 
             LastPoint = hitCheck;
+            ProjectManager.SelectedLayer.RenderThumbnail();
         }
     }
 }

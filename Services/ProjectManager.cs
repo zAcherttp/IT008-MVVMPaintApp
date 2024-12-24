@@ -21,6 +21,12 @@ namespace MVVMPaintApp.Services
         private Layer selectedLayer;
 
         [ObservableProperty]
+        private Color primaryColor = Colors.Black;
+
+        [ObservableProperty]
+        private Color secondaryColor = Colors.White;
+
+        [ObservableProperty]
         private WriteableBitmap renderTarget;
 
         [ObservableProperty]

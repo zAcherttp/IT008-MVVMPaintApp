@@ -1,5 +1,6 @@
 ﻿using MVVMPaintApp.Services;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -8,11 +9,12 @@ namespace MVVMPaintApp.Models.Tools
     public class Pencil(ProjectManager projectManager) : ToolBase(projectManager)
     {
         public int BrushSize { get; set; } = 1;
-        public Color Color { get; set; } = Colors.Black;
 
-        public override void OnMouseMove(object sender, Point hitCheck)
+        public override void OnMouseMove(object sender, MouseEventArgs e, Point hitCheck)
         {
             if (!IsDrawing || ProjectManager.SelectedLayer == null) return;
+
+            var Color = e.LeftButton == MouseButtonState.Pressed ? ProjectManager.PrimaryColor : ProjectManager.SecondaryColor;
 
             ProjectManager.SelectedLayer.Content.DrawLine(
                 (int)LastPoint.X, (int)LastPoint.Y,
@@ -20,6 +22,7 @@ namespace MVVMPaintApp.Models.Tools
                 Color);
 
             LastPoint = hitCheck;
+            ProjectManager.SelectedLayer.RenderThumbnail();
         }
     }
 }

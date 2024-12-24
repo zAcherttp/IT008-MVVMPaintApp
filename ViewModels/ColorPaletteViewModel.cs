@@ -21,12 +21,6 @@ namespace MVVMPaintApp.ViewModels
         private ProjectManager projectManager;
 
         [ObservableProperty]
-        private Color primaryColor = Colors.White;
-
-        [ObservableProperty]
-        private Color secondaryColor = Colors.Black;
-
-        [ObservableProperty]
         private ObservableCollection<PaletteColorSlot> paletteColors = [];
 
         [ObservableProperty]
@@ -61,9 +55,9 @@ namespace MVVMPaintApp.ViewModels
         {
             if (param is not PaletteColorSlot slot) return;
             if (isPrimaryColorSelected)
-                SecondaryColor = slot.Color;
+                ProjectManager.SecondaryColor = slot.Color;
             else
-                PrimaryColor = slot.Color;
+                ProjectManager.PrimaryColor = slot.Color;
         }
 
         [RelayCommand]
@@ -71,9 +65,9 @@ namespace MVVMPaintApp.ViewModels
         {
             if (param is not PaletteColorSlot slot) return;
             if (isPrimaryColorSelected)
-                PrimaryColor = slot.Color;
+                ProjectManager.PrimaryColor = slot.Color;
             else
-                SecondaryColor = slot.Color;
+                ProjectManager.SecondaryColor = slot.Color;
         }
 
         [RelayCommand]
@@ -86,7 +80,7 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         private void OnPaletteButtonMouseLeave()
         {
-            PaletteButtonColor = PrimaryColor;
+            PaletteButtonColor = ProjectManager.PrimaryColor;
         }
 
         public ColorPaletteViewModel(ProjectManager projectManager)

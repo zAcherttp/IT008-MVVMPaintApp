@@ -14,17 +14,17 @@ namespace MVVMPaintApp.Models.Tools
         protected bool IsDrawing { get; set; }
         protected Point LastPoint { get; set; }
 
-        public virtual void OnMouseDown(object sender, Point imagePoint)
+        public virtual void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
         {
             IsDrawing = true;
             LastPoint = imagePoint;
         }
 
-        public virtual void OnMouseUp(object sender, Point imagePoint)
+        public virtual void OnMouseUp(object sender, MouseEventArgs e, Point imagePoint)
         {
             IsDrawing = false;
         }
 
-        public abstract void OnMouseMove(object sender, Point imagePoint);
+        public abstract void OnMouseMove(object sender, MouseEventArgs e, Point imagePoint);
     }
 }

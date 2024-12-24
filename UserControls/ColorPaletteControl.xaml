@@ -263,12 +263,12 @@
                         <RadioButton x:Name="PrimaryColorRadioButton" 
                                    Margin="10,0,10,0" Height="30" Width="30"
                                    Style="{StaticResource ActiveColorButtonStyle}"
-                                   Background="{Binding PrimaryColor, Converter={StaticResource BrushConverter}}"
+                                   Background="{Binding ProjectManager.PrimaryColor, Converter={StaticResource BrushConverter}}"
                                    Command="{Binding SetPrimaryColorCommand}"/>
                         <RadioButton x:Name="SecondaryColorRadioButton"
                                    Margin="10,0,10,0" Height="30" Width="30"
                                    Style="{StaticResource ActiveColorButtonStyle}"
-                                   Background="{Binding SecondaryColor, Converter={StaticResource BrushConverter}}"
+                                   Background="{Binding ProjectManager.SecondaryColor, Converter={StaticResource BrushConverter}}"
                                    Command="{Binding SetSecondaryColorCommand}"/>
                     </StackPanel>
                 </StackPanel>
