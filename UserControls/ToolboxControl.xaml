@@ -10,6 +10,7 @@
         <Border>
             <StackPanel>
                 <Button x:Name="Button_PencilTool" Content="Pencil" Click="Button_PencilTool_Click"/>
+                <Button x:Name="Button_BrushTool" Content="Brush" Click="Button_BrushTool_Click"/>
             </StackPanel>
         </Border>
     </Grid>

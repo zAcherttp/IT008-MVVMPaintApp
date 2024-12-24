@@ -24,5 +24,13 @@ namespace MVVMPaintApp.UserControls
                 vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Pencil);
             }
         }
+
+        public void Button_BrushTool_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
+            {
+                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Brush);
+            }
+        }
     }
 }
