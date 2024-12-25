@@ -2,6 +2,10 @@
 
 IN PROGRESS - Add documentation for all classes and methods
 IN PROGRESS - Use proper dynamic color resources for light and dark mode (current colors are hardcoded)
+IN PROGRESS - ToolBox View / VM
+IN PROGRESS - Use WriteableBitmapEx library to create classes for drawing
+IN PROGRESS - Drawing Brushes using WriteableBitmapEx
+IN PROGRESS - Add Pencil, Eraser, Line, Rectangle, Ellipse, Fill, Text, Select, Move, Zoom tools
 DONE - Add NewFileView
 DONE - Add HomeViewModel
 DONE - Add NewFileViewModel
@@ -10,10 +14,6 @@ DONE - Separate project serialization and deserialization
 DONE - Implement Views Navigation
 DONE - Implement Project create/ load/ save
 DONE - Merge HomeView and NewFileView into one HomeView, rename HomeView to DashboardView
-- LayersPanel View / VM
+DONE -  LayersPanel View / VM
 - ToolStrip View / VM
-- ToolBox View / VM
-- Use WriteableBitmapEx library to create classes for drawing
-- Drawing Brushes using WriteableBitmapEx
-- Add Pencil, Eraser, Line, Rectangle, Ellipse, Fill, Text, Select, Move, Zoom tools
 - Implement Undo/Redo

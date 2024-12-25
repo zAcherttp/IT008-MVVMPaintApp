@@ -62,7 +62,6 @@ namespace MVVMPaintApp.ViewModels
             ProjectManager = projectManager;
             CurrentProject = projectManager.CurrentProject;
             SelectedTool = new Pencil(projectManager);
-
             ProjectManager.Render();
         }
 
@@ -170,7 +169,7 @@ namespace MVVMPaintApp.ViewModels
             if (!IsZoomMode) return;
 
             double delta = e.Delta / 120.0;
-            double newZoomFactor = Math.Clamp(ZoomFactor.Value + (delta * ZOOM_STEP_PERCENTAGE), 0.1, 10); 
+            double newZoomFactor = Math.Clamp(ZoomFactor.Value + (delta * ZOOM_STEP_PERCENTAGE), 0.1, 10);
             await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 30);
         }
 
@@ -189,9 +188,7 @@ namespace MVVMPaintApp.ViewModels
         {
             if (SelectedTool != null && !IsZoomMode && !IsPanMode)
             {
-                Point hitCheck = HitCheck(e.GetPosition(canvas));
-                SelectedTool.OnMouseDown(sender, e, hitCheck);
-                ProjectManager.Render();
+                SelectedTool.OnMouseDown(sender, e, e.GetPosition(canvas));
             }
         }
 
@@ -199,9 +196,7 @@ namespace MVVMPaintApp.ViewModels
         {
             if (SelectedTool != null && !IsZoomMode && !IsPanMode)
             {
-                Point hitCheck = HitCheck(e.GetPosition(canvas));
-                SelectedTool.OnMouseUp(sender, e, hitCheck);
-                ProjectManager.Render();
+                SelectedTool.OnMouseUp(sender, e, e.GetPosition(canvas));
             }
         }
 
@@ -209,9 +204,7 @@ namespace MVVMPaintApp.ViewModels
         {
             if (SelectedTool != null && !IsZoomMode && !IsPanMode)
             {
-                Point hitCheck = HitCheck(e.GetPosition(canvas));
-                SelectedTool.OnMouseMove(sender, e, hitCheck);
-                ProjectManager.Render();
+                SelectedTool.OnMouseMove(sender, e, e.GetPosition(canvas));
             }
         }
 

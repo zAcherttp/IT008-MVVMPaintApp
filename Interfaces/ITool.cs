@@ -8,7 +8,6 @@ namespace MVVMPaintApp.Interfaces
 {
     public interface ITool
     {
-        public ProjectManager ProjectManager { get; set; }
         void OnMouseDown(object o, MouseEventArgs e, Point imagePoint);
         void OnMouseUp(object o, MouseEventArgs e, Point imagePoint);
         void OnMouseMove(object o, MouseEventArgs e, Point imagePoint);
