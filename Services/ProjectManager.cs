@@ -51,6 +51,7 @@ namespace MVVMPaintApp.Services
             {
                 CurrentProject = projectToLoad;
                 RenderTarget = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Bgra32, null);
+                StrokeLayer = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Bgra32, null);
                 SelectedLayer = CurrentProject.Layers[0];
                 Debug.WriteLine("Project " + CurrentProject.Name + " loaded.");
                 Debug.WriteLine("Project width: " + CurrentProject.Width + ", height: " + CurrentProject.Height);
@@ -60,6 +61,7 @@ namespace MVVMPaintApp.Services
                 CurrentProject = JsonConvert.DeserializeObject<SerializableProject>(projectJson)!.ToProject() ??
                 throw new InvalidDataException("Deserialized project is null.");
                 RenderTarget = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Bgra32, null);
+                StrokeLayer = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Bgra32, null);
                 SelectedLayer = CurrentProject.Layers[0];
                 Debug.WriteLine("Project " + CurrentProject.Name + " loaded.");
                 Debug.WriteLine("Project width: " + CurrentProject.Width + ", height: " + CurrentProject.Height);

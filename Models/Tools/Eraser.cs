@@ -1,4 +1,6 @@
-﻿using MVVMPaintApp.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MVVMPaintApp.Services;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -8,43 +10,138 @@ namespace MVVMPaintApp.Models.Tools
 {
     public class Eraser(ProjectManager projectManager) : ToolBase(projectManager)
     {
-        private int BrushSize { get; set; } = 30;
-        private const float MinDistance = 1f;
+        public int BrushSize { get; set; } = 50;
+        public const int PREVIEW_STROKE_REGION_PADDING = 10;
 
-        public override void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
+        public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {
-            IsDrawing = true;
-            LastPoint = imagePoint;
-            ProjectManager.SelectedLayer.Content.FillRectangle((int)imagePoint.X - BrushSize / 2, (int)imagePoint.Y - BrushSize / 2, (int)imagePoint.X + BrushSize / 2, (int)imagePoint.Y + BrushSize / 2, Colors.Transparent);
-            ProjectManager.SelectedLayer.RenderThumbnail();
+            
+            base.OnMouseDown(sender, e, p);
+            if (!IsValidDrawingState()) return;
+            CurrentStrokeRegion = new Rect(p, new Size(1, 1));
+
+            DrawPoint(p, Colors.Transparent);
         }
 
-        public override void OnMouseMove(object sender, MouseEventArgs e, Point hitCheck)
+        public override void OnMouseMove(object sender, MouseEventArgs e, Point p)
         {
-            if (!IsDrawing || ProjectManager.SelectedLayer == null)
-                return;
+            
+            DrawPreview(p, ProjectManager.CurrentProject.Background);
 
-            float distance = (float)Math.Sqrt(
-                Math.Pow(hitCheck.X - LastPoint.X, 2) +
-                Math.Pow(hitCheck.Y - LastPoint.Y, 2)
-            );
+            if (!IsDrawing || !IsValidDrawingState()) return;
 
-            if (distance < MinDistance)
-                return;
+            float distance = CalculateDistance(LastPoint, p);
+            if (distance < MIN_INTERP_DISTANCE) return;
 
-            int steps = Math.Max(1, (int)(distance / (BrushSize * 0.3)));
+            DrawLine(LastPoint, p, Colors.Transparent);
+            LastPoint = p;
+        }
 
-            for (int i = 0; i <= steps; i++)
+        public override void OnMouseUp(object sender, MouseEventArgs e, Point imagePoint)
+        {
+            if (ProjectManager.StrokeLayer != null && CurrentStrokeRegion != null)
             {
-                float t = i / (float)steps;
-                int x = (int)Math.Round(LastPoint.X + (hitCheck.X - LastPoint.X) * t);
-                int y = (int)Math.Round(LastPoint.Y + (hitCheck.Y - LastPoint.Y) * t);
+                // Add history entry
 
-                ProjectManager.SelectedLayer.Content.FillRectangle(x - BrushSize / 2, y - BrushSize / 2, x + BrushSize / 2, y + BrushSize / 2, Colors.Transparent);
+                //BlitStrokeLayer();
             }
 
-            LastPoint = hitCheck;
-            ProjectManager.SelectedLayer.RenderThumbnail();
+            ProjectManager.StrokeLayer.Clear(Colors.Transparent);
+            ProjectManager.InvalidateRegion(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height), ProjectManager.SelectedLayer);
+            CurrentStrokeRegion = null;
+
+            DrawPreview(imagePoint, ProjectManager.CurrentProject.Background);
+            base.OnMouseUp(sender, e, imagePoint);
+        }
+
+        public override void DrawPreview(Point p, Color color)
+        {
+            var diagonal = Math.Sqrt(2) * BrushSize / 2;
+            int x1 = (int)(p.X - diagonal);
+            int y1 = (int)(p.Y - diagonal);
+            int x2 = (int)(p.X + diagonal);
+            int y2 = (int)(p.Y + diagonal);
+            var region = new Rect(
+                x1 - PREVIEW_STROKE_REGION_PADDING,
+                y1 - PREVIEW_STROKE_REGION_PADDING,
+                x2 - x1 + PREVIEW_STROKE_REGION_PADDING * 2,
+                y2 - y1 + PREVIEW_STROKE_REGION_PADDING * 2);
+
+            if (IsValidDrawingState() && CurrentStrokeRegion == null)
+            {
+                ProjectManager.StrokeLayer.FillRectangle(
+                x1 - PREVIEW_STROKE_REGION_PADDING,
+                y1 - PREVIEW_STROKE_REGION_PADDING,
+                x2 + PREVIEW_STROKE_REGION_PADDING,
+                y2 + PREVIEW_STROKE_REGION_PADDING,
+                Colors.Transparent);
+                ProjectManager.StrokeLayer.FillRectangle(x1, y1, x2, y2, color);
+                ProjectManager.StrokeLayer.DrawRectangle(x1 - 1, y1 - 1, x2 + 1, y2 + 1, Colors.Black);
+                ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+            }
+        }
+
+        public override void DrawPoint(Point point, Color color)
+        {
+            //try
+            //{
+            //    var totalPadding = BrushSize + STROKE_REGION_PADDING;
+            //    var region = new Rect(
+            //        point.X - totalPadding,
+            //        point.Y - totalPadding,
+            //        totalPadding * 2,
+            //        totalPadding * 2
+            //    );
+
+            //    var diagonal = Math.Sqrt(2) * BrushSize / 2;
+            //    ProjectManager.StrokeLayer.FillRectangle(
+            //        (int)(point.X - diagonal), (int)(point.Y - diagonal), (int)(point.X + diagonal), (int)(point.Y + diagonal), color);
+
+            //    if (CurrentStrokeRegion.HasValue)
+            //    {
+            //        CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
+            //    }
+
+            //    ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine($"Error drawing point: {ex.Message}");
+            //}
+        }
+
+        public override void DrawLine(Point start, Point end, Color color)
+        {
+            //try
+            //{
+            //    float distance = CalculateDistance(start, end);
+            //    int steps = Math.Max(1, (int)(distance / (BrushSize * INTERP_FACTOR)));
+
+            //    Point lastDrawnPoint = start;
+
+            //    for (int i = 0; i <= steps; i++)
+            //    {
+            //        float t = i / (float)steps;
+            //        var currentPoint = Lerp(start, end, t);
+
+            //        var region = CalculateSegmentRegion(lastDrawnPoint, currentPoint, BrushSize);
+
+            //        var diagonal = Math.Sqrt(2) * BrushSize / 2;
+            //        ProjectManager.StrokeLayer.FillRectangle(
+            //        (int)(currentPoint.X - diagonal), (int)(currentPoint.Y - diagonal), (int)(currentPoint.X + diagonal), (int)(currentPoint.Y + diagonal), color);
+            //        if (CurrentStrokeRegion.HasValue)
+            //        {
+            //            CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
+            //        }
+
+            //        ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+            //        lastDrawnPoint = currentPoint;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine($"Error drawing line: {ex.Message}");
+            //}
         }
     }
 }

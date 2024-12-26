@@ -207,14 +207,5 @@ namespace MVVMPaintApp.ViewModels
                 SelectedTool.OnMouseMove(sender, e, e.GetPosition(canvas));
             }
         }
-
-        public Point HitCheck(Point hitCheck)
-        {
-            if (hitCheck.X < 0) hitCheck.X = 0;
-            if (hitCheck.Y < 0) hitCheck.Y = 0;
-            if (hitCheck.X > ProjectManager.CurrentProject.Width) hitCheck.X = ProjectManager.CurrentProject.Width;
-            if (hitCheck.Y > ProjectManager.CurrentProject.Height) hitCheck.Y = ProjectManager.CurrentProject.Height;
-            return hitCheck;
-        }
     }
 }

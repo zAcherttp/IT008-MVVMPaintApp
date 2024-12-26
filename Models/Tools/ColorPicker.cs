@@ -9,7 +9,10 @@ namespace MVVMPaintApp.Models.Tools
     {
         public override void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
         {
-            ProjectManager.PrimaryColor = ProjectManager.SelectedLayer.Content.GetPixel((int)imagePoint.X, (int)imagePoint.Y);
+            if (e.LeftButton == MouseButtonState.Pressed)
+                ProjectManager.PrimaryColor = ProjectManager.SelectedLayer.Content.GetPixel((int)imagePoint.X, (int)imagePoint.Y);
+            else if (e.RightButton == MouseButtonState.Pressed)
+                ProjectManager.SecondaryColor = ProjectManager.SelectedLayer.Content.GetPixel((int)imagePoint.X, (int)imagePoint.Y);
         }
 
         public override void OnMouseMove(object sender, MouseEventArgs e, Point imagePoint)

@@ -73,7 +73,7 @@ namespace MVVMPaintApp.UserControls
             if (viewModel.IsZoomMode || viewModel.IsPanMode)
             {
                 lastMousePoint = currentPoint;
-            } else
+            } else if (viewModel.ProjectManager.SelectedLayer.IsVisible)
             {
                 viewModel.HandleMouseDown(sender, e, MainCanvas);
             }
@@ -89,7 +89,7 @@ namespace MVVMPaintApp.UserControls
             {
                 ReleaseMouseCapture();
                 lastMousePoint = null;
-            } else
+            } else if (viewModel.ProjectManager.SelectedLayer.IsVisible)
             {
                 viewModel.HandleMouseUp(sender, e, MainCanvas);
                 viewModel.ProjectManager.HasUnsavedChanges = true;
@@ -110,7 +110,7 @@ namespace MVVMPaintApp.UserControls
                     lastMousePoint = currentPoint;
                 }
             }
-            else
+            else if (viewModel.ProjectManager.SelectedLayer.IsVisible)
             {
                 viewModel.HandleMouseMove(sender, e, MainCanvas);
             }

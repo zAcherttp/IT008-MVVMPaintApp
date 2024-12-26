@@ -8,21 +8,21 @@ namespace MVVMPaintApp.Models.Tools
 {
     public class Fill(ProjectManager projectManager) : ToolBase(projectManager)
     {
-        public Color FillColor { get; set; } = Colors.Black;
+        public Color FillColor { get; set; }
         public int ColorTolerance { get; set; } = 0;
 
-        public override async void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
+        public override async void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {
-            if (ProjectManager.SelectedLayer == null) return;
+            if (!IsValidDrawingState()) return;
 
-            FillColor = e.LeftButton == MouseButtonState.Pressed ? ProjectManager.PrimaryColor : ProjectManager.SecondaryColor;
-
+            HitCheck(ref p);
             var bitmap = ProjectManager.SelectedLayer.Content;
-            int startX = (int)imagePoint.X;
-            int startY = (int)imagePoint.Y;
+            int startX = (int)p.X;
+            int startY = (int)p.Y;
 
-            // Get the color on the UI thread
+            CurrentStrokeRegion = new Rect(p, new Size(1, 1));
             Color targetColor = bitmap.GetPixel(startX, startY);
+            FillColor = GetCurrentColor(e);
 
             // Create buffer for pixels
             int width = bitmap.PixelWidth;
@@ -42,7 +42,7 @@ namespace MVVMPaintApp.Models.Tools
                 var wb = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
                 wb.WritePixels(new Int32Rect(0, 0, width, height), modifiedPixels, wb.BackBufferStride, 0);
                 ProjectManager.SelectedLayer.Content = wb;
-                ProjectManager.SelectedLayer.RenderThumbnail();
+                ProjectManager.InvalidateRegion(CurrentStrokeRegion.Value, ProjectManager.SelectedLayer);
             });
         }
 
@@ -53,42 +53,43 @@ namespace MVVMPaintApp.Models.Tools
             int targetArgb = (targetColor.A << 24) | (targetColor.R << 16) | (targetColor.G << 8) | targetColor.B;
             int fillArgb = (fillColor.A << 24) | (fillColor.R << 16) | (fillColor.G << 8) | fillColor.B;
 
+            int minX = x, maxX = x, minY = y, maxY = y;
             Stack<(int y, int left, int right)> segments = new();
             segments.Push((y, x, x));
 
             while (segments.Count > 0)
             {
                 var (curY, curLeft, curRight) = segments.Pop();
-
                 if (curY < 0 || curY >= height) continue;
 
                 int rowOffset = curY * width;
 
-                // Find leftmost boundary
                 int left = curLeft;
-                while (left >= 0 && IsPixelSimilar(pixels[rowOffset + left], targetArgb))
+                while (left >= 0 && IsPixelSimilar(pixels[rowOffset + left], targetArgb, ColorTolerance))
                     left--;
                 left++;
 
-                // Find rightmost boundary
                 int right = curRight;
-                while (right < width && IsPixelSimilar(pixels[rowOffset + right], targetArgb))
+                while (right < width && IsPixelSimilar(pixels[rowOffset + right], targetArgb, ColorTolerance))
                     right++;
                 right--;
 
-                // Fill the current scanline
-                for (int i = left; i <= right; i++)
-                {
-                    pixels[rowOffset + i] = fillArgb;
-                }
+                // Update region bounds
+                minX = Math.Min(minX, left);
+                maxX = Math.Max(maxX, right);
+                minY = Math.Min(minY, curY);
+                maxY = Math.Max(maxY, curY);
 
-                // Check scanlines above and below
+                for (int i = left; i <= right; i++)
+                    pixels[rowOffset + i] = fillArgb;
+
                 if (curY > 0)
                     CheckAndAddSegments(pixels, width, curY - 1, left, right, targetArgb, segments);
                 if (curY < height - 1)
                     CheckAndAddSegments(pixels, width, curY + 1, left, right, targetArgb, segments);
             }
 
+            CurrentStrokeRegion = new Rect(minX, minY, maxX - minX + 1, maxY - minY + 1);
             return pixels;
         }
 
@@ -101,7 +102,7 @@ namespace MVVMPaintApp.Models.Tools
 
             for (int x = left; x <= right; x++)
             {
-                bool matchesTarget = IsPixelSimilar(pixels[rowOffset + x], targetArgb);
+                bool matchesTarget = IsPixelSimilar(pixels[rowOffset + x], targetArgb, ColorTolerance);
 
                 if (matchesTarget && !inSegment)
                 {
@@ -115,32 +116,6 @@ namespace MVVMPaintApp.Models.Tools
                     inSegment = false;
                 }
             }
-        }
-
-        private bool IsPixelSimilar(int pixel1, int pixel2)
-        {
-            byte b1 = (byte)pixel1;
-            byte g1 = (byte)(pixel1 >> 8);
-            byte r1 = (byte)(pixel1 >> 16);
-            byte a1 = (byte)(pixel1 >> 24);
-
-            byte b2 = (byte)pixel2;
-            byte g2 = (byte)(pixel2 >> 8);
-            byte r2 = (byte)(pixel2 >> 16);
-            byte a2 = (byte)(pixel2 >> 24);
-
-            return Math.Abs(r1 - r2) <= ColorTolerance &&
-                   Math.Abs(g1 - g2) <= ColorTolerance &&
-                   Math.Abs(b1 - b2) <= ColorTolerance &&
-                   Math.Abs(a1 - a2) <= ColorTolerance;
-        }
-
-        private bool IsColorSimilar(Color c1, Color c2)
-        {
-            return Math.Abs(c1.R - c2.R) <= ColorTolerance &&
-                   Math.Abs(c1.G - c2.G) <= ColorTolerance &&
-                   Math.Abs(c1.B - c2.B) <= ColorTolerance &&
-                   Math.Abs(c1.A - c2.A) <= ColorTolerance;
         }
 
         public override void OnMouseMove(object sender, MouseEventArgs e, Point imagePoint)
