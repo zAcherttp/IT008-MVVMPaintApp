@@ -42,6 +42,7 @@ namespace MVVMPaintApp.ViewModels
             SelectedTool = new Pencil(projectManager);
             keyHandler = new KeyHandler();
             RegisterKeyCommands();
+            DebugPrintKeyCommandList();
             ProjectManager.Render();
         }
 
@@ -68,7 +69,7 @@ namespace MVVMPaintApp.ViewModels
                 _ => new Pencil(ProjectManager),
             };
             ProjectManager.SetCursor(SelectedTool.GetCursor());
-            Debug.WriteLine("Selected tool: " + SelectedTool.GetType().Name + " - Layer: " + ProjectManager.SelectedLayer.Index);
+            Debug.WriteLine("Selected tool - " + SelectedTool.GetType().Name + " - Layer: " + ProjectManager.SelectedLayer.Index);
         }
 
         public void SetUserControlSize(double width, double height)
@@ -90,24 +91,58 @@ namespace MVVMPaintApp.ViewModels
                 () => ProjectManager.UndoRedoManager.Redo(),
                 "Redo last action",
                 [Key.LeftCtrl, Key.Y]);
+            
+            keyHandler.RegisterCommand(
+                Key.V,
+                () => SetTool(ToolType.Pencil),
+                "Tool - Pencil",
+                [Key.V]);
+
+            keyHandler.RegisterCommand(
+                Key.B,
+                () => SetTool(ToolType.Brush),
+                "Tool - Brush",
+                [Key.B]);
+
+            keyHandler.RegisterCommand(
+                Key.E,
+                () => SetTool(ToolType.Eraser),
+                "Tool - Eraser",
+                [Key.E]);
+
+            keyHandler.RegisterCommand(
+                Key.F,
+                () => SetTool(ToolType.Fill),
+                "Tool - Fill",
+                [Key.F]);
+
+            keyHandler.RegisterCommand(
+                Key.Q,
+                () => SetTool(ToolType.ColorPicker),
+                "Tool - Color Picker",
+                [Key.Q]);
 
             keyHandler.RegisterCommand(
                 Key.Z,
                 () => SetTool(ToolType.ZoomPan),
-                "Tool: ZoomPan",
+                "Tool - ZoomPan",
                 [Key.Z]);
-
-            keyHandler.RegisterCommand(
-                Key.V,
-                () => SetTool(ToolType.Pencil),
-                "Tool: Pencil",
-                [Key.V]);
 
             keyHandler.RegisterCommand(
                 Key.Escape,
                 () => SetTool(ToolType.Default),
-                "Tool: Default",
+                "Tool - Default",
                 [Key.Escape]);
+        }
+
+        public void DebugPrintKeyCommandList()
+        {
+            Debug.WriteLine("Key Commands:");
+            var commands = keyHandler.GetKeyBindings();
+            foreach (var command in commands)
+            {
+                Debug.WriteLine(command);
+            }
         }
 
         public void HandleKey(Key key, Key[] currentlyPressedKeys)

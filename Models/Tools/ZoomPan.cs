@@ -28,8 +28,8 @@ namespace MVVMPaintApp.Models.Tools
         {
             if (IsDrawing)
             {
-                ProjectManager.PanOffsetX.Value =+ p.X - LastPoint.X;
-                ProjectManager.PanOffsetY.Value =+ p.Y - LastPoint.Y;
+                ProjectManager.PanOffsetX.Value += p.X - LastPoint.X;
+                ProjectManager.PanOffsetY.Value += p.Y - LastPoint.Y;
             }
             LastPoint = p;
         }

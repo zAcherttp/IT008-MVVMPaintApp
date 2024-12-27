@@ -29,17 +29,17 @@ namespace MVVMPaintApp.Services
         {
             return [.. keyCommands.Select(cmd =>
             {
-                var modifiers = string.Join("+", cmd.ModifierKeys);
-                var keyBinding = modifiers.Length > 0 ? $"{modifiers}+{cmd.MainKey}" : cmd.MainKey.ToString();
+                var keySet = string.Join("+", cmd.ModifierKeys);
+                var keyBinding = $"{keySet}";
                 return $"{keyBinding}: {cmd.Description}";
             })];
         }
     }
 
-    public class KeyCommand(Key mainKey, Action action, string description, params Key[] modifierKeys)
+    public class KeyCommand(Key mainKey, Action action, string description, params Key[] keySet)
     {
         public Key MainKey { get; } = mainKey;
-        public HashSet<Key> ModifierKeys { get; } = [.. modifierKeys];
+        public HashSet<Key> ModifierKeys { get; } = [.. keySet];
         public Action Action { get; } = action;
         public string Description { get; } = description;
 
