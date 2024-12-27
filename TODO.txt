@@ -1,0 +1,19 @@
+﻿Tasks:
+
+IN PROGRESS - Add documentation for all classes and methods
+IN PROGRESS - Use proper dynamic color resources for light and dark mode (current colors are hardcoded)
+IN PROGRESS - ToolBox View / VM
+IN PROGRESS - Use WriteableBitmapEx library to create classes for drawing
+IN PROGRESS - Drawing Brushes using WriteableBitmapEx
+IN PROGRESS - Add Pencil, Eraser, Line, Rectangle, Ellipse, Fill, Text, Select, Move, Zoom tools
+DONE - Add NewFileView
+DONE - Add HomeViewModel
+DONE - Add NewFileViewModel
+DONE - Add Custom Canvas Control (Pan and zoomable canvas)
+DONE - Separate project serialization and deserialization
+DONE - Implement Views Navigation
+DONE - Implement Project create/ load/ save
+DONE - Merge HomeView and NewFileView into one HomeView, rename HomeView to DashboardView
+DONE -  LayersPanel View / VM
+- ToolStrip View / VM
+- Implement Undo/Redo

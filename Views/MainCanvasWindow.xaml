@@ -1,0 +1,71 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVMPaintApp.Views"
+        xmlns:uc="clr-namespace:MVVMPaintApp.UserControls"
+        x:Class="MVVMPaintApp.Views.MainCanvasWindow"
+        xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Closing="MainCanvasWindow_Closing"
+        PreviewKeyUp="MainCanvasWindow_PreviewKeyUp"
+        PreviewKeyDown="MainCanvasWindow_PreviewKeyDown"
+        Title="{Binding WindowTitle}" Height="{Binding WindowHeight, Mode=TwoWay}" Width="{Binding WindowWidth, Mode=TwoWay}">
+    <Window.Resources>
+    </Window.Resources>
+
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0" Panel.ZIndex="10">
+            <MenuItem Header="File">
+                <MenuItem Header="New"/>
+                <MenuItem Header="Open"/>
+                <MenuItem Header="Save"/>
+                <MenuItem Header="Save As"/>
+                <MenuItem Header="Exit"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Undo"/>
+                <MenuItem Header="Redo"/>
+                <MenuItem Header="Cut"/>
+                <MenuItem Header="Copy"/>
+                <MenuItem Header="Paste"/>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Zoom In"/>
+                <MenuItem Header="Zoom Out"/>
+                <MenuItem Header="Fit to Screen"/>
+            </MenuItem>
+            <Separator/>
+
+        </Menu>
+        <StatusBar Grid.Row="2" Panel.ZIndex="1">
+            <StatusBarItem>
+                <TextBlock Text="Primary Color: " />
+            </StatusBarItem>
+        </StatusBar>
+
+        <DockPanel Grid.Row="1">
+            <uc:LayerControl Panel.ZIndex="10" HorizontalAlignment="Right" Margin="10" Grid.Row="1"
+                                DataContext="{Binding LayerViewModel}" DockPanel.Dock="Right" VerticalAlignment="Stretch"/>
+            
+            <uc:ColorPaletteControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="40,0,0,30" VerticalAlignment="Top" Grid.Row="1"
+                                DataContext="{Binding ColorPaletteViewModel}" DockPanel.Dock="Bottom"/>
+
+            <uc:ToolboxControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="10" Grid.Row="1"
+                               DataContext="{Binding ToolboxViewModel}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+
+            <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                              DataContext="{Binding DrawingCanvasViewModel}"/>
+            
+        </DockPanel>
+
+    </Grid>
+</Window>

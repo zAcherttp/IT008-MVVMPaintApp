@@ -69,5 +69,25 @@ namespace MVVMPaintApp.Resources {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] MyPaintAppIcon {
+            get {
+                object obj = ResourceManager.GetObject("MyPaintAppIcon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] placeholder {
+            get {
+                object obj = ResourceManager.GetObject("placeholder", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

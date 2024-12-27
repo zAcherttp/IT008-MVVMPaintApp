@@ -1,34 +1,28 @@
 ﻿using MVVMPaintApp.ViewModels;
+using MVVMPaintApp.Models;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Diagnostics;
 
 namespace MVVMPaintApp.UserControls
 {
     /// <summary>
-    /// Interaction logic for ColorPalette.xaml
+    /// Interaction logic for ColorPaletteControl.xaml
     /// </summary>
     public partial class ColorPaletteControl : UserControl
     {
         public ColorPaletteControl()
         {
             InitializeComponent();
-            DataContext = new ColorPaletteViewModel(ColorPicker);
         }
 
-        private void OnPrimaryColorChecked(object sender, RoutedEventArgs e)
+        public ColorPaletteControl(ColorPaletteViewModel colorPaletteViewModel)
         {
-            if (DataContext is ColorPaletteViewModel vm)
-            {
-                vm.SetActiveColor(true);
-            }
-        }
-
-        private void OnSecondaryColorChecked(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ColorPaletteViewModel vm)
-            {
-                vm.SetActiveColor(false);
-            }
+            InitializeComponent();
+            DataContext = colorPaletteViewModel;
         }
     }
 }

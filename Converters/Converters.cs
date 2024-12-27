@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows;
 
 namespace MVVMPaintApp.Converters
 {
@@ -73,6 +73,40 @@ namespace MVVMPaintApp.Converters
                 return !boolValue;
             }
             return false;
+        }
+    }
+
+    public class ZoomToScalingModeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double zoomFactor)
+            {
+                return zoomFactor >= 1.0 ?
+                    BitmapScalingMode.NearestNeighbor :
+                    BitmapScalingMode.HighQuality;
+            }
+            return BitmapScalingMode.NearestNeighbor;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value;
+        }
+    }
+
+    public class EnumToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || parameter == null) return false;
+            return value.ToString() == parameter.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || parameter == null) return null!;
+            return (bool)value ? parameter : Binding.DoNothing;
         }
     }
 }
