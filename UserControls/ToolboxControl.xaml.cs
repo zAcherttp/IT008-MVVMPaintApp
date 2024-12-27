@@ -17,6 +17,11 @@ namespace MVVMPaintApp.UserControls
             InitializeComponent();
         }
 
+        public void Toolbox_MouseEnter(object sender, RoutedEventArgs e)
+        {
+            Focus();
+        }
+
         public void Button_PencilTool_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
@@ -54,6 +59,14 @@ namespace MVVMPaintApp.UserControls
             if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
             {
                 vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.ColorPicker);
+            }
+        }
+
+        public void Button_ZoomPanTool_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
+            {
+                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.ZoomPan);
             }
         }
     }

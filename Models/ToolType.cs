@@ -10,8 +10,9 @@ namespace MVVMPaintApp.Models
         Brush,
         Eraser,
         Fill,
-        Zoom,
+        ZoomPan,
         ColorPicker,
         Shape,
+        Default
     }
 }

@@ -7,6 +7,8 @@ using System.Diagnostics;
 using MVVMPaintApp.Interfaces;
 using System.Windows.Media.Imaging;
 using System.Windows;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace MVVMPaintApp.Services
 {
@@ -33,6 +35,24 @@ namespace MVVMPaintApp.Services
 
         [ObservableProperty]
         private Color secondaryColor = Colors.White;
+
+        [ObservableProperty]
+        private Cursor cursor = Cursors.Arrow;
+
+        [ObservableProperty]
+        private Easing panOffsetX = new(0.0);
+
+        [ObservableProperty]
+        private Easing panOffsetY = new(0.0);
+
+        [ObservableProperty]
+        private Easing zoomFactor = new(1.0);
+
+        [ObservableProperty]
+        private double drawingCanvasControlWidth = 1600;
+
+        [ObservableProperty]
+        private double drawingCanvasControlHeight = 700;
 
         [ObservableProperty]
         private WriteableBitmap renderTarget;
@@ -177,7 +197,6 @@ namespace MVVMPaintApp.Services
             CurrentProject.Layers.Add(layer);
         }
 
-
         public void RemoveLayer(object layer)
         {
             if (CurrentProject.Layers.Count == 1)
@@ -243,6 +262,27 @@ namespace MVVMPaintApp.Services
         public static void SaveProjectAs(Project project)
         {
             //to be changed to save as Png/Jpeg/Bmp/Gif/Tiff
+        }
+
+        public void SetCursor(Cursor cursor)
+        {
+            Cursor = cursor;
+        }
+
+        [RelayCommand]
+        private async Task FitToWindow()
+        {
+            double newZoomFactor = Math.Min(
+                DrawingCanvasControlWidth / CurrentProject.Width,
+                DrawingCanvasControlHeight / CurrentProject.Height);
+            double newPanOffsetY = (DrawingCanvasControlHeight - CurrentProject.Height) / 2;
+            var tasks = new[]
+            {
+                PanOffsetX.EaseToAsync(0, Easing.EasingType.EaseInOutCubic , 300),
+                PanOffsetY.EaseToAsync(newPanOffsetY, Easing.EasingType.EaseInOutCubic, 300),
+                ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 300)
+            };
+            await Task.WhenAll(tasks);
         }
     }
 }

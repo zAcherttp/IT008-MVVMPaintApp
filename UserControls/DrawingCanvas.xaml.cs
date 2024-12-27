@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using MVVMPaintApp.ViewModels;
+using MVVMPaintApp.Models.Tools;
 
 namespace MVVMPaintApp.UserControls
 {
@@ -33,62 +34,57 @@ namespace MVVMPaintApp.UserControls
 
         private void DrawingCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Point currentPoint = e.GetPosition(MainCanvasArea);
-            isPressed = true;
-
+            Point p = e.GetPosition(MainCanvas);
             CaptureMouse();
-            if (ViewModel.IsZoomMode || ViewModel.IsPanMode)
+            isPressed = true;
+            ViewModel.UpdateMouseInfo(p, isPressed);
+
+            if (ViewModel.ProjectManager.SelectedLayer.IsVisible && ViewModel.SelectedTool is not ZoomPan)
             {
-                lastMousePoint = currentPoint;
-            } else if (ViewModel.ProjectManager.SelectedLayer.IsVisible)
-            {
-                ViewModel.HandleMouseDown(sender, e, MainCanvas);
+                ViewModel.HandleMouseDown(sender, e, p);
             }
-            ViewModel.UpdateMouseInfo(currentPoint, isPressed);
+            else
+            {
+                ViewModel.HandleMouseDown(sender, e, e.GetPosition(MainCanvasArea));
+            }
         }
 
         private void DrawingCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            Point p = e.GetPosition(MainCanvas);
+            ReleaseMouseCapture();
             isPressed = false;
+            ViewModel.UpdateMouseInfo(p, isPressed);
 
-            if (lastMousePoint.HasValue)
+            if (ViewModel.ProjectManager.SelectedLayer.IsVisible && ViewModel.SelectedTool is not ZoomPan)
             {
-                ReleaseMouseCapture();
-                lastMousePoint = null;
-            } else if (ViewModel.ProjectManager.SelectedLayer.IsVisible)
-            {
-                ViewModel.HandleMouseUp(sender, e, MainCanvas);
+                ViewModel.HandleMouseUp(sender, e, p);
                 ViewModel.ProjectManager.HasUnsavedChanges = true;
             }
-            ViewModel.UpdateMouseInfo(e.GetPosition(MainCanvasArea), isPressed);
+            else
+            {
+                ViewModel.HandleMouseDown(sender, e, e.GetPosition(MainCanvasArea));
+            }
         }
 
         private void DrawingCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Point currentPoint = e.GetPosition(MainCanvas);
-            ViewModel.UpdateMouseInfo(currentPoint, isPressed);
-            if ((ViewModel.IsZoomMode || ViewModel.IsPanMode) && lastMousePoint.HasValue)
+            Point p = e.GetPosition(MainCanvas);
+            ViewModel.UpdateMouseInfo(p, isPressed);
+
+            if (ViewModel.ProjectManager.SelectedLayer.IsVisible && ViewModel.SelectedTool is not ZoomPan)
             {
-                if (ViewModel.IsPanMode)
-                {
-                    currentPoint = e.GetPosition(MainCanvasArea);
-                    ViewModel.HandleMousePan(lastMousePoint.Value, currentPoint);
-                    lastMousePoint = currentPoint;
-                }
+                ViewModel.HandleMouseMove(sender, e, p);
             }
-            else if (ViewModel.ProjectManager.SelectedLayer.IsVisible)
+            else
             {
-                ViewModel.HandleMouseMove(sender, e, MainCanvas);
+                ViewModel.HandleMouseMove(sender, e, e.GetPosition(MainCanvasArea));
             }
         }
     
         private void DrawingCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {   
-            if (ViewModel != null)
-            {
-                ViewModel.UserControlWidth = e.NewSize.Width;
-                ViewModel.UserControlHeight = e.NewSize.Height;
-            }
+            ViewModel?.SetUserControlSize(e.NewSize.Width, e.NewSize.Height);
         }
     }
 }

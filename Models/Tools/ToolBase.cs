@@ -22,20 +22,25 @@ namespace MVVMPaintApp.Models.Tools
         protected WriteableBitmap? OldState { get; set; }
         protected bool IsDrawing { get; set; }
 
-        public virtual void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
+        public virtual void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {
             IsDrawing = true;
-            LastPoint = imagePoint;
+            LastPoint = p;
         }
 
-        public virtual void OnMouseUp(object sender, MouseEventArgs e, Point imagePoint)
+        public virtual void OnMouseUp(object sender, MouseEventArgs e, Point p)
         {
             IsDrawing = false;
             ProjectManager.SelectedLayer.RenderThumbnail();
             Debug.WriteLine($"Stroke layer cleared");
         }
 
-        public abstract void OnMouseMove(object sender, MouseEventArgs e, Point imagePoint);
+        public abstract void OnMouseMove(object sender, MouseEventArgs e, Point p);
+
+        public virtual Cursor GetCursor()
+        {
+            return Cursors.Cross;
+        }
 
         public virtual void DrawPreview(Point p, Color color)
         {

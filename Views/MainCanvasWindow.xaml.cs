@@ -38,7 +38,7 @@ namespace MVVMPaintApp.Views
                     e.Handled = true;
                 }
 
-                Cursor = ViewModel.DrawingCanvasViewModel.GetCursor();
+                Cursor = ViewModel.DrawingCanvasViewModel.SelectedTool.GetCursor();
             }
         }
 
