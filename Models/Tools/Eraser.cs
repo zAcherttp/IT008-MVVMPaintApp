@@ -47,11 +47,11 @@ namespace MVVMPaintApp.Models.Tools
                     new LayerHistoryEntry(
                         ProjectManager.SelectedLayer,
                         CurrentStrokeRegion.Value,
-                        OldState.Crop(CurrentStrokeRegion.Value)));
+                        OldState.Crop(CurrentStrokeRegion.Value))); 
             }
 
             ProjectManager.StrokeLayer.Clear(Colors.Transparent);
-            ProjectManager.InvalidateRegion(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height), ProjectManager.SelectedLayer);
+            ProjectManager.Render(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height));
             CurrentStrokeRegion = null;
             OldState = null;
 
@@ -82,7 +82,7 @@ namespace MVVMPaintApp.Models.Tools
                 Colors.Transparent);
                 ProjectManager.StrokeLayer.FillRectangle(x1, y1, x2, y2, color);
                 ProjectManager.StrokeLayer.DrawRectangle(x1 - 1, y1 - 1, x2 + 1, y2 + 1, Colors.Black);
-                ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+                ProjectManager.Render(region);
             }
         }
 
@@ -108,7 +108,7 @@ namespace MVVMPaintApp.Models.Tools
                     (int)(point.X - diagonal), (int)(point.Y - diagonal), (int)(point.X + diagonal), (int)(point.Y + diagonal), color);
 
 
-                ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+                ProjectManager.Render(region);
             }
             catch (Exception ex)
             {
@@ -142,7 +142,7 @@ namespace MVVMPaintApp.Models.Tools
                         CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
                     }
 
-                    ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+                    ProjectManager.Render(region);
                     lastDrawnPoint = currentPoint;
                 }
             }

@@ -50,7 +50,7 @@ namespace MVVMPaintApp.Models.Tools
             }
 
             ProjectManager.StrokeLayer.Clear(Colors.Transparent);
-            ProjectManager.InvalidateRegion(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height), ProjectManager.SelectedLayer);
+            ProjectManager.Render(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height));
             CurrentStrokeRegion = null;
             OldState = null;
 
@@ -82,7 +82,7 @@ namespace MVVMPaintApp.Models.Tools
                     Colors.Transparent
                 );
                 ProjectManager.StrokeLayer.SetPixel((int)p.X, (int)p.Y, color);
-                ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+                ProjectManager.Render(region);
             }
         }
 
@@ -110,7 +110,7 @@ namespace MVVMPaintApp.Models.Tools
                     CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
                 }
 
-                ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+                ProjectManager.Render(region);
             }
             catch (Exception ex)
             {
@@ -149,7 +149,7 @@ namespace MVVMPaintApp.Models.Tools
                         CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
                     }
 
-                    ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+                    ProjectManager.Render(region);
                     lastDrawnPoint = currentPoint;
                 }
             }

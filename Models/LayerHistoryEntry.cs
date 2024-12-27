@@ -58,7 +58,7 @@ namespace MVVMPaintApp.Models
                 WriteableBitmapExtensions.BlendMode.None
             );
             Layer.RenderThumbnail();
-            projectManager.InvalidateRegion(new Rect(0, 0, Layer.Content.PixelWidth, Layer.Content.PixelHeight), Layer);
+            projectManager.Render(new Rect(0, 0, Layer.Content.PixelWidth, Layer.Content.PixelHeight));
 
             Debug.WriteLine(projectManager.CurrentProject.Name + " " + Layer.Index + " Redo");
         }
@@ -72,7 +72,7 @@ namespace MVVMPaintApp.Models
                 WriteableBitmapExtensions.BlendMode.None
             );
             Layer.RenderThumbnail();
-            projectManager.InvalidateRegion(new Rect(0, 0, Layer.Content.PixelWidth, Layer.Content.PixelHeight), Layer);
+            projectManager.Render(new Rect(0, 0, Layer.Content.PixelWidth, Layer.Content.PixelHeight));
         }
     }
 }

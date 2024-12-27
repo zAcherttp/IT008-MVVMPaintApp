@@ -14,8 +14,6 @@ namespace MVVMPaintApp.Services
 {
     public partial class ProjectManager : ObservableObject
     {
-        private bool needsFullRender = true;
-
         public UndoRedoManager UndoRedoManager { get; }
 
         [ObservableProperty]
@@ -93,67 +91,24 @@ namespace MVVMPaintApp.Services
             }
         }
 
-        public void InvalidateRegion(Rect dirtyRect, Layer modifiedLayer)
+        public void Render(Rect? dirtyRect = null)
         {
             if (CurrentProject == null || RenderTarget == null) return;
 
-            // If the modified layer is below or at the current composite cache point,
-            // we need to rebuild the composite from this layer up
-            bool needsCompositeUpdate = CurrentProject.Layers.IndexOf(modifiedLayer) <= CurrentProject.Layers.IndexOf(SelectedLayer);
-
-            if (needsCompositeUpdate)
-            {
-                RenderRegion(dirtyRect);
-            }
-            else
-            {
-                // Just render the modified layer's region
-                using var context = RenderTarget.GetBitmapContext();
-                if (modifiedLayer.IsVisible)
-                {
-                    RenderTarget.Blit(dirtyRect, modifiedLayer.Content, dirtyRect, WriteableBitmapExtensions.BlendMode.Alpha);
-                }
-            }
-
-            // Draw dirty rect region for debugging
-            //RenderTarget.DrawRectangle(
-            //    (int)dirtyRect.X,
-            //    (int)dirtyRect.Y,
-            //    (int)(dirtyRect.X + dirtyRect.Width),
-            //    (int)(dirtyRect.Y + dirtyRect.Height),
-            //    Colors.Red
-            //);
-        }
-
-        private void RenderRegion(Rect dirtyRect)
-        {
-            if (CurrentProject == null || RenderTarget == null) return;
-
-            // Ensure dirty rect is within bounds
-            dirtyRect.Intersect(new Rect(0, 0, RenderTarget.PixelWidth, RenderTarget.PixelHeight));
-            if (dirtyRect.IsEmpty) return;
+            var region = dirtyRect ?? new Rect(0, 0, RenderTarget.PixelWidth, RenderTarget.PixelHeight);
+            region.Intersect(new Rect(0, 0, RenderTarget.PixelWidth, RenderTarget.PixelHeight));
+            if (region.IsEmpty) return;
 
             using var context = RenderTarget.GetBitmapContext();
 
-            // If we need a full render, clear everything and reset the composite
-            if (needsFullRender)
-            {
-                RenderTarget.Clear(CurrentProject.Background);
-                needsFullRender = false;
-            }
-            else
-            {
-                // Clear just the dirty region
-                RenderTarget.FillRectangle(
-                    (int)dirtyRect.X,
-                    (int)dirtyRect.Y,
-                    (int)(dirtyRect.X + dirtyRect.Width),
-                    (int)(dirtyRect.Y + dirtyRect.Height),
-                    CurrentProject.Background
-                );
-            }
+            RenderTarget.FillRectangle(
+                (int)region.X,
+                (int)region.Y,
+                (int)(region.X + region.Width),
+                (int)(region.Y + region.Height),
+                CurrentProject.Background
+            );
 
-            // Render layers in the dirty region
             for (int i = CurrentProject.Layers.Count - 1; i >= 0; i--)
             {
                 var layer = CurrentProject.Layers[i];
@@ -161,21 +116,24 @@ namespace MVVMPaintApp.Services
                 {
                     if (layer == SelectedLayer)
                     {
-                        RenderTarget.Blit(dirtyRect, layer.Content, dirtyRect, WriteableBitmapExtensions.BlendMode.Alpha);
-                        RenderTarget.Blit(dirtyRect, StrokeLayer, dirtyRect, WriteableBitmapExtensions.BlendMode.Alpha);
+                        RenderTarget.Blit(region, layer.Content, region, WriteableBitmapExtensions.BlendMode.Alpha);
+                        RenderTarget.Blit(region, StrokeLayer, region, WriteableBitmapExtensions.BlendMode.Alpha);
                     }
                     else
                     {
-                        RenderTarget.Blit(dirtyRect, layer.Content, dirtyRect, WriteableBitmapExtensions.BlendMode.Alpha);
+                        RenderTarget.Blit(region, layer.Content, region, WriteableBitmapExtensions.BlendMode.Alpha);
                     }
                 }
             }
-        }
 
-        public void Render()
-        {
-            needsFullRender = true;
-            RenderRegion(new Rect(0, 0, RenderTarget.PixelWidth, RenderTarget.PixelHeight));
+            // Draw dirty rect region for debugging
+            //RenderTarget.DrawRectangle(
+            //    (int)region.X,
+            //    (int)region.Y,
+            //    (int)(region.X + region.Width),
+            //    (int)(region.Y + region.Height),
+            //    Colors.Red
+            //);
         }
 
         public void ToggleLayerVisibility(Layer? layer)
@@ -184,7 +142,6 @@ namespace MVVMPaintApp.Services
             {
                 HasUnsavedChanges = true;
                 CurrentProject.Layers[CurrentProject.Layers.IndexOf(layer)].IsVisible ^= true;
-                needsFullRender = true;
                 Render();
             }
         }
@@ -216,7 +173,6 @@ namespace MVVMPaintApp.Services
             {
                 CurrentProject.Layers[i].Index = i;
             }
-            needsFullRender = true;
             Render();
         }
 
@@ -226,7 +182,6 @@ namespace MVVMPaintApp.Services
             CurrentProject.Layers[oldIndex].Index = newIndex;
             CurrentProject.Layers[newIndex].Index = oldIndex;
             CurrentProject.Layers.Move(oldIndex, newIndex);
-            needsFullRender = true;
             Render();
         }
 

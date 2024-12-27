@@ -32,7 +32,6 @@ namespace MVVMPaintApp.Models.Tools
         {
             IsDrawing = false;
             ProjectManager.SelectedLayer.RenderThumbnail();
-            Debug.WriteLine($"Stroke layer cleared");
         }
 
         public abstract void OnMouseMove(object sender, MouseEventArgs e, Point p);

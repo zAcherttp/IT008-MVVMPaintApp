@@ -41,7 +41,7 @@ namespace MVVMPaintApp.Models.Tools
                 var wb = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
                 wb.WritePixels(new Int32Rect(0, 0, width, height), modifiedPixels, wb.BackBufferStride, 0);
                 ProjectManager.SelectedLayer.Content = wb;
-                ProjectManager.InvalidateRegion(CurrentStrokeRegion.Value, ProjectManager.SelectedLayer);
+                ProjectManager.Render(CurrentStrokeRegion.Value);
             });
 
             ProjectManager.UndoRedoManager.AddHistoryEntry(

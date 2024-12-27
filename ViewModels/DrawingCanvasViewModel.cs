@@ -69,6 +69,7 @@ namespace MVVMPaintApp.ViewModels
                 _ => new Pencil(ProjectManager),
             };
             ProjectManager.SetCursor(SelectedTool.GetCursor());
+            ProjectManager.Render();
             Debug.WriteLine("Selected tool - " + SelectedTool.GetType().Name + " - Layer: " + ProjectManager.SelectedLayer.Index);
         }
 

@@ -9,7 +9,6 @@ namespace MVVMPaintApp.UserControls
     public partial class DrawingCanvas : UserControl
     {
         private DrawingCanvasViewModel ViewModel => (DrawingCanvasViewModel)DataContext;
-        private Point? lastMousePoint;
         private bool isPressed;
 
         public DrawingCanvas()
