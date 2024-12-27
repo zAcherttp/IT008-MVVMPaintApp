@@ -15,9 +15,11 @@ namespace MVVMPaintApp.Models.Tools
 
         public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {
-            
             base.OnMouseDown(sender, e, p);
             if (!IsValidDrawingState()) return;
+
+            OldState = ProjectManager.SelectedLayer.Content.Clone();
+
             CurrentStrokeRegion = new Rect(p, new Size(1, 1));
 
             DrawPoint(p, Colors.Transparent);
@@ -37,21 +39,24 @@ namespace MVVMPaintApp.Models.Tools
             LastPoint = p;
         }
 
-        public override void OnMouseUp(object sender, MouseEventArgs e, Point imagePoint)
+        public override void OnMouseUp(object sender, MouseEventArgs e, Point p)
         {
             if (ProjectManager.StrokeLayer != null && CurrentStrokeRegion != null)
             {
-                // Add history entry
-
-                //BlitStrokeLayer();
+                ProjectManager.UndoRedoManager.AddHistoryEntry(
+                    new LayerHistoryEntry(
+                        ProjectManager.SelectedLayer,
+                        CurrentStrokeRegion.Value,
+                        OldState.Crop(CurrentStrokeRegion.Value)));
             }
 
             ProjectManager.StrokeLayer.Clear(Colors.Transparent);
             ProjectManager.InvalidateRegion(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height), ProjectManager.SelectedLayer);
             CurrentStrokeRegion = null;
+            OldState = null;
 
-            DrawPreview(imagePoint, ProjectManager.CurrentProject.Background);
-            base.OnMouseUp(sender, e, imagePoint);
+            DrawPreview(p, ProjectManager.CurrentProject.Background);
+            base.OnMouseUp(sender, e, p);
         }
 
         public override void DrawPreview(Point p, Color color)
@@ -83,65 +88,68 @@ namespace MVVMPaintApp.Models.Tools
 
         public override void DrawPoint(Point point, Color color)
         {
-            //try
-            //{
-            //    var totalPadding = BrushSize + STROKE_REGION_PADDING;
-            //    var region = new Rect(
-            //        point.X - totalPadding,
-            //        point.Y - totalPadding,
-            //        totalPadding * 2,
-            //        totalPadding * 2
-            //    );
+            try
+            {
+                var totalPadding = BrushSize + STROKE_REGION_PADDING;
+                var region = new Rect(
+                    point.X - totalPadding,
+                    point.Y - totalPadding,
+                    totalPadding * 2,
+                    totalPadding * 2
+                );
 
-            //    var diagonal = Math.Sqrt(2) * BrushSize / 2;
-            //    ProjectManager.StrokeLayer.FillRectangle(
-            //        (int)(point.X - diagonal), (int)(point.Y - diagonal), (int)(point.X + diagonal), (int)(point.Y + diagonal), color);
+                if (CurrentStrokeRegion.HasValue)
+                {
+                    CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
+                }
 
-            //    if (CurrentStrokeRegion.HasValue)
-            //    {
-            //        CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
-            //    }
+                var diagonal = Math.Sqrt(2) * BrushSize / 2;
+                ProjectManager.SelectedLayer.Content.FillRectangle(
+                    (int)(point.X - diagonal), (int)(point.Y - diagonal), (int)(point.X + diagonal), (int)(point.Y + diagonal), color);
 
-            //    ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine($"Error drawing point: {ex.Message}");
-            //}
+
+                ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error drawing point: {ex.Message}");
+            }
         }
 
         public override void DrawLine(Point start, Point end, Color color)
         {
-            //try
-            //{
-            //    float distance = CalculateDistance(start, end);
-            //    int steps = Math.Max(1, (int)(distance / (BrushSize * INTERP_FACTOR)));
+            try
+            {
+                float distance = CalculateDistance(start, end);
+                int steps = Math.Max(1, (int)(distance / (BrushSize * INTERP_FACTOR)));
 
-            //    Point lastDrawnPoint = start;
+                Point lastDrawnPoint = start;
 
-            //    for (int i = 0; i <= steps; i++)
-            //    {
-            //        float t = i / (float)steps;
-            //        var currentPoint = Lerp(start, end, t);
+                for (int i = 0; i <= steps; i++)
+                {
+                    float t = i / (float)steps;
+                    var currentPoint = Lerp(start, end, t);
 
-            //        var region = CalculateSegmentRegion(lastDrawnPoint, currentPoint, BrushSize);
+                    var region = CalculateSegmentRegion(lastDrawnPoint, currentPoint, BrushSize);
 
-            //        var diagonal = Math.Sqrt(2) * BrushSize / 2;
-            //        ProjectManager.StrokeLayer.FillRectangle(
-            //        (int)(currentPoint.X - diagonal), (int)(currentPoint.Y - diagonal), (int)(currentPoint.X + diagonal), (int)(currentPoint.Y + diagonal), color);
-            //        if (CurrentStrokeRegion.HasValue)
-            //        {
-            //            CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
-            //        }
+                    var diagonal = Math.Sqrt(2) * BrushSize / 2;
 
-            //        ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
-            //        lastDrawnPoint = currentPoint;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine($"Error drawing line: {ex.Message}");
-            //}
+                    ProjectManager.SelectedLayer.Content.FillRectangle(
+                        (int)(currentPoint.X - diagonal), (int)(currentPoint.Y - diagonal), (int)(currentPoint.X + diagonal), (int)(currentPoint.Y + diagonal), color);
+                    
+                    if (CurrentStrokeRegion.HasValue)
+                    {
+                        CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
+                    }
+
+                    ProjectManager.InvalidateRegion(region, ProjectManager.SelectedLayer);
+                    lastDrawnPoint = currentPoint;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error drawing line: {ex.Message}");
+            }
         }
     }
 }

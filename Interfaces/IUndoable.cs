@@ -1,8 +1,10 @@
-﻿namespace MVVMPaintApp.Interfaces
+﻿using MVVMPaintApp.Services;
+
+namespace MVVMPaintApp.Interfaces
 {
     public interface IUndoable
     {
-        void Undo();
-        void Redo();
+        void Undo(ProjectManager projectManager);
+        void Redo(ProjectManager projectManager);
     }
 }

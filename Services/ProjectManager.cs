@@ -14,6 +14,8 @@ namespace MVVMPaintApp.Services
     {
         private bool needsFullRender = true;
 
+        public UndoRedoManager UndoRedoManager { get; }
+
         [ObservableProperty]
         private Project currentProject;
         
@@ -43,6 +45,8 @@ namespace MVVMPaintApp.Services
             RenderTarget = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Bgra32, null);
             
             selectedLayer = CurrentProject.Layers[0];
+
+            UndoRedoManager = new UndoRedoManager(this);
         }
 
         public void LoadProject(object project)
@@ -55,7 +59,8 @@ namespace MVVMPaintApp.Services
                 SelectedLayer = CurrentProject.Layers[0];
                 Debug.WriteLine("Project " + CurrentProject.Name + " loaded.");
                 Debug.WriteLine("Project width: " + CurrentProject.Width + ", height: " + CurrentProject.Height);
-            } else if (project is string projectPath)
+            }
+            else if (project is string projectPath)
             {
                 string projectJson = File.ReadAllText(projectPath);
                 CurrentProject = JsonConvert.DeserializeObject<SerializableProject>(projectJson)!.ToProject() ??

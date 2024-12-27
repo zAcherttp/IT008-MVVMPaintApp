@@ -2,7 +2,6 @@
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
-using MVVMPaintApp.Commands;
 using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.Models
@@ -68,7 +67,7 @@ namespace MVVMPaintApp.Models
                 }
             }
 
-            LayerThumbnail = layerThumbnailBackupTexture;
+            LayerThumbnail = layerThumbnailBackupTexture.Clone();
             RenderThumbnail();
         }
 
@@ -76,18 +75,9 @@ namespace MVVMPaintApp.Models
         {
             if (Content != null)
             {
-                var scaledContent = Content.Resize(thumbnailSizeWidth, thumbnailSizeHeight, WriteableBitmapExtensions.Interpolation.Bilinear);
+                LayerThumbnail = layerThumbnailBackupTexture.Clone();
+                var scaledContent = Content.Resize(thumbnailSizeWidth, thumbnailSizeHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
                 LayerThumbnail.Blit(new Rect(0, 0, thumbnailSizeWidth, thumbnailSizeHeight), scaledContent, new Rect(0, 0, scaledContent.PixelWidth, scaledContent.PixelHeight), WriteableBitmapExtensions.BlendMode.Alpha);
-            }
-        }
-
-        // Helper method to track bitmap changes
-        public void TrackBitmapChange(Int32Rect region, byte[] beforePixels, byte[] afterPixels)
-        {
-            if (Content != null && UndoRedoManager != null)
-            {
-                var command = new BitmapChangeCommand(Content, region, beforePixels, afterPixels);
-                UndoRedoManager.AddCommand(command);
             }
         }
     }

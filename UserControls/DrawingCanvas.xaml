@@ -9,16 +9,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1200"
              
-             KeyDown="UserControl_KeyDown"
-             KeyUp="UserControl_KeyUp"
-             MouseMove="UserControl_MouseMove"
-             MouseDown="UserControl_MouseDown"
-             MouseUp="UserControl_MouseUp"
-             MouseWheel="UserControl_MouseWheel"
-             Loaded="UserControl_Loaded"
-             SizeChanged="UserControl_SizeChanged"
+             FocusVisualStyle="{x:Null}"
              
-             Focusable="True">
+             MouseMove="DrawingCanvas_MouseMove"
+             MouseDown="DrawingCanvas_MouseDown"
+             MouseUp="DrawingCanvas_MouseUp"
+             MouseWheel="DrawingCanvas_MouseWheel"
+             SizeChanged="DrawingCanvas_SizeChanged">
     <UserControl.Resources>
         <conv:ZoomToScalingModeConverter x:Key="ZoomToScalingModeConverter"/>
     </UserControl.Resources>

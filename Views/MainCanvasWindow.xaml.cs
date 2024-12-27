@@ -2,6 +2,8 @@
 using System.Windows;
 using System.ComponentModel;
 using MVVMPaintApp.Services;
+using System.Windows.Input;
+using MVVMPaintApp.UserControls;
 
 namespace MVVMPaintApp.Views
 {
@@ -10,11 +12,8 @@ namespace MVVMPaintApp.Views
     /// </summary>
     public partial class MainCanvasWindow : Window
     {
-
-        public MainCanvasWindow()
-        {
-            InitializeComponent();
-        }
+        private readonly HashSet<Key> currentlyPressedKeys = [];
+        private MainCanvasViewModel ViewModel => (MainCanvasViewModel)DataContext;
 
         public MainCanvasWindow(MainCanvasViewModel mainCanvasViewModel)
         {
@@ -22,15 +21,44 @@ namespace MVVMPaintApp.Views
             DataContext = mainCanvasViewModel;
         }
 
+        private void MainCanvasWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (ViewModel.DrawingCanvasViewModel != null)
+            {
+                e.Handled = true;
+                if (!currentlyPressedKeys.Contains(e.Key))
+                {
+                    currentlyPressedKeys.Add(e.Key);
+                }
+
+                ViewModel.DrawingCanvasViewModel.HandleKey(e.Key, [.. currentlyPressedKeys]);
+
+                if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+                {
+                    e.Handled = true;
+                }
+
+                Cursor = ViewModel.DrawingCanvasViewModel.GetCursor();
+            }
+        }
+
+        private void MainCanvasWindow_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (ViewModel.DrawingCanvasViewModel != null)
+            {
+                e.Handled = true;
+                currentlyPressedKeys.Remove(e.Key);
+            }
+        }
+
         private void MainCanvasWindow_Closing(object sender, CancelEventArgs e)
         {
-            var mainCanvasViewModel = (MainCanvasViewModel)DataContext;
-            if (mainCanvasViewModel.ProjectManager.HasUnsavedChanges)
+            if (ViewModel.ProjectManager.HasUnsavedChanges)
             {
                 var result = MessageBox.Show("Do you want to save changes?", "Unsaved changes", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes)
                 {
-                    mainCanvasViewModel.ProjectManager.SaveProject();
+                    ViewModel.ProjectManager.SaveProject();
                 }
                 else if (result == MessageBoxResult.Cancel)
                 {

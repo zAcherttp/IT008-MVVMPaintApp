@@ -10,6 +10,8 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Closing="MainCanvasWindow_Closing"
+        PreviewKeyUp="MainCanvasWindow_PreviewKeyUp"
+        PreviewKeyDown="MainCanvasWindow_PreviewKeyDown"
         Title="{Binding WindowTitle}" Height="{Binding WindowHeight, Mode=TwoWay}" Width="{Binding WindowWidth, Mode=TwoWay}">
     <Window.Resources>
     </Window.Resources>

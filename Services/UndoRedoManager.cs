@@ -1,67 +1,59 @@
-﻿using MVVMPaintApp.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MVVMPaintApp.Interfaces;
+﻿using MVVMPaintApp.Models;
 
 namespace MVVMPaintApp.Services
 {
-    public class UndoRedoManager
+    public class UndoRedoManager(ProjectManager projectManager)
     {
-        private readonly Stack<IUndoable> UndoStack = new();
-        private readonly Stack<IUndoable> RedoStack = new();
-        private const int MAX_STACK_SIZE = 20;  // Limit memory usage
+        private readonly Stack<HistoryEntry> undoStack = new();
+        private readonly Stack<HistoryEntry> redoStack = new();
+        private readonly ProjectManager projectManager = projectManager;
+        private const int MAX_HISTORY = 10;
 
-        public bool CanUndo => UndoStack.Count > 0;
-        public bool CanRedo => RedoStack.Count > 0;
+        public bool CanUndo => undoStack.Count > 0;
+        public bool CanRedo => redoStack.Count > 0;
 
-        public void AddCommand(IUndoable command)
+        public void AddHistoryEntry(HistoryEntry entry)
         {
-            UndoStack.Push(command);
-            RedoStack.Clear();  // Clear redo stack when new action is performed
+            undoStack.Push(entry);
+            redoStack.Clear();
 
-            // Maintain stack size limit
-            if (UndoStack.Count > MAX_STACK_SIZE)
+            if (undoStack.Count > MAX_HISTORY)
             {
-                var tempStack = new Stack<IUndoable>();
-                for (int i = 0; i < MAX_STACK_SIZE; i++)
+                var tempStack = new Stack<HistoryEntry>();
+                for (int i = 0; i < MAX_HISTORY; i++)
                 {
-                    tempStack.Push(UndoStack.Pop());
+                    tempStack.Push(undoStack.Pop());
                 }
-                UndoStack.Clear();
+                undoStack.Clear();
                 while (tempStack.Count > 0)
                 {
-                    UndoStack.Push(tempStack.Pop());
+                    undoStack.Push(tempStack.Pop());
                 }
             }
         }
 
         public void Undo()
         {
-            if (CanUndo)
-            {
-                var command = UndoStack.Pop();
-                command.Undo();
-                RedoStack.Push(command);
-            }
+            if (!CanUndo) return;
+
+            var entry = undoStack.Pop();
+            entry.Undo(projectManager);
+            redoStack.Push(entry);
         }
 
         public void Redo()
         {
-            if (CanRedo)
-            {
-                var command = RedoStack.Pop();
-                command.Redo();
-                UndoStack.Push(command);
-            }
+            if (!CanRedo) return;
+
+            var entry = redoStack.Pop();
+            entry.Redo(projectManager);
+            undoStack.Push(entry);
         }
 
         public void Clear()
         {
-            UndoStack.Clear();
-            RedoStack.Clear();
-        }
+            undoStack.Clear();
+            redoStack.Clear();
+        }   
     }
 }

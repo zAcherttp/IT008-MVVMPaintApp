@@ -31,21 +31,26 @@ namespace MVVMPaintApp.Models.Tools
             LastPoint = p;
         }
 
-        public override void OnMouseUp(object sender, MouseEventArgs e, Point imagePoint)
+        public override void OnMouseUp(object sender, MouseEventArgs e, Point p)
         {
-            
             if (ProjectManager.StrokeLayer != null && CurrentStrokeRegion != null)
             {
-                // Add history entry
-
+                OldState = new((int)CurrentStrokeRegion.Value.Width, (int)CurrentStrokeRegion.Value.Height, 96,96, PixelFormats.Bgra32, null);
+                OldState.Blit(new Rect(0.0, 0.0, CurrentStrokeRegion.Value.Width, CurrentStrokeRegion.Value.Height), ProjectManager.SelectedLayer.Content, CurrentStrokeRegion.Value);
                 BlitStrokeLayer();
+                ProjectManager.UndoRedoManager.AddHistoryEntry(
+                    new LayerHistoryEntry(
+                        ProjectManager.SelectedLayer,
+                        CurrentStrokeRegion.Value,
+                        OldState));
             }
 
             ProjectManager.StrokeLayer.Clear(Colors.Transparent);
             ProjectManager.InvalidateRegion(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height), ProjectManager.SelectedLayer);
             CurrentStrokeRegion = null;
+            OldState = null;
 
-            base.OnMouseUp(sender, e, imagePoint);
+            base.OnMouseUp(sender, e, p);
         }
 
         public override void DrawPreview(Point p, Color color)

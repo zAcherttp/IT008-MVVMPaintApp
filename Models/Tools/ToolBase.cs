@@ -19,6 +19,7 @@ namespace MVVMPaintApp.Models.Tools
         protected ProjectManager ProjectManager { get; set; } = projectManager;
         protected Point LastPoint { get; set; }
         protected Rect? CurrentStrokeRegion { get; set; }
+        protected WriteableBitmap? OldState { get; set; }
         protected bool IsDrawing { get; set; }
 
         public virtual void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
@@ -108,10 +109,10 @@ namespace MVVMPaintApp.Models.Tools
 
         public void HitCheck(ref Point point)
         {
-            if (point.X < 0) point.X = 0;
-            if (point.Y < 0) point.Y = 0;
-            if (point.X > ProjectManager.CurrentProject.Width) point.X = ProjectManager.CurrentProject.Width;
-            if (point.Y > ProjectManager.CurrentProject.Height) point.Y = ProjectManager.CurrentProject.Height;
+            if (point.X <= 0) point.X = 0;
+            if (point.Y <= 0) point.Y = 0;
+            if (point.X >= ProjectManager.CurrentProject.Width) point.X = ProjectManager.CurrentProject.Width - 1;
+            if (point.Y >= ProjectManager.CurrentProject.Height) point.Y = ProjectManager.CurrentProject.Height - 1;
         }
 
         public void BlitStrokeLayer()

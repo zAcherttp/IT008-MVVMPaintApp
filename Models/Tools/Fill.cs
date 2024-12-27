@@ -24,19 +24,18 @@ namespace MVVMPaintApp.Models.Tools
             Color targetColor = bitmap.GetPixel(startX, startY);
             FillColor = GetCurrentColor(e);
 
-            // Create buffer for pixels
             int width = bitmap.PixelWidth;
             int height = bitmap.PixelHeight;
             int[] pixels = new int[width * height];
 
-            // Copy pixels to array on UI thread
             bitmap.CopyPixels(pixels, bitmap.BackBufferStride, 0);
 
-            // Process the fill on a background thread
             var modifiedPixels = await Task.Run(() =>
                 ScanlineFill(pixels, width, height, startX, startY, targetColor, FillColor));
 
-            // Update the bitmap on the UI thread
+            OldState = new((int)CurrentStrokeRegion.Value.Width, (int)CurrentStrokeRegion.Value.Height, 96, 96, PixelFormats.Bgra32, null);
+            OldState.Blit(new Rect(0.0, 0.0, CurrentStrokeRegion.Value.Width, CurrentStrokeRegion.Value.Height), ProjectManager.SelectedLayer.Content, CurrentStrokeRegion.Value);
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var wb = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
@@ -44,6 +43,12 @@ namespace MVVMPaintApp.Models.Tools
                 ProjectManager.SelectedLayer.Content = wb;
                 ProjectManager.InvalidateRegion(CurrentStrokeRegion.Value, ProjectManager.SelectedLayer);
             });
+
+            ProjectManager.UndoRedoManager.AddHistoryEntry(
+                    new LayerHistoryEntry(
+                        ProjectManager.SelectedLayer,
+                        CurrentStrokeRegion.Value,
+                        OldState));
         }
 
         private int[] ScanlineFill(int[] pixels, int width, int height, int x, int y, Color targetColor, Color fillColor)
@@ -74,7 +79,6 @@ namespace MVVMPaintApp.Models.Tools
                     right++;
                 right--;
 
-                // Update region bounds
                 minX = Math.Min(minX, left);
                 maxX = Math.Max(maxX, right);
                 minY = Math.Min(minY, curY);

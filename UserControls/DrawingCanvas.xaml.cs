@@ -2,12 +2,12 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using MVVMPaintApp.ViewModels;
-using MVVMPaintApp.Models;  
 
 namespace MVVMPaintApp.UserControls
 {
     public partial class DrawingCanvas : UserControl
     {
+        private DrawingCanvasViewModel ViewModel => (DrawingCanvasViewModel)DataContext;
         private Point? lastMousePoint;
         private bool isPressed;
 
@@ -19,116 +19,75 @@ namespace MVVMPaintApp.UserControls
         public DrawingCanvas(DrawingCanvasViewModel drawingCanvasViewModel)
         {
             InitializeComponent();
+            Focusable = true;
             DataContext = drawingCanvasViewModel;
-        }
 
-        private void UserControl_KeyDown(object sender, KeyEventArgs e)
-        {
-            Focus();
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-
-            if (e.Key == Key.Z)
-            {
-                viewModel.ToggleZoomModeCommand.Execute(null);
-                Cursor = viewModel.IsZoomMode
-                    ? Cursors.Cross
-                    : Cursors.Arrow;
-            }
-            else if (e.Key == Key.V)
-            {
-                viewModel.TogglePanModeCommand.Execute(null);
-                Cursor = viewModel.IsPanMode
-                    ? Cursors.Hand
-                    : Cursors.Arrow;
-            }
-            else if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-            {
-                viewModel.HandleCtrlKeyPress(true);
-            }
-        }
-
-        private void UserControl_KeyUp(object sender, KeyEventArgs e)
-        {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-            {
-                viewModel.HandleCtrlKeyPress(false);
-            }
+            MouseDown += (s, e) => Focus();
+            Loaded += (s, e) => Focus();
         }
   
-        private void UserControl_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void DrawingCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            _ = viewModel.HandleMouseWheel(e);
+            _ = ViewModel.HandleMouseWheel(e);
         }
 
-        private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
+        private void DrawingCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Focus();
-            var viewModel = (DrawingCanvasViewModel)DataContext;
             Point currentPoint = e.GetPosition(MainCanvasArea);
             isPressed = true;
 
             CaptureMouse();
-            if (viewModel.IsZoomMode || viewModel.IsPanMode)
+            if (ViewModel.IsZoomMode || ViewModel.IsPanMode)
             {
                 lastMousePoint = currentPoint;
-            } else if (viewModel.ProjectManager.SelectedLayer.IsVisible)
+            } else if (ViewModel.ProjectManager.SelectedLayer.IsVisible)
             {
-                viewModel.HandleMouseDown(sender, e, MainCanvas);
+                ViewModel.HandleMouseDown(sender, e, MainCanvas);
             }
-            viewModel.UpdateMouseInfo(currentPoint, isPressed);
+            ViewModel.UpdateMouseInfo(currentPoint, isPressed);
         }
 
-        private void UserControl_MouseUp(object sender, MouseButtonEventArgs e)
+        private void DrawingCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
             isPressed = false;
 
             if (lastMousePoint.HasValue)
             {
                 ReleaseMouseCapture();
                 lastMousePoint = null;
-            } else if (viewModel.ProjectManager.SelectedLayer.IsVisible)
+            } else if (ViewModel.ProjectManager.SelectedLayer.IsVisible)
             {
-                viewModel.HandleMouseUp(sender, e, MainCanvas);
-                viewModel.ProjectManager.HasUnsavedChanges = true;
+                ViewModel.HandleMouseUp(sender, e, MainCanvas);
+                ViewModel.ProjectManager.HasUnsavedChanges = true;
             }
-            viewModel.UpdateMouseInfo(e.GetPosition(MainCanvasArea), isPressed);
+            ViewModel.UpdateMouseInfo(e.GetPosition(MainCanvasArea), isPressed);
         }
 
-        private void UserControl_MouseMove(object sender, MouseEventArgs e)
+        private void DrawingCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-            Point currentPoint = e.GetPosition(MainCanvasArea);
-            viewModel.UpdateMouseInfo(currentPoint, isPressed);
-            if ((viewModel.IsZoomMode || viewModel.IsPanMode) && lastMousePoint.HasValue)
+            Point currentPoint = e.GetPosition(MainCanvas);
+            ViewModel.UpdateMouseInfo(currentPoint, isPressed);
+            if ((ViewModel.IsZoomMode || ViewModel.IsPanMode) && lastMousePoint.HasValue)
             {
-                if (viewModel.IsPanMode)
+                if (ViewModel.IsPanMode)
                 {
-                    viewModel.HandleMousePan(lastMousePoint.Value, currentPoint);
+                    currentPoint = e.GetPosition(MainCanvasArea);
+                    ViewModel.HandleMousePan(lastMousePoint.Value, currentPoint);
                     lastMousePoint = currentPoint;
                 }
             }
-            else if (viewModel.ProjectManager.SelectedLayer.IsVisible)
+            else if (ViewModel.ProjectManager.SelectedLayer.IsVisible)
             {
-                viewModel.HandleMouseMove(sender, e, MainCanvas);
+                ViewModel.HandleMouseMove(sender, e, MainCanvas);
             }
         }
-       
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            Focus();
-        }
     
-        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var viewModel = (DrawingCanvasViewModel)DataContext;
-
-            if (viewModel != null)
+        private void DrawingCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {   
+            if (ViewModel != null)
             {
-                viewModel.UserControlWidth = e.NewSize.Width;
-                viewModel.UserControlHeight = e.NewSize.Height;
+                ViewModel.UserControlWidth = e.NewSize.Width;
+                ViewModel.UserControlHeight = e.NewSize.Height;
             }
         }
     }

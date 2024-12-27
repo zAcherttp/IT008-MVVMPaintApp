@@ -12,6 +12,7 @@ namespace MVVMPaintApp.ViewModels
     public partial class DrawingCanvasViewModel : ObservableObject
     {
         private const double ZOOM_STEP_PERCENTAGE = 0.1;
+        private readonly KeyHandler keyHandler;
 
         [ObservableProperty]
         private ProjectManager projectManager;
@@ -33,7 +34,7 @@ namespace MVVMPaintApp.ViewModels
         private Easing panOffsetX = new(0.0);
 
         [ObservableProperty]
-        private Easing panOffsetY = new (0.0);
+        private Easing panOffsetY = new(0.0);
 
         [ObservableProperty]
         private Easing zoomFactor = new(1.0);
@@ -45,10 +46,6 @@ namespace MVVMPaintApp.ViewModels
 
         [ObservableProperty]
         private bool isPanMode;
-
-        [ObservableProperty]
-        private bool isCtrlPressed;
-
 
         // Debugging properties
         [ObservableProperty]
@@ -62,7 +59,9 @@ namespace MVVMPaintApp.ViewModels
             ProjectManager = projectManager;
             CurrentProject = projectManager.CurrentProject;
             SelectedTool = new Pencil(projectManager);
+            keyHandler = new KeyHandler();
             ProjectManager.Render();
+            RegisterKeyCommands();
         }
 
         public void SetProjectManager(ProjectManager projectManager)
@@ -85,6 +84,8 @@ namespace MVVMPaintApp.ViewModels
 
                 _ => new Pencil(ProjectManager),
             };
+            IsPanMode = false;
+            IsZoomMode = false;
             Debug.WriteLine("Selected tool: " + SelectedTool.GetType().Name + " - Layer: " + ProjectManager.SelectedLayer.Index);
         }
 
@@ -93,7 +94,49 @@ namespace MVVMPaintApp.ViewModels
             UserControlWidth = width;
             UserControlHeight = height;
         }
-        
+
+        public void RegisterKeyCommands()
+        {
+            keyHandler.RegisterCommand(
+                Key.Z,
+                () => ProjectManager.UndoRedoManager.Undo(),
+                "Undo last action",
+                [Key.LeftCtrl, Key.Z]);
+
+            keyHandler.RegisterCommand(
+                Key.Y,
+                () => ProjectManager.UndoRedoManager.Redo(),
+                "Redo last action",
+                [Key.LeftCtrl, Key.Y]);
+
+            keyHandler.RegisterCommand(
+                Key.Z,
+                () => ToggleZoomMode(),
+                "Toggle zoom mode",
+                [Key.Z]);
+
+            keyHandler.RegisterCommand(
+                Key.V,
+                () => TogglePanMode(),
+                "Toggle pan mode",
+                [Key.V]);
+
+            keyHandler.RegisterCommand(
+                Key.Escape,
+                () =>
+                {
+                    IsZoomMode = false;
+                    IsPanMode = false;
+                },
+                "Exit pan/zoom mode",
+                [Key.Escape]);
+        }
+
+        public void HandleKey(Key key, Key[] currentlyPressedKeys)
+        {
+            keyHandler.HandleKeyPress(key, currentlyPressedKeys);
+        }
+
         partial void OnIsZoomModeChanged(bool value)
         {
             UpdateModeText();
@@ -109,18 +152,83 @@ namespace MVVMPaintApp.ViewModels
             ModeText = IsZoomMode ? "ZOOM" : (IsPanMode ? "PAN" : "");
         }
 
-        [RelayCommand]
+        public Cursor GetCursor()
+        {
+            if (IsZoomMode)
+            {
+                return Cursors.Cross;
+            }
+            else if (IsPanMode)
+            {
+                return Cursors.SizeAll;
+            }
+            else
+            {
+                return Cursors.Arrow;
+            }
+        }
+
         private void ToggleZoomMode()
         {
             IsZoomMode ^= true;
             IsPanMode = false;
         }
 
-        [RelayCommand]
         private void TogglePanMode()
         {
             IsPanMode ^= true;
             IsZoomMode = false;
+        }
+
+        public void UpdateMouseInfo(Point position, bool isPressed)
+        {
+            MouseInfo = $"{position.X:F0}, {position.Y:F0}" + (isPressed ? " [DOWN]" : "");
+        }
+
+        public async Task HandleMouseWheel(MouseWheelEventArgs e)
+        {
+            await HandleMouseZoom(e);
+        }
+
+        public async Task HandleMouseZoom(MouseWheelEventArgs e)
+        {
+            if (!IsZoomMode) return;
+
+            double delta = e.Delta / 120.0;
+            double newZoomFactor = Math.Clamp(ZoomFactor.Value + (delta * ZOOM_STEP_PERCENTAGE), 0.1, 10);
+            await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 30);
+        }
+
+        public void HandleMousePan(Point startPoint, Point currentPoint)
+        {
+            if (!IsPanMode) return;
+
+            PanOffsetX.Value += currentPoint.X - startPoint.X;
+            PanOffsetY.Value += currentPoint.Y - startPoint.Y;
+        }
+
+        public void HandleMouseDown(object sender, MouseButtonEventArgs e, FrameworkElement canvas)
+        {
+            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
+            {
+                SelectedTool.OnMouseDown(sender, e, e.GetPosition(canvas));
+            }
+        }
+
+        public void HandleMouseUp(object sender, MouseButtonEventArgs e, FrameworkElement canvas)
+        {
+            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
+            {
+                SelectedTool.OnMouseUp(sender, e, e.GetPosition(canvas));
+            }
+        }
+
+        public void HandleMouseMove(object sender, MouseEventArgs e, FrameworkElement canvas)
+        {
+            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
+            {
+                SelectedTool.OnMouseMove(sender, e, e.GetPosition(canvas));
+            }
         }
 
         [RelayCommand]
@@ -147,65 +255,6 @@ namespace MVVMPaintApp.ViewModels
                 ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 300)
             };
             await Task.WhenAll(tasks);
-        }
-
-        public void UpdateMouseInfo(Point position, bool isPressed)
-        {
-            MouseInfo = $"{position.X:F0}, {position.Y:F0}" + (isPressed ? " [DOWN]" : "");
-        }
-
-        public void HandleCtrlKeyPress(bool isPressed)
-        {
-            IsCtrlPressed = isPressed;
-        }
-
-        public async Task HandleMouseWheel(MouseWheelEventArgs e)
-        {
-            await HandleMouseZoom(e);
-        }
-
-        public async Task HandleMouseZoom(MouseWheelEventArgs e)
-        {
-            if (!IsZoomMode) return;
-
-            double delta = e.Delta / 120.0;
-            double newZoomFactor = Math.Clamp(ZoomFactor.Value + (delta * ZOOM_STEP_PERCENTAGE), 0.1, 10);
-            await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 30);
-        }
-
-        public void HandleMousePan(Point startPoint, Point currentPoint)
-        {
-            if (!IsPanMode) return;
-
-            double deltaX = currentPoint.X - startPoint.X;
-            double deltaY = currentPoint.Y - startPoint.Y;
-
-            PanOffsetX.Value += deltaX;
-            PanOffsetY.Value += deltaY;
-        }
-
-        public void HandleMouseDown(object sender, MouseButtonEventArgs e, FrameworkElement canvas)
-        {
-            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
-            {
-                SelectedTool.OnMouseDown(sender, e, e.GetPosition(canvas));
-            }
-        }
-
-        public void HandleMouseUp(object sender, MouseButtonEventArgs e, FrameworkElement canvas)
-        {
-            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
-            {
-                SelectedTool.OnMouseUp(sender, e, e.GetPosition(canvas));
-            }
-        }
-
-        public void HandleMouseMove(object sender, MouseEventArgs e, FrameworkElement canvas)
-        {
-            if (SelectedTool != null && !IsZoomMode && !IsPanMode)
-            {
-                SelectedTool.OnMouseMove(sender, e, e.GetPosition(canvas));
-            }
         }
     }
 }
