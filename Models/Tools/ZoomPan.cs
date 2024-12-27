@@ -41,18 +41,17 @@ namespace MVVMPaintApp.Models.Tools
 
         public async Task HandleMouseWheel(MouseWheelEventArgs e)
         {
-            double delta = e.Delta / 120.0;
-            double newZoomFactor = Math.Clamp(
-                ProjectManager.ZoomFactor.Value + (delta * ZOOM_STEP_PERCENTAGE),
-                0.1,
-                10
-            );
-
-            await ProjectManager.ZoomFactor.EaseToAsync(
-                newZoomFactor,
-                Easing.EasingType.EaseInOutCubic,
-                30
-            );
+            double zoomChange = e.Delta > 0 ? 1.0 : -1.0;
+            if(ProjectManager.ZoomFactor.Value < 2.0)
+            {
+                zoomChange *= 0.1;
+            }
+            else
+            {
+                zoomChange *= 0.25;
+            }
+            double newZoomFactor = Math.Clamp(ProjectManager.ZoomFactor.Value + zoomChange, 0.1, 8.0);
+            await ProjectManager.ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 30);
         }
     }
 }

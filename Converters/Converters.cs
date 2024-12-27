@@ -1,11 +1,7 @@
 ﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows;
-using MVVMPaintApp.Models;
-using MVVMPaintApp.Services;
-using MVVMPaintApp.ViewModels;
-using System.Collections.ObjectModel;
 
 namespace MVVMPaintApp.Converters
 {
@@ -86,8 +82,6 @@ namespace MVVMPaintApp.Converters
         {
             if (value is double zoomFactor)
             {
-                // Use NearestNeighbor when zoomed in for pixel-perfect view
-                // Use Bilinear when zoomed out for smoother appearance
                 return zoomFactor >= 1.0 ?
                     BitmapScalingMode.NearestNeighbor :
                     BitmapScalingMode.HighQuality;
@@ -98,6 +92,21 @@ namespace MVVMPaintApp.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value;
+        }
+    }
+
+    public class EnumToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || parameter == null) return false;
+            return value.ToString() == parameter.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || parameter == null) return null!;
+            return (bool)value ? parameter : Binding.DoNothing;
         }
     }
 }

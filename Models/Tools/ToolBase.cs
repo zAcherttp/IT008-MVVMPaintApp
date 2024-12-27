@@ -10,17 +10,23 @@ using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.Models.Tools
 {
-    public abstract class ToolBase(ProjectManager projectManager) : ITool
+    public abstract class ToolBase : ITool
     {
         public const float MIN_INTERP_DISTANCE = 1f;
         public const float INTERP_FACTOR = 0.3f;
         public const int STROKE_REGION_PADDING = 2;
 
-        protected ProjectManager ProjectManager { get; set; } = projectManager;
+        protected ProjectManager ProjectManager { get; set; }
         protected Point LastPoint { get; set; }
         protected Rect? CurrentStrokeRegion { get; set; }
         protected WriteableBitmap? OldState { get; set; }
         protected bool IsDrawing { get; set; }
+
+        public ToolBase(ProjectManager projectManager)
+        {
+            ProjectManager = projectManager;
+            LastPoint = ProjectManager.CursorPositionOnCanvas;
+        }
 
         public virtual void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {

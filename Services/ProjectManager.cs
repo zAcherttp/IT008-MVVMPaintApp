@@ -38,6 +38,9 @@ namespace MVVMPaintApp.Services
         private Cursor cursor = Cursors.Arrow;
 
         [ObservableProperty]
+        private Point cursorPositionOnCanvas;
+
+        [ObservableProperty]
         private Easing panOffsetX = new(0.0);
 
         [ObservableProperty]

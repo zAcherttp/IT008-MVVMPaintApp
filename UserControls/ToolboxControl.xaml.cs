@@ -16,58 +16,5 @@ namespace MVVMPaintApp.UserControls
         {
             InitializeComponent();
         }
-
-        public void Toolbox_MouseEnter(object sender, RoutedEventArgs e)
-        {
-            Focus();
-        }
-
-        public void Button_PencilTool_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
-            {
-                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Pencil);
-            }
-        }
-
-        public void Button_BrushTool_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
-            {
-                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Brush);
-            }
-        }
-
-        public void Button_EraserTool_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
-            {
-                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Eraser);
-            }
-        }
-
-        public void Button_FillTool_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
-            {
-                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.Fill);
-            }
-        }
-
-        public void Button_ColorPickerTool_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
-            {
-                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.ColorPicker);
-            }
-        }
-
-        public void Button_ZoomPanTool_Click(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is ViewModels.ToolboxViewModel vm && vm.ProjectManager.SelectedLayer != null)
-            {
-                vm.ViewModelLocator.DrawingCanvasViewModel.SetTool(ToolType.ZoomPan);
-            }
-        }
     }
 }

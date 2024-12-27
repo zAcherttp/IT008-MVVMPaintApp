@@ -60,7 +60,7 @@
                                 DataContext="{Binding ColorPaletteViewModel}" DockPanel.Dock="Bottom"/>
 
             <uc:ToolboxControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="10" Grid.Row="1"
-                               DataContext="{Binding ToolboxViewModel}" DockPanel.Dock="Left"/>
+                               DataContext="{Binding ToolboxViewModel}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
 
             <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                               DataContext="{Binding DrawingCanvasViewModel}"/>

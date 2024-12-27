@@ -8,10 +8,15 @@ using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.Models.Tools
 {
-    public class Brush(ProjectManager projectManager) : ToolBase(projectManager)
+    public class Brush : ToolBase
     {
         public int BrushSize { get; set; } = 40;
-        private const int PREVIEW_STROKE_REGION_PADDING = 5;
+        private const int PREVIEW_STROKE_REGION_PADDING = 10;
+
+        public Brush(ProjectManager projectManager) : base(projectManager)
+        {
+            DrawPreview(LastPoint, ProjectManager.PrimaryColor);
+        }
 
         public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {

@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using MVVMPaintApp.Services;
+﻿using MVVMPaintApp.Services;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -8,10 +7,15 @@ using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.Models.Tools
 {
-    public class Eraser(ProjectManager projectManager) : ToolBase(projectManager)
+    public class Eraser : ToolBase
     {
         public int BrushSize { get; set; } = 50;
-        public const int PREVIEW_STROKE_REGION_PADDING = 10;
+        public const int PREVIEW_STROKE_REGION_PADDING = 20;
+
+        public Eraser(ProjectManager projectManager) : base(projectManager)
+        {
+            DrawPreview(LastPoint, Colors.Transparent);
+        }
 
         public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {
@@ -27,7 +31,6 @@ namespace MVVMPaintApp.Models.Tools
 
         public override void OnMouseMove(object sender, MouseEventArgs e, Point p)
         {
-            
             DrawPreview(p, ProjectManager.CurrentProject.Background);
 
             if (!IsDrawing || !IsValidDrawingState()) return;
@@ -51,39 +54,36 @@ namespace MVVMPaintApp.Models.Tools
             }
 
             ProjectManager.StrokeLayer.Clear(Colors.Transparent);
+            DrawPreview(p, ProjectManager.CurrentProject.Background);
             ProjectManager.Render(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height));
             CurrentStrokeRegion = null;
             OldState = null;
 
-            DrawPreview(p, ProjectManager.CurrentProject.Background);
             base.OnMouseUp(sender, e, p);
         }
 
         public override void DrawPreview(Point p, Color color)
         {
-            var diagonal = Math.Sqrt(2) * BrushSize / 2;
-            int x1 = (int)(p.X - diagonal);
-            int y1 = (int)(p.Y - diagonal);
-            int x2 = (int)(p.X + diagonal);
-            int y2 = (int)(p.Y + diagonal);
+            var h = BrushSize / 2;
+            int x1 = (int)(p.X - h);
+            int y1 = (int)(p.Y - h);
+            int x2 = (int)(p.X + h);
+            int y2 = (int)(p.Y + h);
             var region = new Rect(
                 x1 - PREVIEW_STROKE_REGION_PADDING,
                 y1 - PREVIEW_STROKE_REGION_PADDING,
                 x2 - x1 + PREVIEW_STROKE_REGION_PADDING * 2,
                 y2 - y1 + PREVIEW_STROKE_REGION_PADDING * 2);
 
-            if (IsValidDrawingState() && CurrentStrokeRegion == null)
-            {
-                ProjectManager.StrokeLayer.FillRectangle(
-                x1 - PREVIEW_STROKE_REGION_PADDING,
-                y1 - PREVIEW_STROKE_REGION_PADDING,
-                x2 + PREVIEW_STROKE_REGION_PADDING,
-                y2 + PREVIEW_STROKE_REGION_PADDING,
-                Colors.Transparent);
-                ProjectManager.StrokeLayer.FillRectangle(x1, y1, x2, y2, color);
-                ProjectManager.StrokeLayer.DrawRectangle(x1 - 1, y1 - 1, x2 + 1, y2 + 1, Colors.Black);
-                ProjectManager.Render(region);
-            }
+            ProjectManager.StrokeLayer.FillRectangle(
+            x1 - PREVIEW_STROKE_REGION_PADDING,
+            y1 - PREVIEW_STROKE_REGION_PADDING,
+            x2 + PREVIEW_STROKE_REGION_PADDING,
+            y2 + PREVIEW_STROKE_REGION_PADDING,
+            Colors.Transparent);
+            ProjectManager.StrokeLayer.FillRectangle(x1, y1, x2, y2, color);
+            ProjectManager.StrokeLayer.DrawRectangle(x1 - 1, y1 - 1, x2 + 1, y2 + 1, Colors.Black);
+            ProjectManager.Render(region);
         }
 
         public override void DrawPoint(Point point, Color color)

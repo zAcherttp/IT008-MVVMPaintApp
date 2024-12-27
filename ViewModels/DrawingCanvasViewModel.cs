@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using System.Windows.Media.Imaging;
 using MVVMPaintApp.Models;
 using MVVMPaintApp.Models.Tools;
 using MVVMPaintApp.Services;
@@ -21,6 +21,9 @@ namespace MVVMPaintApp.ViewModels
 
         [ObservableProperty]
         private ToolBase selectedTool;
+
+        [ObservableProperty]
+        private ToolType selectedToolType;
 
         [ObservableProperty]
         private double userControlWidth = 1600;
@@ -56,6 +59,9 @@ namespace MVVMPaintApp.ViewModels
 
         public void SetTool(ToolType tool)
         {
+            ProjectManager.StrokeLayer.Clear();
+            ProjectManager.Render();
+            SelectedToolType = tool;
             SelectedTool = tool switch
             {
                 ToolType.Pencil => new Pencil(ProjectManager),
@@ -69,8 +75,12 @@ namespace MVVMPaintApp.ViewModels
                 _ => new Pencil(ProjectManager),
             };
             ProjectManager.SetCursor(SelectedTool.GetCursor());
-            ProjectManager.Render();
             Debug.WriteLine("Selected tool - " + SelectedTool.GetType().Name + " - Layer: " + ProjectManager.SelectedLayer.Index);
+        }
+
+        partial void OnSelectedToolTypeChanged(ToolType value)
+        {
+            SetTool(value);
         }
 
         public void SetUserControlSize(double width, double height)
@@ -169,6 +179,7 @@ namespace MVVMPaintApp.ViewModels
         public void HandleMouseMove(object sender, MouseEventArgs e, Point p)
         {
             SelectedTool?.OnMouseMove(sender, e, p);
+            ProjectManager.CursorPositionOnCanvas = p;
         }
 
         public async Task HandleMouseWheel(MouseWheelEventArgs e)

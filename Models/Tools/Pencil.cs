@@ -7,10 +7,15 @@ using System.Windows.Media.Imaging;
 
 namespace MVVMPaintApp.Models.Tools
 {
-    public class Pencil(ProjectManager projectManager) : ToolBase(projectManager)
+    public class Pencil : ToolBase
     {
         public int Size { get; set; } = 1;
         public const int PREVIEW_STROKE_REGION_PADDING = 4;
+
+        public Pencil(ProjectManager projectManager) : base(projectManager)
+        {
+            DrawPreview(LastPoint, ProjectManager.PrimaryColor);
+        }
 
         public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
         {
