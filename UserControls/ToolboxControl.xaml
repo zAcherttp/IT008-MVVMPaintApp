@@ -34,6 +34,10 @@
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ColorPicker}}"/>
+                <RadioButton Content="Shape" 
+                           IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
+                           Converter={StaticResource EnumToBoolConverter}, 
+                           ConverterParameter={x:Static t:ToolType.Shape}}"/>
                 <RadioButton Content="Zoom Pan" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 

@@ -69,6 +69,7 @@ namespace MVVMPaintApp.ViewModels
                 ToolType.Eraser => new Eraser(ProjectManager),
                 ToolType.Fill => new Fill(ProjectManager),
                 ToolType.ColorPicker => new ColorPicker(ProjectManager),
+                ToolType.Shape => new Shape(ProjectManager),
                 ToolType.ZoomPan => new ZoomPan(ProjectManager),
                 ToolType.RectSelect => new RectSelect(ProjectManager),
                 ToolType.Default => new Default(ProjectManager),
