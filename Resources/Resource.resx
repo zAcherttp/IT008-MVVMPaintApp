@@ -118,13 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Brush" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Brush.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="ColorPaletteGradientButtonIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>ColorPaletteGradientButtonIcon.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Eraser" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Eraser.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Fill" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Fill.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="MyPaintAppIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>MyPaintAppIcon.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Pencil" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Pencil.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Picker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Picker.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="placeholder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>placeholder.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Shape" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Shape.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Zoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Zoom.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

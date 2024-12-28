@@ -7,45 +7,61 @@
              xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
              xmlns:t="clr-namespace:MVVMPaintApp.Models"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="260">
     <UserControl.Resources>
         <conv:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
     </UserControl.Resources>
     <Grid>
-        <Border>
-            <StackPanel>
-                <RadioButton Content="Pencil" 
+        <Border Background="{DynamicResource ControlOnImageFillColorDefaultBrush}" CornerRadius="10" Width="70">
+            <StackPanel Margin="0,0,0,5">
+                <RadioButton 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.Pencil}}"/>
-                <RadioButton Content="Brush" 
+                           ConverterParameter={x:Static t:ToolType.Pencil}}" Width="85">
+                    <Image Source="/Resources/Pencil.png" Width="32" Height="32"/>
+                </RadioButton>
+                <RadioButton
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.Brush}}"/>
-                <RadioButton Content="Eraser" 
+                           ConverterParameter={x:Static t:ToolType.Brush}}">
+                    <Image Source="/Resources/Brush.png" Width="32" Height="32"/>
+                </RadioButton>
+                <RadioButton
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.Eraser}}"/>
-                <RadioButton Content="Fill" 
+                           ConverterParameter={x:Static t:ToolType.Eraser}}">
+                    <Image Source="/Resources/Eraser.png" Width="32" Height="32"/>
+                </RadioButton>
+                <RadioButton 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.Fill}}"/>
-                <RadioButton Content="Color Picker" 
+                           ConverterParameter={x:Static t:ToolType.Fill}}">
+                    <Image Source="/Resources/Fill.png" Width="40" Height="40"/>
+                </RadioButton>
+                <RadioButton
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.ColorPicker}}"/>
-                <RadioButton Content="Shape" 
+                           ConverterParameter={x:Static t:ToolType.ColorPicker}}">
+                    <Image Source="/Resources/Picker.png" Width="32" Height="32"/>
+                </RadioButton>
+                <RadioButton
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.Shape}}"/>
-                <RadioButton Content="Zoom Pan" 
+                           ConverterParameter={x:Static t:ToolType.Shape}}">
+                    <Image Source="/Resources/Shape.png" Width="32" Height="32"/>
+                </RadioButton>
+                <RadioButton
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.ZoomPan}}"/>
-                <RadioButton Content="Rect Select" 
+                           ConverterParameter={x:Static t:ToolType.ZoomPan}}">
+                    <Image Source="/Resources/Zoom.png" Width="32" Height="32"/>
+                </RadioButton>
+                <RadioButton
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.RectSelect}}"/>
+                           ConverterParameter={x:Static t:ToolType.RectSelect}}">
+                    <Image Source="/Resources/Shape.png" Width="32" Height="32"/>
+                </RadioButton>
             </StackPanel>
         </Border>
     </Grid>

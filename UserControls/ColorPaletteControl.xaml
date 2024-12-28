@@ -214,7 +214,7 @@
     <Grid>
         <StackPanel>
             <Border x:Name="ColorPaletteControlBorder"
-                    CornerRadius="10" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="10" Background="{DynamicResource ControlOnImageFillColorDefaultBrush}"
                     Width="325" Height="80">
                 <StackPanel Orientation="Horizontal">
                     <!-- Color Spectrum -->

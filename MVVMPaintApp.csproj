@@ -14,9 +14,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Brush.png" />
     <None Remove="Resources\ColorPaletteGradientButtonIcon.png" />
+    <None Remove="Resources\Eraser.png" />
+    <None Remove="Resources\Fill.png" />
     <None Remove="Resources\MyPaintAppIcon.png" />
+    <None Remove="Resources\Pencil.png" />
+    <None Remove="Resources\Picker.png" />
     <None Remove="Resources\placeholder.png" />
+    <None Remove="Resources\Shape.png" />
+    <None Remove="Resources\Zoom.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +34,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Brush.png" />
     <Resource Include="Resources\ColorPaletteGradientButtonIcon.png" />
+    <Resource Include="Resources\Eraser.png" />
+    <Resource Include="Resources\Fill.png" />
     <Resource Include="Resources\MyPaintAppIcon.png" />
+    <Resource Include="Resources\Pencil.png" />
+    <Resource Include="Resources\Picker.png" />
     <Resource Include="Resources\placeholder.png" />
   </ItemGroup>
 
@@ -37,6 +49,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </Resource>
+    <Resource Include="Resources\Shape.png" />
+    <Resource Include="Resources\Zoom.png" />
   </ItemGroup>
 
   <ItemGroup>

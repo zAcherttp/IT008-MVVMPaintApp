@@ -48,7 +48,7 @@
         </Menu>
         <StatusBar Grid.Row="2" Panel.ZIndex="1">
             <StatusBarItem>
-                <TextBlock Text="Primary Color: " />
+                <TextBlock Text="Cursor: " />
             </StatusBarItem>
         </StatusBar>
 
@@ -56,10 +56,10 @@
             <uc:LayerControl Panel.ZIndex="10" HorizontalAlignment="Right" Margin="10" Grid.Row="1"
                                 DataContext="{Binding LayerViewModel}" DockPanel.Dock="Right" VerticalAlignment="Stretch"/>
             
-            <uc:ColorPaletteControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="40,0,0,30" VerticalAlignment="Top" Grid.Row="1"
+            <uc:ColorPaletteControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="30,0,0,30" VerticalAlignment="Top" Grid.Row="1"
                                 DataContext="{Binding ColorPaletteViewModel}" DockPanel.Dock="Bottom"/>
 
-            <uc:ToolboxControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="10" Grid.Row="1"
+            <uc:ToolboxControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="30" Grid.Row="1"
                                DataContext="{Binding ToolboxViewModel}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
 
             <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"

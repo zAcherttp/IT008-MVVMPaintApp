@@ -60,7 +60,7 @@
             </DrawingImage.Drawing>
         </DrawingImage>
     </UserControl.Resources>
-    <Border BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="1" CornerRadius="15">
+    <Border BorderBrush="{DynamicResource ControlOnImageFillColorDefaultBrush}" BorderThickness="1" CornerRadius="15" ClipToBounds="True">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

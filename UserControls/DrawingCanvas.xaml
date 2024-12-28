@@ -71,6 +71,7 @@
                     </TransformGroup>
                 </Canvas.RenderTransform>
                 <Image Source="{Binding ProjectManager.RenderTarget}" 
+                       Panel.ZIndex="0"
                        Stretch="None"
                        RenderOptions.BitmapScalingMode="{Binding ProjectManager.ZoomFactor.Value, 
                         Converter={StaticResource ZoomToScalingModeConverter}}"
