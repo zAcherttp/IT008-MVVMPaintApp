@@ -11,15 +11,13 @@ namespace MVVMPaintApp.Models.Tools
 {
     public class ZoomPan(ProjectManager projectManager) : ToolBase(projectManager)
     {
-        private const double ZOOM_STEP_PERCENTAGE = 0.1;
-
-        public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
             IsDrawing = e.RightButton == MouseButtonState.Pressed;
             LastPoint = p;
         }
 
-        public override void OnMouseUp(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseUp(object sender, MouseButtonEventArgs e, Point p)
         {
             IsDrawing = false;
         }

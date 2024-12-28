@@ -38,6 +38,10 @@
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ZoomPan}}"/>
+                <RadioButton Content="Rect Select" 
+                           IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
+                           Converter={StaticResource EnumToBoolConverter}, 
+                           ConverterParameter={x:Static t:ToolType.RectSelect}}"/>
             </StackPanel>
         </Border>
     </Grid>

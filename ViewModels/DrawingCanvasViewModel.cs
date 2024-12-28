@@ -70,6 +70,7 @@ namespace MVVMPaintApp.ViewModels
                 ToolType.Fill => new Fill(ProjectManager),
                 ToolType.ColorPicker => new ColorPicker(ProjectManager),
                 ToolType.ZoomPan => new ZoomPan(ProjectManager),
+                ToolType.RectSelect => new RectSelect(ProjectManager),
                 ToolType.Default => new Default(ProjectManager),
 
                 _ => new Pencil(ProjectManager),

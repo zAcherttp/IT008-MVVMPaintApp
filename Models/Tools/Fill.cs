@@ -11,7 +11,7 @@ namespace MVVMPaintApp.Models.Tools
         public Color FillColor { get; set; }
         public int ColorTolerance { get; set; } = 0;
 
-        public override async void OnMouseDown(object sender, MouseEventArgs e, Point p)
+        public override async void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
             if (!IsValidDrawingState()) return;
 

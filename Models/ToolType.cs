@@ -13,6 +13,7 @@ namespace MVVMPaintApp.Models
         ZoomPan,
         ColorPicker,
         Shape,
+        RectSelect,
         Default
     }
 }

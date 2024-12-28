@@ -17,7 +17,7 @@ namespace MVVMPaintApp.Models.Tools
             DrawPreview(LastPoint, Colors.Transparent);
         }
 
-        public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
             base.OnMouseDown(sender, e, p);
             if (!IsValidDrawingState()) return;
@@ -42,7 +42,7 @@ namespace MVVMPaintApp.Models.Tools
             LastPoint = p;
         }
 
-        public override void OnMouseUp(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseUp(object sender, MouseButtonEventArgs e, Point p)
         {
             if (ProjectManager.StrokeLayer != null && CurrentStrokeRegion != null)
             {

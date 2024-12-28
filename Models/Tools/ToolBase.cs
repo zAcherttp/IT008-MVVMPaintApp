@@ -28,13 +28,13 @@ namespace MVVMPaintApp.Models.Tools
             LastPoint = ProjectManager.CursorPositionOnCanvas;
         }
 
-        public virtual void OnMouseDown(object sender, MouseEventArgs e, Point p)
+        public virtual void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
             IsDrawing = true;
             LastPoint = p;
         }
 
-        public virtual void OnMouseUp(object sender, MouseEventArgs e, Point p)
+        public virtual void OnMouseUp(object sender, MouseButtonEventArgs e, Point p)
         {
             IsDrawing = false;
             ProjectManager.SelectedLayer.RenderThumbnail();
