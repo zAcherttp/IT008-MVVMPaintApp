@@ -9,6 +9,8 @@ namespace MVVMPaintApp.Models.Tools
 {
     public class RectSelect(ProjectManager projectManager) : ToolBase(projectManager)
     {
+        private const int MIN_SELECTION_SIZE = 25;
+
         public Selection Selection { get; set; } = new Selection();
         public Point Start { get; set; }
         public WriteableBitmap? SelectedContent { get; set; }
@@ -17,7 +19,6 @@ namespace MVVMPaintApp.Models.Tools
         private bool IsResizingSelection;
         private int? ActiveHandleIndex;
         private Rect? PreviousRenderBounds;
-        private const int MIN_SELECTION_SIZE = 25;
 
         public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
@@ -52,7 +53,9 @@ namespace MVVMPaintApp.Models.Tools
                     CommitSelection();
                 }
             }
+            OldState = ProjectManager.SelectedLayer.Content.Clone();
 
+            CurrentStrokeRegion = new Rect(p, new Size(1, 1));
             HitCheck(ref p);
             Start = p;
             Selection.UpdateBounds(Start, Start);
@@ -78,7 +81,7 @@ namespace MVVMPaintApp.Models.Tools
             if (!IsDrawing || !IsValidDrawingState()) return;
 
             Selection.UpdateBounds(Start, p);
-            DrawPreview(p, Colors.Black);
+            DrawPreview(p, Color.FromArgb(150, 255, 255, 255));
         }
 
         public override void OnMouseUp(object sender, MouseButtonEventArgs e, Point p)
@@ -169,6 +172,10 @@ namespace MVVMPaintApp.Models.Tools
 
             var newBounds = new Rect(start, end);
             if (newBounds.Width < 10 || newBounds.Height < 10) return;
+            if (CurrentStrokeRegion.HasValue)
+            {
+                CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, newBounds);
+            }
 
             // Create new bitmap for resized content
             var newContent = new WriteableBitmap(
@@ -180,7 +187,7 @@ namespace MVVMPaintApp.Models.Tools
             );
 
             // Scale the content to new size
-            if(SelectedContent != null)
+            if (SelectedContent != null)
             {
                 // Set SelectedContentBackup to SelectedContent for cool blur effect
                 newContent = SelectedContentBackup.Resize(
@@ -216,7 +223,6 @@ namespace MVVMPaintApp.Models.Tools
             if (SelectedContent != null)
             {
                 Debug.WriteLine("Committing selection to layer");
-                // Store the current bounds before clearing selection
                 var commitBounds = Selection.RenderBounds;
 
                 // Blit the selected content back to the layer
@@ -224,13 +230,25 @@ namespace MVVMPaintApp.Models.Tools
                     Selection.Bounds,
                     SelectedContent,
                     Selection.SourceBounds,
-                    WriteableBitmapExtensions.BlendMode.Alpha
+                    WriteableBitmapExtensions.BlendMode.Additive
                 );
 
-                // Clear selection state
+                // Add history entry if we have a valid region
+                if (CurrentStrokeRegion.HasValue)
+                {
+                    ProjectManager.UndoRedoManager.AddHistoryEntry(
+                        new LayerHistoryEntry(
+                            ProjectManager.SelectedLayer,
+                            CurrentStrokeRegion.Value,
+                            OldState.Crop(CurrentStrokeRegion.Value)));
+                }
+
+                // Clear state
                 ProjectManager.StrokeLayer.Clear(Colors.Transparent);
                 SelectedContent = null;
                 Selection.IsActive = false;
+                CurrentStrokeRegion = null;
+                OldState = null;
 
                 // Render the affected area
                 ProjectManager.Render(commitBounds);
@@ -248,6 +266,11 @@ namespace MVVMPaintApp.Models.Tools
                 Selection.Bounds.Width,
                 Selection.Bounds.Height
             );
+
+            if (CurrentStrokeRegion.HasValue)
+            {
+                CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, newBounds);
+            }
 
             Selection.UpdateBounds(
                 new Point(newBounds.X, newBounds.Y),
@@ -313,7 +336,7 @@ namespace MVVMPaintApp.Models.Tools
 
         public override void DrawPreview(Point p, Color color)
         {
-            if (IsValidDrawingState() && CurrentStrokeRegion == null)
+            if (IsValidDrawingState() && CurrentStrokeRegion.HasValue)
             {
                 ProjectManager.StrokeLayer.Clear(Colors.Transparent);
 

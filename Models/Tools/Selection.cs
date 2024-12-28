@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace MVVMPaintApp.Models
+namespace MVVMPaintApp.Models.Tools
 {
     public class Selection
     {
@@ -94,7 +94,7 @@ namespace MVVMPaintApp.Models
         }
 
         public bool IsPointInsideBounds(Point p)
-        { 
+        {
             return p.X >= Bounds.Left + HANDLE_SIZE + HANDLE_PADDING && p.X <= Bounds.Right - HANDLE_SIZE - HANDLE_PADDING &&
                    p.Y >= Bounds.Top + HANDLE_SIZE + HANDLE_PADDING && p.Y <= Bounds.Bottom - HANDLE_SIZE - HANDLE_PADDING;
         }

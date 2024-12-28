@@ -44,7 +44,7 @@ namespace MVVMPaintApp.Models.Tools
 
         public override void OnMouseUp(object sender, MouseButtonEventArgs e, Point p)
         {
-            if (ProjectManager.StrokeLayer != null && CurrentStrokeRegion != null)
+            if (CurrentStrokeRegion.HasValue)
             {
                 ProjectManager.UndoRedoManager.AddHistoryEntry(
                     new LayerHistoryEntry(
