@@ -10,53 +10,110 @@
              d:DesignHeight="450" d:DesignWidth="260">
     <UserControl.Resources>
         <conv:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+        <Style x:Key="ToolRadioButtonStyle" TargetType="{x:Type RadioButton}">
+            <Setter Property="FocusVisualStyle" Value="{DynamicResource DefaultControlFocusVisualStyle}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource RadioButtonForeground}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="MinWidth" Value="32" />
+            <Setter Property="MinHeight" Value="32" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Border x:Name="BorderContainer" 
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                            <ContentPresenter x:Name="ContentPresenter" 
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BorderContainer" 
+                                Property="Background" 
+                                Value="{DynamicResource RadioButtonOuterEllipseFillPointerOver}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="BorderContainer" 
+                                Property="Background" 
+                                Value="Transparent" />
+                                <Setter TargetName="BorderContainer" 
+                                Property="BorderBrush" 
+                                Value="{DynamicResource RadioButtonOuterEllipseCheckedStroke}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="BorderContainer" 
+                                Property="Background" 
+                                Value="{DynamicResource ButtonBackgroundPressed}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="BorderContainer" 
+                                Property="Opacity" 
+                                Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <Border Background="{DynamicResource ControlOnImageFillColorDefaultBrush}" CornerRadius="10" Width="70">
-            <StackPanel Margin="0,0,0,5">
-                <RadioButton 
+        <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="2"
+                CornerRadius="10" Width="50">
+            <StackPanel Margin="0,0,0,0">
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
-                           ConverterParameter={x:Static t:ToolType.Pencil}}" Width="85">
+                           ConverterParameter={x:Static t:ToolType.Pencil}}">
                     <Image Source="/Resources/Pencil.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Brush}}">
                     <Image Source="/Resources/Brush.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Eraser}}">
                     <Image Source="/Resources/Eraser.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Fill}}">
-                    <Image Source="/Resources/Fill.png" Width="40" Height="40"/>
+                    <Image Source="/Resources/Fill.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ColorPicker}}">
                     <Image Source="/Resources/Picker.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Shape}}">
                     <Image Source="/Resources/Shape.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ZoomPan}}">
                     <Image Source="/Resources/Zoom.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.RectSelect}}">

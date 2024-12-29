@@ -24,6 +24,8 @@
     <None Remove="Resources\placeholder.png" />
     <None Remove="Resources\Shape.png" />
     <None Remove="Resources\Zoom.png" />
+    <None Remove="Resources\ZoomSliderDown.png" />
+    <None Remove="Resources\ZoomSliderUp.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +53,8 @@
     </Resource>
     <Resource Include="Resources\Shape.png" />
     <Resource Include="Resources\Zoom.png" />
+    <Resource Include="Resources\ZoomSliderDown.png" />
+    <Resource Include="Resources\ZoomSliderUp.png" />
   </ItemGroup>
 
   <ItemGroup>

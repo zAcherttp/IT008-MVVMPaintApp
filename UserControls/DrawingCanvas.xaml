@@ -48,12 +48,11 @@
             <TextBlock Grid.Column="2" Text="Pan X:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
             <TextBlock Grid.Column="3" Text="{Binding ProjectManager.PanOffsetX.Value, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
             <TextBlock Grid.Column="4" Text="Pan Y:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
-            <TextBlock Grid.Column="5" Text="{Binding ProjectManager.PanOffsetY.Value, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
-            <TextBlock Grid.Column="6" Text="Mode:" VerticalAlignment="Center" Foreground="Lime" Margin="5,0,5,0"/>
-            <TextBlock Grid.Column="7" Text="{Binding ModeText}" VerticalAlignment="Center" Foreground="Yellow"/>
-            <TextBlock Grid.Column="8" Text="Mouse:" VerticalAlignment="Center" Foreground="Lime" Margin="5,0,5,0"/>
-            <TextBlock Grid.Column="9" Text="{Binding MouseInfo}" VerticalAlignment="Center" Foreground="Yellow"/>
-            <Button Grid.Column="11" Foreground="Lime" Command="{Binding ProjectManager.FitToWindowCommand}">Fit to window</Button>
+            <TextBlock Grid.Column="5" Text="{Binding ProjectManager.PanOffsetY.Value, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/><TextBlock Grid.Column="4" Text="Pan Y:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
+            <TextBlock Grid.Column="6" Text="Control Y:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
+            <TextBlock Grid.Column="7" Text="{Binding ProjectManager.DrawingCanvasControlWidth, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
+            <TextBlock Grid.Column="8" Text="Control X:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
+            <TextBlock Grid.Column="9" Text="{Binding ProjectManager.DrawingCanvasControlHeight, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
         </Grid>
         <Grid Grid.Row="1" x:Name="MainCanvasArea" Background="Transparent">
             <Canvas

@@ -12,6 +12,9 @@ namespace MVVMPaintApp.ViewModels
         private readonly IWindowManager windowManager;
 
         [ObservableProperty]
+        private bool showGridBorders = false;
+
+        [ObservableProperty]
         private ProjectManager projectManager;
 
         [ObservableProperty]

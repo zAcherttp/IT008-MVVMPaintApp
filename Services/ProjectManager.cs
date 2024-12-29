@@ -230,10 +230,11 @@ namespace MVVMPaintApp.Services
         [RelayCommand]
         private async Task FitToWindow()
         {
+            var padding = DrawingCanvasControlHeight - 30;
             double newZoomFactor = Math.Min(
-                DrawingCanvasControlWidth / CurrentProject.Width,
-                DrawingCanvasControlHeight / CurrentProject.Height);
-            double newPanOffsetY = (DrawingCanvasControlHeight - CurrentProject.Height) / 2;
+                padding / CurrentProject.Width,
+                padding / CurrentProject.Height);
+            double newPanOffsetY = (padding - CurrentProject.Height) / 2;
             var tasks = new[]
             {
                 PanOffsetX.EaseToAsync(0, Easing.EasingType.EaseInOutCubic , 300),

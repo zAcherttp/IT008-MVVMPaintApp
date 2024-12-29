@@ -3,13 +3,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using MVVMPaintApp.ViewModels;
 using MVVMPaintApp.Models.Tools;
+using MVVMPaintApp.Models;
+using MVVMPaintApp.Services;
 
 namespace MVVMPaintApp.UserControls
 {
     public partial class DrawingCanvas : UserControl
     {
         private DrawingCanvasViewModel ViewModel => (DrawingCanvasViewModel)DataContext;
-        private bool isPressed;
 
         public DrawingCanvas()
         {
@@ -35,8 +36,6 @@ namespace MVVMPaintApp.UserControls
         {
             Point p = e.GetPosition(MainCanvas);
             CaptureMouse();
-            isPressed = true;
-            ViewModel.UpdateMouseInfo(p, isPressed);
 
             if (ViewModel.ProjectManager.SelectedLayer.IsVisible && ViewModel.SelectedTool is not ZoomPan)
             {
@@ -52,8 +51,6 @@ namespace MVVMPaintApp.UserControls
         {
             Point p = e.GetPosition(MainCanvas);
             ReleaseMouseCapture();
-            isPressed = false;
-            ViewModel.UpdateMouseInfo(p, isPressed);
 
             if (ViewModel.ProjectManager.SelectedLayer.IsVisible && ViewModel.SelectedTool is not ZoomPan)
             {
@@ -69,7 +66,8 @@ namespace MVVMPaintApp.UserControls
         private void DrawingCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             Point p = e.GetPosition(MainCanvas);
-            ViewModel.UpdateMouseInfo(p, isPressed);
+            ViewModel.UpdateMousePosOnCanvas(p);
+            ViewModel.UpdateSelectionSize();
 
             if (ViewModel.ProjectManager.SelectedLayer.IsVisible && ViewModel.SelectedTool is not ZoomPan)
             {

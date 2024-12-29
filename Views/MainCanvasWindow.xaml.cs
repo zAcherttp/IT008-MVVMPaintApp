@@ -4,6 +4,9 @@ using System.ComponentModel;
 using MVVMPaintApp.Services;
 using System.Windows.Input;
 using MVVMPaintApp.UserControls;
+using System.Windows.Controls;
+using MVVMPaintApp.Models;
+using MVVMPaintApp.Converters;
 
 namespace MVVMPaintApp.Views
 {

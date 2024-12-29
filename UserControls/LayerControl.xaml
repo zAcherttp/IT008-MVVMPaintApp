@@ -51,6 +51,11 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="BackgroundButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource DefaultButtonStyle}">
+            <Setter Property="Padding" Value="0"/>
+        </Style>
         <DrawingImage x:Key="LayerAddButtonIcon">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V14 H14 V0 H0 Z">
@@ -60,7 +65,9 @@
             </DrawingImage.Drawing>
         </DrawingImage>
     </UserControl.Resources>
-    <Border BorderBrush="{DynamicResource ControlOnImageFillColorDefaultBrush}" BorderThickness="1" CornerRadius="15" ClipToBounds="True">
+    <Border BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+            Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+            BorderThickness="2" CornerRadius="15" ClipToBounds="True">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -118,7 +125,9 @@
             </ListView>
             <Line Grid.Row="2" Stroke="{DynamicResource ControlElevationBorderBrush}" X1="0" Y1="0" X2="120" Y2="0" StrokeThickness="1"/>
             <Border Grid.Row="2" Margin="0,15,0,20" Width="80" Height="80" MaxHeight="80" MaxWidth="80" BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="center" CornerRadius="10">
-                <Image Source="{Binding BackgroundLayer}" Margin="2"/>
+                <Button Style="{StaticResource BackgroundButtonStyle}" >
+                    <Image Source="{Binding BackgroundLayer}" Margin="2"/>
+                </Button>
             </Border>
         </Grid>
     </Border>

@@ -148,4 +148,10 @@
   <data name="Zoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Zoom.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ZoomSliderDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZoomSliderDown.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ZoomSliderUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZoomSliderUp.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

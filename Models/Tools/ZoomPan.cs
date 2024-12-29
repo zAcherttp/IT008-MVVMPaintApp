@@ -49,7 +49,7 @@ namespace MVVMPaintApp.Models.Tools
                 zoomChange *= 0.25;
             }
             double newZoomFactor = Math.Clamp(ProjectManager.ZoomFactor.Value + zoomChange, 0.1, 8.0);
-            await ProjectManager.ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 30);
+            await ProjectManager.ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 100);
         }
     }
 }

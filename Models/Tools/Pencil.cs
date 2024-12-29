@@ -62,6 +62,11 @@ namespace MVVMPaintApp.Models.Tools
             base.OnMouseUp(sender, e, p);
         }
 
+        public override Cursor GetCursor()
+        {
+            return Cursors.Pen;
+        }
+
         public override void DrawPreview(Point p, Color color)
         {
             HitCheck(ref p);
