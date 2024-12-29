@@ -21,7 +21,7 @@
         <conv:ZoomToScalingModeConverter x:Key="ZoomToScalingModeConverter"/>
     </UserControl.Resources>
         <Grid x:Name="MainCanvasGrid"
-          Background="Transparent">
+          Background="{DynamicResource ControlFillColorTertiaryBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>

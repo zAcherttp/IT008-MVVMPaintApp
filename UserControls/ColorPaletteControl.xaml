@@ -6,8 +6,7 @@
              xmlns:vm="clr-namespace:MVVMPaintApp.ViewModels"
              xmlns:uc="clr-namespace:MVVMPaintApp.UserControls"
              xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance vm:ColorPaletteViewModel, IsDesignTimeCreatable=True}">
+             mc:Ignorable="d">
     <UserControl.Resources>
         <conv:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <conv:BrushConverter x:Key="BrushConverter"/>
@@ -281,7 +280,7 @@
                PopupAnimation="Fade">
             <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
                     BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="2" 
-                    CornerRadius="5" Padding="10" Width="610">
+                    CornerRadius="10" Padding="10" Width="610">
                 <StackPanel>
                     <uc:ColorPickerControl SelectedColor="{Binding Path=DataContext.ColorPickerColor, 
                                                 RelativeSource={RelativeSource FindAncestor, 

@@ -9,9 +9,17 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
+using Microsoft.Win32;
 
 namespace MVVMPaintApp.Services
 {
+    public enum ImageFileType
+    {
+        PNG,
+        JPEG,
+        BMP
+    }
+
     public partial class ProjectManager : ObservableObject
     {
         public UndoRedoManager UndoRedoManager { get; }
@@ -208,6 +216,7 @@ namespace MVVMPaintApp.Services
             {
                 string projectJson = JsonConvert.SerializeObject(new SerializableProject(CurrentProject), Formatting.Indented);
                 File.WriteAllText(Path.Combine(CurrentProject.ProjectFolderPath, "project.json"), projectJson);
+                HasUnsavedChanges = false;
                 Debug.WriteLine("Project saved successfully.");
             }
             catch (Exception ex)
@@ -217,14 +226,117 @@ namespace MVVMPaintApp.Services
             }
         }
 
-        public static void SaveProjectAs(Project project)
+        public static void SaveProjectAs(Project project, ImageFileType fileType)
         {
-            //to be changed to save as Png/Jpeg/Bmp/Gif/Tiff
+            var dialog = new SaveFileDialog
+            {
+                Title = "Save Image As",
+                Filter = GetFileFilter(fileType),
+                DefaultExt = GetFileExtension(fileType),
+                AddExtension = true
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var renderTarget = new WriteableBitmap(
+                        project.Width,
+                        project.Height,
+                        96, 96,
+                        PixelFormats.Bgra32,
+                        null
+                    );
+
+                    renderTarget.FillRectangle(
+                        0, 0,
+                        project.Width,
+                        project.Height,
+                        project.Background
+                    );
+
+                    for (int i = project.Layers.Count - 1; i >= 0; i--)
+                    {
+                        var layer = project.Layers[i];
+                        if (layer.IsVisible && layer.Content != null)
+                        {
+                            renderTarget.Blit(
+                                new Rect(0, 0, project.Width, project.Height),
+                                layer.Content,
+                                new Rect(0, 0, project.Width, project.Height),
+                                WriteableBitmapExtensions.BlendMode.Alpha
+                            );
+                        }
+                    }
+
+                    using var fileStream = new FileStream(dialog.FileName, FileMode.Create);
+                    BitmapEncoder encoder = CreateEncoder(fileType);
+                    encoder.Frames.Add(BitmapFrame.Create(renderTarget));
+                    encoder.Save(fileStream);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"Failed to save image: {ex.Message}",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                    );
+                }
+            }
         }
+
+        private static string GetFileFilter(ImageFileType fileType)
+        {
+            return fileType switch
+            {
+                ImageFileType.PNG => "PNG Image|*.png",
+                ImageFileType.JPEG => "JPEG Image|*.jpg",
+                ImageFileType.BMP => "Bitmap Image|*.bmp",
+                _ => "PNG Image|*.png"
+            };
+        }
+
+        private static string GetFileExtension(ImageFileType fileType)
+        {
+            return fileType switch
+            {
+                ImageFileType.PNG => ".png",
+                ImageFileType.JPEG => ".jpg",
+                ImageFileType.BMP => ".bmp",
+                _ => ".png"
+            };
+        }
+
+        private static BitmapEncoder CreateEncoder(ImageFileType fileType)
+        {
+            return fileType switch
+            {
+                ImageFileType.PNG => new PngBitmapEncoder(),
+                ImageFileType.JPEG => new JpegBitmapEncoder { QualityLevel = 95 },
+                ImageFileType.BMP => new BmpBitmapEncoder(),
+                _ => new PngBitmapEncoder()
+            };
+        }
+
 
         public void SetCursor(Cursor cursor)
         {
             Cursor = cursor;
+        }
+
+        public async void ZoomIn()
+        {
+            var newZoomFactor = ZoomFactor.Value - 0.5 > 0.1 ? ZoomFactor.Value - 0.5 : 0.1;
+            if (Math.Abs(newZoomFactor - ZoomFactor.Value) < 0.01) return;
+            await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 300);
+        }
+
+        public async void ZoomOut()
+        {
+            var newZoomFactor = ZoomFactor.Value + 0.5 < 8 ? ZoomFactor.Value + 0.5 : 10;
+            if (Math.Abs(newZoomFactor - ZoomFactor.Value) < 0.01) return;
+            await ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 300);
         }
 
         [RelayCommand]
@@ -235,6 +347,9 @@ namespace MVVMPaintApp.Services
                 padding / CurrentProject.Width,
                 padding / CurrentProject.Height);
             double newPanOffsetY = (padding - CurrentProject.Height) / 2;
+
+            newPanOffsetY = newZoomFactor >= 1 ? 0 : newPanOffsetY;
+
             var tasks = new[]
             {
                 PanOffsetX.EaseToAsync(0, Easing.EasingType.EaseInOutCubic , 300),

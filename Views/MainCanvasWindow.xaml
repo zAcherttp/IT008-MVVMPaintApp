@@ -66,23 +66,27 @@
 
         <Menu Grid.Row="0" Panel.ZIndex="10" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
             <MenuItem Header="File">
-                <MenuItem Header="New"/>
-                <MenuItem Header="Open"/>
-                <MenuItem Header="Save"/>
-                <MenuItem Header="Save As"/>
-                <MenuItem Header="Exit"/>
+                <MenuItem Header="New" Command="{Binding NewCommand}"/>
+                <MenuItem Header="Open" Command="{Binding OpenCommand}"/>
+                <MenuItem Header="Save" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="Save As">
+                    <MenuItem Header="PNG" Command="{Binding SaveAsPNGCommand}"/>
+                    <MenuItem Header="JPG" Command="{Binding SaveAsJPEGCommand}"/>
+                    <MenuItem Header="BMP" Command="{Binding SaveAsBMPCommand}"/>
+                </MenuItem>
+                <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem Header="Undo"/>
-                <MenuItem Header="Redo"/>
-                <MenuItem Header="Cut"/>
-                <MenuItem Header="Copy"/>
-                <MenuItem Header="Paste"/>
+                <MenuItem Header="Undo" Command="{Binding UndoCommand}"/>
+                <MenuItem Header="Redo" Command="{Binding RedoCommand}"/>
+                <MenuItem Header="Cut" Command="{Binding CutCommand}"/>
+                <MenuItem Header="Copy" Command="{Binding CopyCommand}"/>
+                <MenuItem Header="Paste" Command="{Binding PasteCommand}"/>
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Zoom In"/>
-                <MenuItem Header="Zoom Out"/>
-                <MenuItem Header="Fit to Screen"/>
+                <MenuItem Header="Zoom In" Command="{Binding ZoomInCommand}"/>
+                <MenuItem Header="Zoom Out" Command="{Binding ZoomOutCommand}"/>
+                <MenuItem Header="Fit to Window" Command="{Binding FitToWindowCommand}"/>
             </MenuItem>
             <Separator/>
 
@@ -167,6 +171,21 @@
             <uc:ToolboxControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="30" Grid.Row="1"
                                DataContext="{Binding ToolboxViewModel}" DockPanel.Dock="Left" VerticalAlignment="Center"/>
         </DockPanel>
-
+        <Popup IsOpen="{Binding LayerViewModel.IsColorPickerOpen}"
+           PlacementTarget="{Binding ElementName=ZoomSlider}" 
+           Placement="Top" HorizontalOffset="-380" VerticalOffset="-13" AllowsTransparency="True"
+           PopupAnimation="Fade">
+            <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="2" 
+                CornerRadius="15" Padding="10" Width="610">
+                <StackPanel>
+                    <uc:ColorPickerControl SelectedColor="{Binding Path=DataContext.LayerViewModel.BackgroundColor, 
+                                                RelativeSource={RelativeSource FindAncestor, 
+                                                AncestorType={x:Type local:MainCanvasWindow}},
+                                                Mode=TwoWay}" Margin="0,0,0,-30" />
+                    <Button HorizontalAlignment="Right" Content="Set color" Command="{Binding LayerViewModel.SetBackgroundColorCommand}"/>
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

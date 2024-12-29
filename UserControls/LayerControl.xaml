@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conv="Mvv"
-             xmlns:local="clr-namespace:MVVMPaintApp.UserControls"
+             xmlns:uc="clr-namespace:MVVMPaintApp.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="100">
     <UserControl.Resources>
@@ -67,7 +67,8 @@
     </UserControl.Resources>
     <Border BorderBrush="{DynamicResource ControlElevationBorderBrush}"
             Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
-            BorderThickness="2" CornerRadius="15" ClipToBounds="True">
+            BorderThickness="2" CornerRadius="15" ClipToBounds="True"
+            x:Name="LayerControlBorder">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -125,7 +126,7 @@
             </ListView>
             <Line Grid.Row="2" Stroke="{DynamicResource ControlElevationBorderBrush}" X1="0" Y1="0" X2="120" Y2="0" StrokeThickness="1"/>
             <Border Grid.Row="2" Margin="0,15,0,20" Width="80" Height="80" MaxHeight="80" MaxWidth="80" BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="center" CornerRadius="10">
-                <Button Style="{StaticResource BackgroundButtonStyle}" >
+                <Button Style="{StaticResource BackgroundButtonStyle}" Command="{Binding ToggleColorPickerCommand}">
                     <Image Source="{Binding BackgroundLayer}" Margin="2"/>
                 </Button>
             </Border>
