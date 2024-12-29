@@ -6,10 +6,103 @@
              xmlns:local="clr-namespace:MVVMPaintApp.UserControls"
              xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
              xmlns:t="clr-namespace:MVVMPaintApp.Models"
+             xmlns:tools="clr-namespace:MVVMPaintApp.Models.Tools"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="260">
     <UserControl.Resources>
         <conv:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+        <Style x:Key="BrushSizeSlider" TargetType="Slider" BasedOn="{StaticResource {x:Type Slider}}">
+            <Setter Property="Orientation" Value="Vertical"/>
+            <Setter Property="Height" Value="100"/>
+            <Setter Property="Minimum" Value="1"/>
+            <Setter Property="Maximum" Value="100"/>
+            <Setter Property="TickFrequency" Value="1"/>
+            <Setter Property="IsSnapToTickEnabled" Value="True"/>
+        </Style>
+        <DataTemplate x:Key="BrushToolPopupContent">
+            <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="12">
+                <StackPanel MinWidth="120">
+                    <TextBlock Text="Brush Size" 
+                         HorizontalAlignment="Center" 
+                         Margin="0,0,0,8"
+                         FontWeight="Medium"/>
+                    <Slider Style="{StaticResource BrushSizeSlider}"
+                        Orientation="Vertical"
+                        Minimum="1"
+                        Maximum="100"
+                        Value="{Binding DataContext.SelectedTool.BrushSize, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type Window}}}"
+                        TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        Margin="0,4"/>
+                    <TextBlock Text="{Binding Value, StringFormat='Size: {0:0}', 
+                           RelativeSource={RelativeSource FindAncestor, 
+                           AncestorType={x:Type Slider}}}"
+                           HorizontalAlignment="Center"
+                           Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <!-- Template for shape tool -->
+        <DataTemplate x:Key="ShapeToolPopupContent">
+            <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="12">
+                <StackPanel Width="200">
+                    <TextBlock Text="Shape Properties" 
+                         HorizontalAlignment="Center" 
+                         FontWeight="Medium" 
+                         Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Stroke Size" 
+                         Margin="0,0,0,4"
+                         FontWeight="Medium"/>
+                    <Slider Style="{StaticResource BrushSizeSlider}"
+                        Orientation="Horizontal"
+                        Minimum="1"
+                        Maximum="20"
+                        Value="{Binding DataContext.SelectedTool.StrokeSize, 
+                                RelativeSource={RelativeSource FindAncestor, 
+                                AncestorType={x:Type Window}}}"
+                        TickFrequency="1"
+                        IsSnapToTickEnabled="True"
+                        Margin="0,0,0,12"/>
+
+                    <CheckBox Content="Filled Shape" 
+                         IsChecked="{Binding DataContext.SelectedTool.IsFilled,
+                                   RelativeSource={RelativeSource FindAncestor,
+                                   AncestorType={x:Type Window}}}"
+                         Margin="0,0,0,12"/>
+
+                    <TextBlock Text="Shape Type" 
+                         Margin="0,0,0,4"
+                         FontWeight="Medium"/>
+                    <ListView ItemsSource="{Binding Source={x:Static tools:Shape.ShapeTypes}}"
+                        SelectedItem="{Binding DataContext.SelectedTool.CurrentShapeType,
+                                     RelativeSource={RelativeSource FindAncestor,
+                                     AncestorType={x:Type Window}}}"
+                        Height="120"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                        Background="Transparent"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Padding="4,2"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
         <Style x:Key="ToolRadioButtonStyle" TargetType="{x:Type RadioButton}">
             <Setter Property="FocusVisualStyle" Value="{DynamicResource DefaultControlFocusVisualStyle}" />
             <Setter Property="Background" Value="Transparent" />
@@ -23,41 +116,51 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type RadioButton}">
-                        <Border x:Name="BorderContainer" 
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="4">
-                            <ContentPresenter x:Name="ContentPresenter" 
+                        <Grid>
+                            <Border x:Name="BorderContainer" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <ContentPresenter x:Name="ContentPresenter" 
                                     Margin="{TemplateBinding Padding}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </Border>
+                            </Border>
+                            <Popup x:Name="ToolPopup" 
+                               PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                               Placement="Right"
+                               AllowsTransparency="True"
+                               PopupAnimation="Fade"
+                               StaysOpen="False">
+                                <ContentControl x:Name="PopupContent"/>
+                            </Popup>
+                        </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="BorderContainer" 
-                                Property="Background" 
-                                Value="{DynamicResource RadioButtonOuterEllipseFillPointerOver}" />
+                                    Property="Background" 
+                                    Value="{DynamicResource RadioButtonOuterEllipseFillPointerOver}" />
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="BorderContainer" 
-                                Property="Background" 
-                                Value="Transparent" />
+                                    Property="Background" 
+                                    Value="Transparent" />
                                 <Setter TargetName="BorderContainer" 
-                                Property="BorderBrush" 
-                                Value="{DynamicResource RadioButtonOuterEllipseCheckedStroke}" />
+                                    Property="BorderBrush" 
+                                    Value="{DynamicResource RadioButtonOuterEllipseCheckedStroke}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="BorderContainer" 
-                                Property="Background" 
-                                Value="{DynamicResource ButtonBackgroundPressed}" />
+                                    Property="Background" 
+                                    Value="{DynamicResource ButtonBackgroundPressed}" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="BorderContainer" 
-                                Property="Opacity" 
-                                Value="0.5" />
+                                    Property="Opacity" 
+                                    Value="0.5" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -71,49 +174,57 @@
                 BorderThickness="2"
                 CornerRadius="10" Width="50">
             <StackPanel Margin="0,0,0,0">
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Pencil}}">
                     <Image Source="/Resources/Pencil.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Brush}}">
                     <Image Source="/Resources/Brush.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Eraser}}">
                     <Image Source="/Resources/Eraser.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Fill}}">
                     <Image Source="/Resources/Fill.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ColorPicker}}">
                     <Image Source="/Resources/Picker.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Shape}}">
                     <Image Source="/Resources/Shape.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ZoomPan}}">
                     <Image Source="/Resources/Zoom.png" Width="32" Height="32"/>
                 </RadioButton>
-                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" 
+                <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
+                             MouseRightButtonDown="RadioButton_MouseRightButtonDown"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.RectSelect}}">

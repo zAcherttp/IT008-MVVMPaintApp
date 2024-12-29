@@ -64,6 +64,48 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="MergeDownIcon">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M24,24z M0,0z M13.22,17.219A0.75,0.75,0,0,0,13.147,18.195L13.22,18.279 15.587,20.649A0.77,0.77,0,0,0,16.251,21A0.786,0.786,0,0,0,16.862,20.724L16.915,20.649 19.282,18.279 19.355,18.195A0.75,0.75,0,0,0,19.362,17.313L19.282,17.219 19.198,17.146A0.75,0.75,0,0,0,18.315,17.139L18.221,17.219 17,18.44 17,3.656 16.993,3.567C16.943,3.247 16.63,3 16.25,3 15.87,3 15.556,3.247 15.507,3.567L15.5,3.657 15.5,18.44 14.28,17.219 14.196,17.146A0.75,0.75,0,0,0,13.22,17.219z M6.25,20.008A2.25,2.25,0,0,1,4,17.758L4,6.258A2.25,2.25,0,0,1,6.25,4.008L12.25,4.008A0.75,0.75,0,0,1,12.25,5.508L6.25,5.508A0.75,0.75,0,0,0,5.5,6.258L5.5,17.758C5.5,18.172,5.836,18.508,6.25,18.508L10.25,18.508A0.75,0.75,0,0,1,10.25,20.008L6.25,20.008z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="UpArrowIcon">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M24,24z M0,0z M4.21,10.733A0.75,0.75,0,0,0,5.296,11.767L11.25,5.516 11.25,20.25A0.75,0.75,0,0,0,12.75,20.25L12.75,5.516 18.705,11.767A0.75,0.75,0,0,0,19.791,10.733L12.724,3.313A0.995,0.995,0,0,0,12.144,3.013A0.754,0.754,0,0,0,11.854,3.014A0.995,0.995,0,0,0,11.276,3.314L4.21,10.733z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="DownArrowIcon">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M24,24z M0,0z M19.79,13.267A0.75,0.75,0,0,0,18.704,12.233L12.75,18.484 12.75,3.75A0.75,0.75,0,1,0,11.25,3.75L11.25,18.484 5.295,12.233A0.75,0.75,0,0,0,4.209,13.267L11.276,20.687C11.436,20.855,11.642,20.955,11.856,20.987A0.753,0.753,0,0,0,12.146,20.986A0.995,0.995,0,0,0,12.724,20.686L19.791,13.267z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="DeleteIcon">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M24,24z M0,0z M12,1.75A3.25,3.25,0,0,1,15.245,4.816L15.25,5 20.5,5A0.75,0.75,0,0,1,20.602,6.493L20.5,6.5 19.704,6.5 18.424,19.52A2.75,2.75,0,0,1,15.863,21.994L15.687,22 8.313,22A2.75,2.75,0,0,1,5.599,19.693L5.576,19.519 4.295,6.5 3.5,6.5A0.75,0.75,0,0,1,2.757,5.852L2.75,5.75A0.75,0.75,0,0,1,3.398,5.007L3.5,5 8.75,5A3.25,3.25,0,0,1,12,1.75z M18.197,6.5L5.802,6.5 7.069,19.372A1.25,1.25,0,0,0,8.186,20.494L8.313,20.5 15.687,20.5C16.287,20.5,16.796,20.075,16.912,19.498L16.932,19.372 18.196,6.5z M13.75,9.25A0.75,0.75,0,0,1,14.493,9.898L14.5,10 14.5,17A0.75,0.75,0,0,1,13.007,17.102L13,17 13,10A0.75,0.75,0,0,1,13.75,9.25z M10.25,9.25A0.75,0.75,0,0,1,10.993,9.898L11,10 11,17A0.75,0.75,0,0,1,9.507,17.102L9.5,17 9.5,10A0.75,0.75,0,0,1,10.25,9.25z M12,3.25A1.75,1.75,0,0,0,10.256,4.856L10.25,5 13.75,5A1.75,1.75,0,0,0,12,3.25z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="HideIcon">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M24,24z M0,0z M2.22,2.22A0.75,0.75,0,0,0,2.147,3.196L2.22,3.28 6.254,7.315A9.986,9.986,0,0,0,2.299,13.065A0.75,0.75,0,0,0,3.754,13.429A8.49,8.49,0,0,1,7.334,8.395L9.144,10.205A4,4,0,0,0,14.8,15.86L20.719,21.78A0.75,0.75,0,0,0,21.852,20.803L21.779,20.719 15.666,14.605 15.667,14.603 14.467,13.405 11.597,10.535 11.599,10.535 8.719,7.658 8.72,7.656 7.587,6.526 3.28,2.22A0.75,0.75,0,0,0,2.22,2.22z M10.204,11.265L13.739,14.801A2.5,2.5,0,0,1,10.204,11.266z M12,5.5C11,5.5,10.03,5.648,9.111,5.925L10.348,7.161A8.503,8.503,0,0,1,20.247,13.433A0.75,0.75,0,0,0,21.702,13.07A10.003,10.003,0,0,0,12,5.5z M12.195,9.01L15.996,12.81A4.003,4.003,0,0,0,12.195,9.01z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="ShowIcon">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M24,24z M0,0z M12,9.005A4,4,0,1,1,12,17.005A4,4,0,0,1,12,9.005z M12,10.505A2.5,2.5,0,1,0,12,15.505A2.5,2.5,0,0,0,12,10.505z M12,5.5C16.613,5.5,20.596,8.65,21.701,13.064A0.75,0.75,0,1,1,20.246,13.429A8.503,8.503,0,0,0,3.753,13.433A0.75,0.75,0,0,1,2.298,13.07A10.003,10.003,0,0,1,12,5.5z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
     </UserControl.Resources>
     <Border BorderBrush="{DynamicResource ControlElevationBorderBrush}"
             Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
@@ -104,23 +146,49 @@
                                 <Style TargetType="MenuItem">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding SelectedLayer.IsVisible}" Value="True">
-                                            <Setter Property="Header" Value="👁️‍🗨️ Hide"/>
+                                            <Setter Property="Header" Value="Hide"/>
+                                            <Setter Property="Icon">
+                                                <Setter.Value>
+                                                    <Image Source="{StaticResource HideIcon}" Width="16" Height="16"/>
+                                                </Setter.Value>
+                                            </Setter>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding SelectedLayer.IsVisible}" Value="False">
-                                            <Setter Property="Header" Value="🔍 Show"/>
+                                            <Setter Property="Header" Value="Show"/>
+                                            <Setter Property="Icon">
+                                                <Setter.Value>
+                                                    <Image Source="{StaticResource ShowIcon}" Width="16" Height="16"/>
+                                                </Setter.Value>
+                                            </Setter>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </MenuItem.Style>
                         </MenuItem>
-                        <MenuItem Header="⬇️ Merge Down" 
-                          Command="{Binding MergeLayerDownCommand}"/>
-                        <MenuItem Header="▲ Move Up" 
-                          Command="{Binding MoveLayerUpCommand}"/>
-                        <MenuItem Header="▼ Move Down" 
-                          Command="{Binding MoveLayerDownCommand}"/>
-                        <MenuItem Header="🗑️ Delete" 
-                          Command="{Binding DeleteLayerCommand}"/>
+                        <MenuItem Header="Merge Down"
+                          Command="{Binding MergeLayerDownCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource MergeDownIcon}" Width="16" Height="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Move Up"
+                          Command="{Binding MoveLayerUpCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource UpArrowIcon}" Width="16" Height="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Move Down"
+                          Command="{Binding MoveLayerDownCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource DownArrowIcon}" Width="16" Height="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Delete"
+                          Command="{Binding DeleteLayerCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource DeleteIcon}" Width="16" Height="16"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
             </ListView>

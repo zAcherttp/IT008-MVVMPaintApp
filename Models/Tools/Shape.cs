@@ -448,5 +448,13 @@ namespace MVVMPaintApp.Models.Tools
                 ProjectManager.Render(ShapeBounds.RenderBounds);
             }
         }
+
+        public static List<ShapeType> ShapeTypes
+        {
+            get
+            {
+                return [.. Enum.GetValues<ShapeType>().Cast<ShapeType>()];
+            }
+        }
     }
 }
