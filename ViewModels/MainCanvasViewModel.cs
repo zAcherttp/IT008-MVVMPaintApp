@@ -8,6 +8,7 @@ using System.Windows;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
+using MVVMPaintApp.Views;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -180,6 +181,23 @@ namespace MVVMPaintApp.ViewModels
         private void ZoomOut()
         {
             ProjectManager.ZoomOut();
+        }
+
+        [RelayCommand]
+        private async Task ShowResizeDialog()
+        {
+            var dialog = new ResizeDialog(ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                var viewModel = (ResizeDialogViewModel)dialog.DataContext;
+                // Apply the resize values
+                //ApplyResize(viewModel.Width, viewModel.Height);
+            }
         }
     }
 }

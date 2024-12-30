@@ -33,6 +33,7 @@ namespace MVVMPaintApp
             services.AddSingleton<ColorPaletteViewModel>();
             services.AddSingleton<LayerViewModel>();
             services.AddSingleton<ToolboxViewModel>();
+            services.AddSingleton<ResizeDialogViewModel>();
 
             services.AddSingleton<WindowMapper>();
             services.AddSingleton<UserControlMapper>();

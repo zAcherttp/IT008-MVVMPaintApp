@@ -53,6 +53,7 @@ namespace MVVMPaintApp.Models.Tools
         public Selection ShapeBounds { get; set; } = new Selection();
         public ShapeState CurrentState { get; private set; } = ShapeState.None;
         public ShapeType CurrentShapeType { get; set; } = ShapeType.Rectangle;
+        public bool IsFilled { get; set; } = false;
         public Point Start { get; set; }
         public WriteableBitmap? ShapeContent { get; set; }
         private WriteableBitmap? ShapeContentBackup;
@@ -61,7 +62,6 @@ namespace MVVMPaintApp.Models.Tools
         private int? ActiveHandleIndex;
         private Rect? PreviousRenderBounds;
         private Color ShapeColor = Colors.Black;
-        private bool IsFilled = false;
 
         public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {

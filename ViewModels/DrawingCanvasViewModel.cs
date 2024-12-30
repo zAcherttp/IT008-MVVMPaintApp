@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Input;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -93,6 +94,12 @@ namespace MVVMPaintApp.ViewModels
         partial void OnSelectedToolTypeChanged(ToolType value)
         {
             SetTool(value);
+        }
+
+        [RelayCommand]
+        private void SetRectSelectTool()
+        {
+            SetTool(ToolType.RectSelect);
         }
 
         public void SetUserControlSize(double width, double height)

@@ -358,5 +358,6 @@ namespace MVVMPaintApp.Services
             };
             await Task.WhenAll(tasks);
         }
+
     }
 }

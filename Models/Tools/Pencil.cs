@@ -9,7 +9,7 @@ namespace MVVMPaintApp.Models.Tools
 {
     public class Pencil : ToolBase
     {
-        public int Size { get; set; } = 1;
+        public int BrushSize { get; set; } = 1;
         public const int PREVIEW_STROKE_REGION_PADDING = 4;
 
         public Pencil(ProjectManager projectManager) : base(projectManager)
@@ -70,10 +70,10 @@ namespace MVVMPaintApp.Models.Tools
         public override void DrawPreview(Point p, Color color)
         {
             HitCheck(ref p);
-            int x1 = (int)(p.X - Size);
-            int y1 = (int)(p.Y - Size);
-            int x2 = (int)(p.X + Size);
-            int y2 = (int)(p.Y + Size);
+            int x1 = (int)(p.X - BrushSize);
+            int y1 = (int)(p.Y - BrushSize);
+            int x2 = (int)(p.X + BrushSize);
+            int y2 = (int)(p.Y + BrushSize);
 
             var region = new Rect(
                 x1 - PREVIEW_STROKE_REGION_PADDING,
@@ -101,7 +101,7 @@ namespace MVVMPaintApp.Models.Tools
             try
             {
                 HitCheck(ref point);
-                var totalPadding = Size + STROKE_REGION_PADDING;
+                var totalPadding = BrushSize + STROKE_REGION_PADDING;
                 var region = new Rect(
                     point.X - totalPadding,
                     point.Y - totalPadding,
@@ -142,11 +142,11 @@ namespace MVVMPaintApp.Models.Tools
                     float t = i / (float)steps;
                     var currentPoint = Lerp(start, end, t);
 
-                    var region = CalculateSegmentRegion(lastDrawnPoint, currentPoint, Size);
+                    var region = CalculateSegmentRegion(lastDrawnPoint, currentPoint, BrushSize);
 
-                    for (int dx = -Size / 2; dx <= Size / 2; dx++)
+                    for (int dx = -BrushSize / 2; dx <= BrushSize / 2; dx++)
                     {
-                        for (int dy = -Size / 2; dy <= Size / 2; dy++)
+                        for (int dy = -BrushSize / 2; dy <= BrushSize / 2; dy++)
                         {
                             var p = new Point(currentPoint.X + dx, currentPoint.Y + dy);
                             HitCheck(ref p);

@@ -215,7 +215,7 @@
             <Border x:Name="ColorPaletteControlBorder"
                     CornerRadius="10" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
                     BorderBrush="{DynamicResource ControlElevationBorderBrush}" BorderThickness="2"
-                    Width="325" Height="80">
+                    Width="335" Height="80">
                 <StackPanel Orientation="Horizontal">
                     <!-- Color Spectrum -->
                     <Button Width="50" Height="50" Margin="15,0,11,0" 

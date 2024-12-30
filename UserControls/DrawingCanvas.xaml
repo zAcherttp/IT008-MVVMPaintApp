@@ -26,7 +26,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="Debug" Grid.Row="0" Panel.ZIndex="10">
+        <!--<Grid x:Name="Debug" Grid.Row="0" Panel.ZIndex="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="50"/>
@@ -53,7 +53,7 @@
             <TextBlock Grid.Column="7" Text="{Binding ProjectManager.DrawingCanvasControlWidth, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
             <TextBlock Grid.Column="8" Text="Control X:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
             <TextBlock Grid.Column="9" Text="{Binding ProjectManager.DrawingCanvasControlHeight, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
-        </Grid>
+        </Grid>-->
         <Grid Grid.Row="1" x:Name="MainCanvasArea" Background="Transparent">
             <Canvas
             Background="White" 
