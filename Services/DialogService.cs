@@ -12,24 +12,36 @@ namespace MVVMPaintApp.Services
 
         public (bool dialogResult, T viewModel) ShowDialog<T>(T viewModel) where T : DialogViewModelBase
         {
-            var userControlType = userControlMapper.GetViewType(viewModel.GetType());
-            var dialog = new DialogWindow
+            try
             {
-                Title = viewModel.Title,
-                DataContext = viewModel,
-                Content = Activator.CreateInstance(userControlType!) as UserControl,
-                Owner = Application.Current.MainWindow,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
+                var userControlType = userControlMapper.GetViewType(viewModel.GetType());
+                var content = Activator.CreateInstance(userControlType!) as UserControl;
 
-            viewModel.RequestClose += result =>
+                var owner = Application.Current.Windows.OfType<Window>().FirstOrDefault();
+
+                var dialog = new DialogWindow
+                {
+                    Title = viewModel.Title,
+                    DataContext = viewModel,
+                    Content = content,
+                    Owner = owner,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                };
+
+                viewModel.RequestClose += result =>
+                {
+                    dialog.DialogResult = result == MessageBoxResult.OK || result == MessageBoxResult.Yes;
+                    dialog.Close();
+                };
+
+                var result = dialog.ShowDialog();
+                return (result ?? false, viewModel);
+            }
+            catch (Exception ex)
             {
-                dialog.DialogResult = result == MessageBoxResult.OK || result == MessageBoxResult.Yes;
-                dialog.Close();
-            };
-
-            var result = dialog.ShowDialog();
-            return (result ?? false, viewModel);
+                MessageBox.Show($"Dialog creation failed: {ex.Message}");
+                return (false, viewModel);
+            }
         }
     }
 }
