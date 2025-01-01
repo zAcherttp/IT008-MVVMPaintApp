@@ -164,7 +164,11 @@
                                     FontSize="18"
                                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                     Margin="0,4,0,0"
-                                    TextTrimming="CharacterEllipsis"/>
+                                    TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}" Direction="0" ShadowDepth="5" BlurRadius="10" Opacity="0.5"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

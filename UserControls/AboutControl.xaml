@@ -17,15 +17,17 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Content -->
             <Grid Grid.Row="0" Margin="0,0,0,20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Image Margin="10,0,10,0" RenderOptions.BitmapScalingMode="HighQuality" Grid.Column="0" Source="/Resources/MyPaintAppIcon.png" Width="50" Height="50"/>
-                <!--<Image Grid.Column="2" Source="/Resources/UIT.png" Width="50" Height="50"/>-->
+                <Image Margin="10,0,10,0" RenderOptions.BitmapScalingMode="HighQuality" Grid.Column="0" Source="/Resources/MyPaintAppIcon.png" Width="50" Height="50">
+                    <Image.Effect>
+                        <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}" Direction="-90" ShadowDepth="5" BlurRadius="10" Opacity="0.5"/>
+                    </Image.Effect>
+                </Image>
                 <TextBlock Grid.Column="1"
                            VerticalAlignment="Center"
                         Text="My Paint App"
@@ -61,10 +63,14 @@
                         <TextBlock Margin="10,0,0,0" Text="23521078 - Nguyễn Đức Nhân" Grid.Row="1" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                         <TextBlock Margin="10,0,0,0" Text="23521150 - Thang Tuấn Phát" Grid.Row="2" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                     </Grid>
-                    <Image Grid.Column="1" Margin="20,0,0,0" Source="/Resources/UIT.png" Height="60" Width="60" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Image Grid.Column="1" Margin="20,0,0,0" Source="/Resources/UIT.png" Height="60" Width="60" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Effect>
+                            <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}" Direction="-90" ShadowDepth="5" BlurRadius="10" Opacity="0.2"/>
+                        </Image.Effect>
+                    </Image>
                 </Grid>
             </Grid>
-            <StackPanel Grid.Row="2" 
+            <StackPanel Grid.Row="2" Margin="0,20,0,0"
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right">
                 <Button Content="Close"

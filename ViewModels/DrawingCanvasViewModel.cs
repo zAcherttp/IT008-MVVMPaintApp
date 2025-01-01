@@ -51,7 +51,7 @@ namespace MVVMPaintApp.ViewModels
             ProjectManager = projectManager;
             CurrentProject = projectManager.CurrentProject;
             CanvasSize = $"{CurrentProject.Width}, {CurrentProject.Height}px";
-            SelectedTool = new Pencil(projectManager);
+            SelectedTool = new Default(projectManager);
             keyHandler = new KeyHandler();
             InitZoomPresets();
             RegisterKeyCommands();
@@ -64,7 +64,7 @@ namespace MVVMPaintApp.ViewModels
             ProjectManager = projectManager;
             CurrentProject = projectManager.CurrentProject;
             CanvasSize = $"{CurrentProject.Width}, {CurrentProject.Height}px";
-            SelectedTool = new Pencil(projectManager);
+            SelectedTool = new Default(projectManager);
             ProjectManager.Render();
         }
 

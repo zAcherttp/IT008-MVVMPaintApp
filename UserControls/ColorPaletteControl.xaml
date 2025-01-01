@@ -208,6 +208,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <DropShadowEffect x:Key="ControlElevationEffect" ShadowDepth="2" BlurRadius="2" Color="{DynamicResource ControlElevationShadowColor}" Opacity="0.25"/>
     </UserControl.Resources>
 
     <Grid>
@@ -223,7 +224,7 @@
                             Style="{StaticResource GradientButtonStyle}"
                             Command="{Binding ToggleColorPickerCommand}">
                         <Button.Content>
-                            <Image Source="pack://application:,,,/Resources/ColorPaletteGradientButtonIcon.png" Width="32" Height="32"/>
+                            <Image Source="/Resources/ColorPaletteGradientButtonIcon.png" Width="32" Height="32" Effect="{StaticResource ControlElevationEffect}"/>
                         </Button.Content>
                     </Button>
 
@@ -231,7 +232,7 @@
 
                     <!-- Color List -->
                     <ItemsControl x:Name="ColorList" Margin="12,0,12,0" Width="174" Height="60" 
-                                ItemsSource="{Binding PaletteColors}">
+                                ItemsSource="{Binding PaletteColors}" Effect="{StaticResource ControlElevationEffect}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Rows="3" Columns="9"/>
@@ -263,12 +264,12 @@
                                    Margin="10,0,10,0" Height="30" Width="30"
                                    Style="{StaticResource ActiveColorButtonStyle}"
                                    Background="{Binding ProjectManager.PrimaryColor, Converter={StaticResource BrushConverter}}"
-                                   Command="{Binding SetPrimaryColorCommand}"/>
+                                   Command="{Binding SetPrimaryColorCommand}" Effect="{StaticResource ControlElevationEffect}"/>
                         <RadioButton x:Name="SecondaryColorRadioButton"
                                    Margin="10,0,10,0" Height="30" Width="30"
                                    Style="{StaticResource ActiveColorButtonStyle}"
                                    Background="{Binding ProjectManager.SecondaryColor, Converter={StaticResource BrushConverter}}"
-                                   Command="{Binding SetSecondaryColorCommand}"/>
+                                   Command="{Binding SetSecondaryColorCommand}" Effect="{StaticResource ControlElevationEffect}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
