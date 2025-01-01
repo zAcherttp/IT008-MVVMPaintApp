@@ -7,7 +7,7 @@ namespace MVVMPaintApp.Services
         private readonly Stack<HistoryEntry> undoStack = new();
         private readonly Stack<HistoryEntry> redoStack = new();
         private readonly ProjectManager projectManager = projectManager;
-        private const int MAX_HISTORY = 10;
+        private const int MAX_HISTORY = 20;
 
         public bool CanUndo => undoStack.Count > 0;
         public bool CanRedo => redoStack.Count > 0;

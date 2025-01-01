@@ -9,6 +9,7 @@
         x:Class="MVVMPaintApp.Views.MainCanvasWindow"
         xmlns:conv="clr-namespace:MVVMPaintApp.Converters"
         WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         mc:Ignorable="d"
         Closing="MainCanvasWindow_Closing"
         PreviewKeyUp="MainCanvasWindow_PreviewKeyUp"
@@ -180,6 +181,13 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="AboutIcon">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M24,24z M0,0z M12,1.999C17.524,1.999 22.002,6.477 22.002,12.001 22.002,17.524 17.524,22.002 12,22.002 6.476,22.002 1.998,17.524 1.998,12.001 1.998,6.477 6.476,1.999 12,1.999z M12,3.499A8.502,8.502,0,1,0,12,20.502A8.502,8.502,0,0,0,12,3.5z M11.996,10.499A0.75,0.75,0,0,1,12.74,11.147L12.747,11.249 12.75,16.751A0.75,0.75,0,0,1,11.257,16.853L11.25,16.752 11.247,11.25A0.75,0.75,0,0,1,11.997,10.5z M12,7.003A0.999,0.999,0,1,1,12,9A0.999,0.999,0,0,1,12,7.003z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <Style x:Key="FitToWindowButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource DefaultButtonStyle}">
@@ -272,100 +280,114 @@
                 </Grid>
             </Grid>
         </Border>
-        <Menu Grid.Row="0" Panel.ZIndex="10" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
-            <MenuItem Header="File">
-                <MenuItem Header="New" Command="{Binding NewCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource NewIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Menu Grid.Column="0" Panel.ZIndex="10" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
+                <MenuItem Header="File">
+                    <MenuItem Header="New" Command="{Binding NewCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource NewIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Open" Command="{Binding OpenCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource OpenIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Save" Command="{Binding SaveCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource SaveIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Save As">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource SaveAsIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                        <MenuItem Header="PNG" Command="{Binding SaveAsPNGCommand}"/>
+                        <MenuItem Header="JPG" Command="{Binding SaveAsJPEGCommand}"/>
+                        <MenuItem Header="BMP" Command="{Binding SaveAsBMPCommand}"/>
+                    </MenuItem>
+                    <MenuItem Header="Exit" Command="{Binding ExitCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource ExitIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
-                <MenuItem Header="Open" Command="{Binding OpenCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource OpenIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Undo" Command="{Binding UndoCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource UndoIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Redo" Command="{Binding RedoCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource RedoIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Cut" Command="{Binding CutCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource CutIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Copy" Command="{Binding CopyCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource CopyIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Paste" Command="{Binding PasteCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource PasteIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
-                <MenuItem Header="Save" Command="{Binding SaveCommand}">
+                <MenuItem Header="View">
+                    <MenuItem Header="Zoom In" Command="{Binding ZoomInCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource ZoomInIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Zoom Out" Command="{Binding ZoomOutCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource ZoomOutIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Fit to Window" Command="{Binding ProjectManager.FitToWindowCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FitToWindowIcon}" Width="20" Height="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <Separator Margin="0,5,0,5" BorderThickness="1"/>
+                <MenuItem Command="{Binding SaveCommand}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource SaveIcon}" Width="20" Height="20"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save As">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource SaveAsIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
-                    <MenuItem Header="PNG" Command="{Binding SaveAsPNGCommand}"/>
-                    <MenuItem Header="JPG" Command="{Binding SaveAsJPEGCommand}"/>
-                    <MenuItem Header="BMP" Command="{Binding SaveAsBMPCommand}"/>
-                </MenuItem>
-                <MenuItem Header="Exit" Command="{Binding ExitCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource ExitIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Undo" Command="{Binding UndoCommand}">
+                <Separator Margin="0,5,0,5" BorderThickness="1"/>
+                <MenuItem Command="{Binding UndoCommand}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource UndoIcon}" Width="20" Height="20"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Redo" Command="{Binding RedoCommand}">
+                <MenuItem Command="{Binding RedoCommand}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource RedoIcon}" Width="20" Height="20"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Cut" Command="{Binding CutCommand}">
+            </Menu>
+            <Menu Grid.Column="1"  Panel.ZIndex="10" FlowDirection="RightToLeft" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
+                <MenuItem Command="{Binding ShowAboutDialogCommand}">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource CutIcon}" Width="20" Height="20"/>
+                        <Image Source="{StaticResource AboutIcon}" Width="20" Height="20"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Copy" Command="{Binding CopyCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource CopyIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Paste" Command="{Binding PasteCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource PasteIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="View">
-                <MenuItem Header="Zoom In" Command="{Binding ZoomInCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource ZoomInIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Zoom Out" Command="{Binding ZoomOutCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource ZoomOutIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Fit to Window" Command="{Binding ProjectManager.FitToWindowCommand}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource FitToWindowIcon}" Width="20" Height="20"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <Separator Margin="0,5,0,5" BorderThickness="1"/>
-            <MenuItem Command="{Binding SaveCommand}">
-                <MenuItem.Icon>
-                    <Image Source="{StaticResource SaveIcon}" Width="20" Height="20"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator Margin="0,5,0,5" BorderThickness="1"/>
-            <MenuItem Command="{Binding UndoCommand}">
-                <MenuItem.Icon>
-                    <Image Source="{StaticResource UndoIcon}" Width="20" Height="20"/>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Command="{Binding RedoCommand}">
-                <MenuItem.Icon>
-                    <Image Source="{StaticResource RedoIcon}" Width="20" Height="20"/>
-                </MenuItem.Icon>
-            </MenuItem>
-        </Menu>
-        
+            </Menu>
+        </Grid>
+       
+
         <StatusBar Grid.Row="3" Panel.ZIndex="10" Padding="4" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
             <StatusBarItem Width="120" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <Grid x:Name="CursorInfo">
@@ -435,12 +457,12 @@
 
         <uc:DrawingCanvas Panel.ZIndex="0" Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                             DataContext="{Binding DrawingCanvasViewModel}"/>
-        
+
         <DockPanel Grid.Row="2">
-            <uc:LayerControl Panel.ZIndex="10" HorizontalAlignment="Right" Margin="10" Grid.Row="1" Visibility="{Binding LayerControlVisibility}"
+            <uc:LayerControl Panel.ZIndex="10" HorizontalAlignment="Right" Margin="30" Grid.Row="1" Visibility="{Binding LayerControlVisibility}"
                                 DataContext="{Binding LayerViewModel}" DockPanel.Dock="Right" VerticalAlignment="Stretch"/>
 
-            <uc:ColorPaletteControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="30,0,0,30" VerticalAlignment="Top" Grid.Row="1"
+            <uc:ColorPaletteControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="30" VerticalAlignment="Top" Grid.Row="1"
                                 DataContext="{Binding ColorPaletteViewModel}" DockPanel.Dock="Bottom"/>
 
             <uc:ToolboxControl Panel.ZIndex="10" HorizontalAlignment="Left" Margin="30" Grid.Row="1"

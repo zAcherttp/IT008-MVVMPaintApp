@@ -9,12 +9,14 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using MVVMPaintApp.Views;
+using System.Diagnostics;
 
 namespace MVVMPaintApp.ViewModels
 {
     public partial class MainCanvasViewModel : ObservableObject
     {
         private readonly IWindowManager windowManager;
+        public readonly IDialogService dialogService;
         private readonly ViewModelLocator viewModelLocator;
 
         [ObservableProperty]
@@ -54,10 +56,13 @@ namespace MVVMPaintApp.ViewModels
             ColorPaletteViewModel.SetProjectColors(project.ColorsList);
             LayerViewModel.SetProjectManager(ProjectManager);
             ToolboxViewModel.SetProjectManager(ProjectManager);
+
+            ProjectManager.FitToWindowCommand.Execute(null);
         }
 
         public MainCanvasViewModel(
             IWindowManager windowManager,
+            IDialogService dialogService,
             ViewModelLocator viewModelLocator,
             ProjectManager projectManager,
             DrawingCanvasViewModel drawingCanvasViewModel,
@@ -66,6 +71,7 @@ namespace MVVMPaintApp.ViewModels
             ToolboxViewModel toolboxViewModel)
         {
             this.windowManager = windowManager;
+            this.dialogService = dialogService;
             this.viewModelLocator = viewModelLocator;
             DrawingCanvasViewModel = drawingCanvasViewModel;
             ColorPaletteViewModel = colorPaletteViewModel;
@@ -186,18 +192,22 @@ namespace MVVMPaintApp.ViewModels
         [RelayCommand]
         private async Task ShowResizeDialog()
         {
-            var dialog = new ResizeDialog(ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height)
-            {
-                Owner = Application.Current.MainWindow
-            };
+            var vm = new ResizeViewModel(ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height);
+            var (result, dialogVm) = dialogService.ShowDialog(vm);
 
-            var result = dialog.ShowDialog();
-            if (result == true)
+            if (result)
             {
-                var viewModel = (ResizeDialogViewModel)dialog.DataContext;
-                // Apply the resize values
-                //ApplyResize(viewModel.Width, viewModel.Height);
+                Debug.WriteLine("Width: " + dialogVm.Width + " Height: " + dialogVm.Height);
+                Debug.WriteLine("IsPixels: " + dialogVm.IsPixels);
+                // Use dialogVm.Width and dialogVm.Height to resize the canvas
             }
+        }
+
+        [RelayCommand]
+        private void ShowAboutDialog()
+        {
+            var vm = new AboutViewModel();
+            dialogService.ShowDialog(vm);
         }
     }
 }

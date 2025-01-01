@@ -52,6 +52,7 @@ namespace MVVMPaintApp.Models.Tools
 
             ProjectManager.StrokeLayer.Clear(Colors.Transparent);
             ProjectManager.Render(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height));
+            ProjectManager.HasUnsavedChanges = true;
             CurrentStrokeRegion = null;
             OldState = null;
 

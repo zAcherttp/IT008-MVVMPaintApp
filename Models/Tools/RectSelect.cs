@@ -56,6 +56,7 @@ namespace MVVMPaintApp.Models.Tools
             OldState = ProjectManager.SelectedLayer.Content.Clone();
 
             CurrentStrokeRegion = new Rect(p, new Size(1, 1));
+            ProjectManager.HasUnsavedChanges = true;
             HitCheck(ref p);
             Start = p;
             Selection.UpdateBounds(Start, Start);

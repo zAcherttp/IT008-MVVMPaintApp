@@ -55,7 +55,6 @@ namespace MVVMPaintApp.UserControls
             if (ViewModel.ProjectManager.SelectedLayer.IsVisible && ViewModel.SelectedTool is not ZoomPan)
             {
                 ViewModel.HandleMouseUp(sender, e, p);
-                ViewModel.ProjectManager.HasUnsavedChanges = true;
             }
             else
             {

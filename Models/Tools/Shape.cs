@@ -94,6 +94,7 @@ namespace MVVMPaintApp.Models.Tools
                 }
             }
 
+            ProjectManager.HasUnsavedChanges = true;
             HitCheck(ref p);
             Start = p;
             CurrentState = ShapeState.Creating;

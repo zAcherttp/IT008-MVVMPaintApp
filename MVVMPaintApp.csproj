@@ -7,6 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon>mypaintapp.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,11 +22,18 @@
     <None Remove="Resources\MyPaintAppIcon.png" />
     <None Remove="Resources\Pencil.png" />
     <None Remove="Resources\Picker.png" />
-    <None Remove="Resources\placeholder.png" />
     <None Remove="Resources\Shape.png" />
     <None Remove="Resources\Zoom.png" />
     <None Remove="Resources\ZoomSliderDown.png" />
     <None Remove="Resources\ZoomSliderUp.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="mypaintapp.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ViewModels\AboutViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +51,7 @@
     <Resource Include="Resources\MyPaintAppIcon.png" />
     <Resource Include="Resources\Pencil.png" />
     <Resource Include="Resources\Picker.png" />
-    <Resource Include="Resources\placeholder.png" />
+    <Resource Include="Resources\UIT.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +70,12 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\AboutControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UserControls\SaveChangesControl.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 

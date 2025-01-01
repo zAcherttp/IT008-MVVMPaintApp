@@ -49,6 +49,7 @@ namespace MVVMPaintApp.Models.Tools
                         ProjectManager.SelectedLayer,
                         CurrentStrokeRegion.Value,
                         OldState));
+            ProjectManager.HasUnsavedChanges = true;
         }
 
         private int[] ScanlineFill(int[] pixels, int width, int height, int x, int y, Color targetColor, Color fillColor)

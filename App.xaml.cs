@@ -20,7 +20,7 @@ namespace MVVMPaintApp
         public App()
         {
             ConfigureServices(serviceCollection);
-            serviceProvider = serviceCollection.BuildServiceProvider();
+            serviceProvider = serviceCollection.BuildServiceProvider(); 
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -33,13 +33,15 @@ namespace MVVMPaintApp
             services.AddSingleton<ColorPaletteViewModel>();
             services.AddSingleton<LayerViewModel>();
             services.AddSingleton<ToolboxViewModel>();
-            services.AddSingleton<ResizeDialogViewModel>();
+            services.AddSingleton<ResizeViewModel>();
+            services.AddSingleton<SaveChangesViewModel>();
+            services.AddSingleton<AboutViewModel>();
 
             services.AddSingleton<WindowMapper>();
             services.AddSingleton<UserControlMapper>();
             services.AddSingleton<ViewModelLocator>();
             services.AddSingleton<ProjectManager>();
-            services.AddSingleton<ITool, Pencil>();
+            services.AddTransient<IDialogService, DialogService>();
             services.AddSingleton<IProjectFactory, ProjectFactory>();
             services.AddSingleton<IWindowManager, WindowManager>();
         }

@@ -7,6 +7,9 @@ using MVVMPaintApp.UserControls;
 using System.Windows.Controls;
 using MVVMPaintApp.Models;
 using MVVMPaintApp.Converters;
+using Microsoft.Extensions.DependencyInjection;
+using MVVMPaintApp.Interfaces;
+using System.Diagnostics;
 
 namespace MVVMPaintApp.Views
 {
@@ -58,12 +61,13 @@ namespace MVVMPaintApp.Views
         {
             if (ViewModel.ProjectManager.HasUnsavedChanges)
             {
-                var result = MessageBox.Show("Do you want to save changes?", "Unsaved changes", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Yes)
+                var vm = new SaveChangesViewModel();
+                var (result, dialogVm) = ViewModel.dialogService.ShowDialog(vm);
+                if (result)
                 {
                     ViewModel.ProjectManager.SaveProject();
                 }
-                else if (result == MessageBoxResult.Cancel)
+                else if (dialogVm.DialogResult == MessageBoxResult.Cancel)
                 {
                     e.Cancel = true;
                 }
