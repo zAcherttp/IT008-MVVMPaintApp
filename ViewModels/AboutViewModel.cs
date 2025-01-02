@@ -9,6 +9,12 @@ namespace MVVMPaintApp.ViewModels
     {
         private const string title = "About";
 
+        [ObservableProperty]
+        private string version = "v0.5.8";
+
+        [ObservableProperty]
+        private string appName = "My Paint App";
+
         public AboutViewModel() : base(title) { }
 
         [RelayCommand]
