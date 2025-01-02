@@ -219,7 +219,7 @@ namespace MVVMPaintApp.Models.Tools
             ProjectManager.Render(renderRegion);
         }
 
-        private void CommitSelection()
+        public void CommitSelection()
         {
             if (SelectedContent != null)
             {

@@ -145,7 +145,11 @@
                 CornerRadius="10" Width="50">
             <StackPanel Margin="0,0,0,0">
                 <StackPanel.Effect>
-                    <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}" Direction="270" ShadowDepth="5" BlurRadius="10" Opacity="0.2"/>
+                    <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}"
+                                      Direction="270"
+                                      ShadowDepth="5"
+                                      BlurRadius="10"
+                                      Opacity="0.2" />
                 </StackPanel.Effect>
                 <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
                              ContextMenu="{StaticResource BrushToolsMenu}"

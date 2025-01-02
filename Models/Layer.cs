@@ -30,12 +30,21 @@ namespace MVVMPaintApp.Models
         private int thumbnailSizeWidth;
         private int thumbnailSizeHeight;
         private int thumbnailCheckerSize;
-        public Layer(int index, int width, int height)
+
+        public Layer(int index, int width, int height, WriteableBitmap? content = null)
         {
             Index = index;
             Width = width;
             Height = height;
             Content = BitmapFactory.New(width, height);
+            if (content != null)
+            {
+                int w = (int)content.Width;
+                var h = (int)content.Height;
+                if (w > width) w = width;
+                if (h > height) h = height;
+                Content.Blit(new Rect(0, 0, w, h), content, new Rect(0, 0, w, h), WriteableBitmapExtensions.BlendMode.Alpha);
+            }
             thumbnailSizeWidth = 80;
             thumbnailSizeHeight = (int)(80 / (Width / (double)Height));
             LayerThumbnail = BitmapFactory.New(thumbnailSizeWidth, thumbnailSizeHeight);
@@ -50,7 +59,53 @@ namespace MVVMPaintApp.Models
         {
             if (Content != null && layer.Content != null)
             {
-                Content.Blit(new Rect(0, 0, Width, Height), layer.Content, new Rect(0, 0, layer.Width, layer.Height), WriteableBitmapExtensions.BlendMode.Alpha);
+                layer.Content.Blit(new Rect(0, 0, Width, Height), Content, new Rect(0, 0, layer.Width, layer.Height), WriteableBitmapExtensions.BlendMode.Alpha);
+                Content = layer.Content;
+            }
+            RenderThumbnail();
+        }
+
+        public void Resize(int newWidth, int newHeight)
+        {
+            Content = Content.Resize(newWidth, newHeight, WriteableBitmapExtensions.Interpolation.NearestNeighbor);
+            Width = newWidth;
+            Height = newHeight;
+            thumbnailSizeHeight = (int)(thumbnailSizeWidth / (Width / (double)Height));
+            layerThumbnailBackupTexture = BitmapFactory.New(thumbnailSizeWidth, thumbnailSizeHeight);
+            InitializeThumbnail();
+        }
+
+        public void Crop(Rect rect)
+        {
+            if (Content != null)
+            {
+                Content = Content.Crop((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
+                Width = (int)rect.Width;
+                Height = (int)rect.Height;
+                thumbnailSizeHeight = (int)(thumbnailSizeWidth / (Width / (double)Height));
+                layerThumbnailBackupTexture = BitmapFactory.New(thumbnailSizeWidth, thumbnailSizeHeight);
+                InitializeThumbnail();
+            }
+        }
+
+        public void Flip(WriteableBitmapExtensions.FlipMode flipMode)
+        {
+            if (Content != null)
+            {
+                Content = Content.Flip(flipMode);
+                RenderThumbnail();
+            }
+        }
+
+        public void Rotate(int degrees)
+        {
+            if (Content != null)
+            {
+                Content = Content.Rotate(degrees);
+                (Height, Width) = (Width, Height);
+                thumbnailSizeHeight = (int)(thumbnailSizeWidth / (Width / (double)Height));
+                layerThumbnailBackupTexture = BitmapFactory.New(thumbnailSizeWidth, thumbnailSizeHeight);
+                InitializeThumbnail();
             }
         }
 

@@ -46,6 +46,12 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private int windowHeight = 900;
 
+        [ObservableProperty]
+        private bool isFlipPopupVisible = false;
+
+        [ObservableProperty]
+        private bool isRotatePopupVisible = false;
+
         [RelayCommand]
         public void SetProject(Project project)
         {
@@ -136,25 +142,13 @@ namespace MVVMPaintApp.ViewModels
             ProjectManager.UndoRedoManager.Redo();
         }
 
-        //<MenuItem Header = "Copy" Command="{Binding CopyCommand}"/>
-        //<MenuItem Header = "Paste" Command="{Binding PasteCommand}"/>
-        //< MenuItem Header="Zoom In" Command="{Binding ZoomInCommand}"/>
-        //<MenuItem Header = "Zoom Out" Command="{Binding ZoomOutCommand}"/>
-        //<MenuItem Header = "Fit to Window" Command="{Binding FitToWindowCommand}"/>
-
-        //[RelayCommand]
-        //private void Cut()
-        //{
-        //    ProjectManager.Cut();
-        //}
-
         [RelayCommand]
         private void Copy()
         {
             if (DrawingCanvasViewModel.SelectedTool is RectSelect rectSelect && rectSelect.SelectedContent != null)
             {
-                var wb = rectSelect.SelectedContent;
-
+                var wb = rectSelect.SelectedContent.Clone();
+                rectSelect.CommitSelection();
                 BitmapSource bitmapSource = BitmapSource.Create(
                     wb.PixelWidth, wb.PixelHeight,
                     wb.DpiX, wb.DpiY,
@@ -171,11 +165,107 @@ namespace MVVMPaintApp.ViewModels
             }
         }
 
-        //[RelayCommand]
-        //private void Paste()
-        //{
-        //    ProjectManager.Paste();
-        //}
+        [RelayCommand]
+        private void Paste()
+        {
+            if(DrawingCanvasViewModel.SelectedTool is RectSelect rectSelect && rectSelect.SelectedContent != null)
+            {
+                rectSelect.CommitSelection();
+            }
+
+            if (!Clipboard.ContainsImage()) return;
+
+            var image = Clipboard.GetImage();
+            var bitmap = new WriteableBitmap(image);
+
+            ProjectManager.AddLayer(bitmap);
+            ProjectManager.Render();
+        }
+
+        [RelayCommand]
+        private void Cut()
+        {
+            if (DrawingCanvasViewModel.SelectedTool is RectSelect rectSelect && rectSelect.SelectedContent != null)
+            {
+                var wb = rectSelect.SelectedContent.Clone();
+                rectSelect.SelectedContent.Clear();
+                rectSelect.CommitSelection();
+                BitmapSource bitmapSource = BitmapSource.Create(
+                    wb.PixelWidth, wb.PixelHeight,
+                    wb.DpiX, wb.DpiY,
+                    PixelFormats.Bgra32,
+                    null,
+                    wb.BackBuffer,
+                    wb.BackBufferStride * wb.PixelHeight,
+                    wb.BackBufferStride
+                );
+
+                bitmapSource.Freeze();
+
+                Clipboard.SetImage(bitmapSource);
+            }
+        }
+
+        [RelayCommand]
+        private void Crop()
+        {
+            if (DrawingCanvasViewModel.SelectedTool is RectSelect rectSelect && rectSelect.SelectedContent != null)
+            {
+                var rect = rectSelect.Selection.Bounds;
+                rectSelect.CommitSelection();
+
+                ProjectManager.CropProject(rect);
+            }
+        }
+
+        [RelayCommand]
+        private void ToggleFlipPopup()
+        {
+            IsFlipPopupVisible ^= true;
+            IsRotatePopupVisible = false;
+        }
+
+        [RelayCommand]
+        private void FlipHorizontal()
+        {
+            ProjectManager.FlipProject(WriteableBitmapExtensions.FlipMode.Horizontal);
+            IsFlipPopupVisible = false;
+        }
+
+        [RelayCommand]
+        private void FlipVertical()
+        {
+            ProjectManager.FlipProject(WriteableBitmapExtensions.FlipMode.Vertical);
+            IsFlipPopupVisible = false;
+        }
+
+        [RelayCommand]
+        private void ToggleRotatePopup()
+        {
+            IsRotatePopupVisible ^= true;
+            IsFlipPopupVisible = false;
+        }
+
+        [RelayCommand]
+        private void Rotate90()
+        {
+            ProjectManager.RotateProject(90);
+            IsRotatePopupVisible = false;
+        }
+
+        [RelayCommand]
+        private void Rotate270()
+        {
+            ProjectManager.RotateProject(270);
+            IsRotatePopupVisible = false;
+        }
+
+        [RelayCommand]
+        private void Rotate180()
+        {
+            ProjectManager.RotateProject(180);
+            IsRotatePopupVisible = false;
+        }
 
         [RelayCommand]
         private void ZoomIn()
@@ -190,16 +280,14 @@ namespace MVVMPaintApp.ViewModels
         }
 
         [RelayCommand]
-        private async Task ShowResizeDialog()
+        private void ShowResizeDialog()
         {
             var vm = new ResizeViewModel(ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height);
             var (result, dialogVm) = dialogService.ShowDialog(vm);
 
             if (result)
             {
-                Debug.WriteLine("Width: " + dialogVm.Width + " Height: " + dialogVm.Height);
-                Debug.WriteLine("IsPixels: " + dialogVm.IsPixels);
-                // Use dialogVm.Width and dialogVm.Height to resize the canvas
+                ProjectManager.ResizeProject(dialogVm.Width, dialogVm.Height, dialogVm.IsPixels);
             }
         }
 

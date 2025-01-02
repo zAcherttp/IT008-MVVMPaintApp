@@ -119,6 +119,7 @@ namespace MVVMPaintApp.Services
                 (int)(region.Y + region.Height),
                 CurrentProject.Background
             );
+            Debug.WriteLine("Rendering project at size: " + RenderTarget.PixelWidth + "x" + RenderTarget.PixelHeight);
 
             for (int i = CurrentProject.Layers.Count - 1; i >= 0; i--)
             {
@@ -160,9 +161,23 @@ namespace MVVMPaintApp.Services
         public void AddLayer()
         {
             HasUnsavedChanges = true;
-            int count = CurrentProject.Layers.Count;
-            Layer layer = new(count + 1, CurrentProject.Width, CurrentProject.Height);
-            CurrentProject.Layers.Add(layer);
+            foreach (var l in CurrentProject.Layers)
+            {
+                l.Index++;
+            }
+            Layer layer = new(0, CurrentProject.Width, CurrentProject.Height);
+            CurrentProject.Layers.Insert(0, layer);
+        }
+
+        public void AddLayer(WriteableBitmap content)
+        {
+            HasUnsavedChanges = true;
+            foreach (var l in CurrentProject.Layers)
+            {
+                l.Index++;
+            }
+            Layer layer = new(0, CurrentProject.Width, CurrentProject.Height, content);
+            CurrentProject.Layers.Insert(0, layer);
         }
 
         public void RemoveLayer(object layer)
@@ -319,6 +334,71 @@ namespace MVVMPaintApp.Services
             };
         }
 
+        public void ResizeProject(int width, int height, bool isPixels)
+        {
+            var w = width;
+            var h = height;
+            if (!isPixels)
+            {
+                w = CurrentProject.Width * width / 100;
+                h = CurrentProject.Height * height / 100;
+            }
+            if (w == CurrentProject.Width && h == CurrentProject.Height) return;
+            if (w < 99 || h < 99) return;
+
+            HasUnsavedChanges = true;
+            CurrentProject.Width = w;
+            CurrentProject.Height = h;
+            RenderTarget = new WriteableBitmap(w, h, 96, 96, PixelFormats.Bgra32, null);
+            StrokeLayer = new WriteableBitmap(w, h, 96, 96, PixelFormats.Bgra32, null);
+            foreach (var layer in CurrentProject.Layers)
+            {
+                layer.Resize(w, h);
+            }
+            Render();
+        }
+
+        public void CropProject(Rect region)
+        {
+            var w = (int)region.Width;
+            var h = (int)region.Height;
+            if (w == CurrentProject.Width && h == CurrentProject.Height) return;
+            if (w < 99 || h < 99) return;
+
+            HasUnsavedChanges = true;
+            CurrentProject.Width = w;
+            CurrentProject.Height = h;
+            RenderTarget = new WriteableBitmap(w, h, 96, 96, PixelFormats.Bgra32, null);
+            StrokeLayer = new WriteableBitmap(w, h, 96, 96, PixelFormats.Bgra32, null);
+            foreach (var layer in CurrentProject.Layers)
+            {
+                layer.Crop(region);
+            }
+            Render();
+        }
+
+        public void FlipProject(WriteableBitmapExtensions.FlipMode flipMode)
+        {
+            HasUnsavedChanges = true;
+            foreach (var layer in CurrentProject.Layers)
+            {
+                layer.Flip(flipMode);
+            }
+            Render();
+        }
+
+        public void RotateProject(int degrees)
+        {
+            HasUnsavedChanges = true;
+            (CurrentProject.Width, CurrentProject.Height) = (CurrentProject.Height, CurrentProject.Width);
+            RenderTarget = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Bgra32, null);
+            StrokeLayer = new WriteableBitmap(CurrentProject.Width, CurrentProject.Height, 96, 96, PixelFormats.Bgra32, null);
+            foreach (var layer in CurrentProject.Layers)
+            {
+                layer.Rotate(degrees);
+            }
+            Render();
+        }
 
         public void SetCursor(Cursor cursor)
         {

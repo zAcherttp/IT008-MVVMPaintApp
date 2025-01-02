@@ -69,7 +69,7 @@ namespace MVVMPaintApp.Models
             ProjectFolderPath = Path.Combine(defaultFolder, Name);
             Layers = [new(0, Width, Height), new(1, Width, Height)];
             Background = Colors.White;
-            ColorsList = Enumerable.Repeat(Colors.Transparent, 18).ToList();
+            ColorsList = [.. Enumerable.Repeat(Colors.Transparent, 18)];
         }
 
         public Project()
