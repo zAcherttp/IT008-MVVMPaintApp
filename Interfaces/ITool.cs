@@ -8,8 +8,8 @@ namespace MVVMPaintApp.Interfaces
 {
     public interface ITool
     {
-        void OnMouseDown(object o, MouseEventArgs e, Point imagePoint);
-        void OnMouseUp(object o, MouseEventArgs e, Point imagePoint);
+        void OnMouseDown(object o, MouseButtonEventArgs e, Point imagePoint);
+        void OnMouseUp(object o, MouseButtonEventArgs e, Point imagePoint);
         void OnMouseMove(object o, MouseEventArgs e, Point imagePoint);
     }
 }

@@ -14,11 +14,16 @@ namespace MVVMPaintApp.Services
 
         public void ShowWindow(ObservableObject viewModel)
         {
-            var windowType = windowMapper.GetWindowType(viewModel.GetType());
-            if (windowType != null)
+            if (windowMapper.GetWindowType(viewModel.GetType()) is Type windowType) 
             {
-                var window = Activator.CreateInstance(windowType, viewModel) as Window;
-                window?.Show();
+                if (Activator.CreateInstance(windowType, viewModel) is Window window)
+                {
+                    if (Application.Current.MainWindow == null)
+                    {
+                        Application.Current.MainWindow = window;
+                    }
+                    window.Show();
+                }
             }
         }
 

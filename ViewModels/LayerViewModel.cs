@@ -22,6 +22,21 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private Layer? selectedLayer;
 
+        [ObservableProperty]
+        private Color backgroundColor;
+
+        [ObservableProperty]
+        private bool isColorPickerOpen;
+
+        [ObservableProperty]
+        private Visibility layerControlVisibility;
+
+        [RelayCommand]
+        private void ToggleColorPicker()
+        {
+            IsColorPickerOpen ^= true;
+        }
+
         [RelayCommand]
         private void ToggleVisibility()
         {
@@ -90,6 +105,20 @@ namespace MVVMPaintApp.ViewModels
                 ProjectManager.SelectedLayer = SelectedLayer;
                 Debug.WriteLine("Selected layer: " + SelectedLayer.Index);
             }
+        }
+
+        [RelayCommand]
+        private void SetBackgroundColor()
+        {
+            ProjectManager.CurrentProject.Background = BackgroundColor;
+            ProjectManager.Render();
+            UpdateBackgroundLayer();
+        }
+
+        [RelayCommand]
+        private void ToggleLayerControlVisibility()
+        {
+            LayerControlVisibility = LayerControlVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
         [ObservableProperty]

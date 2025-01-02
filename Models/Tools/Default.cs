@@ -23,7 +23,7 @@ namespace MVVMPaintApp.Models.Tools
             }
         }
 
-        public override void OnMouseDown(object sender, MouseEventArgs e, Point imagePoint)
+        public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point imagePoint)
         {
             if (window != null && e.LeftButton == MouseButtonState.Pressed)
             {
@@ -31,7 +31,7 @@ namespace MVVMPaintApp.Models.Tools
             }
         }
 
-        public override void OnMouseUp(object sender, MouseEventArgs e, Point imagePoint)
+        public override void OnMouseUp(object sender, MouseButtonEventArgs e, Point imagePoint)
         {
         }
 

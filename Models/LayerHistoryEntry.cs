@@ -51,6 +51,7 @@ namespace MVVMPaintApp.Models
 
         public override void Redo(ProjectManager projectManager)
         {
+            ModifiedRegion.Intersect(new Rect(0, 0, Layer.Content.PixelWidth, Layer.Content.PixelHeight));
             Layer.Content.Blit(
                 ModifiedRegion,
                 NewState,
@@ -65,12 +66,13 @@ namespace MVVMPaintApp.Models
 
         public override void Undo(ProjectManager projectManager)
         {
+            ModifiedRegion.Intersect(new Rect(0, 0, Layer.Content.PixelWidth, Layer.Content.PixelHeight));
             Layer.Content.Blit(
-                ModifiedRegion,
-                OldState,
-                new Rect(0, 0, ModifiedRegion.Width, ModifiedRegion.Height),
-                WriteableBitmapExtensions.BlendMode.None
-            );
+            ModifiedRegion,
+            OldState,
+            new Rect(0, 0, ModifiedRegion.Width, ModifiedRegion.Height),
+            WriteableBitmapExtensions.BlendMode.None
+                );
             Layer.RenderThumbnail();
             projectManager.Render(new Rect(0, 0, Layer.Content.PixelWidth, Layer.Content.PixelHeight));
         }

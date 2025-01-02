@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using MVVMPaintApp.ViewModels;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -107,6 +108,32 @@ namespace MVVMPaintApp.Converters
         {
             if (value == null || parameter == null) return null!;
             return (bool)value ? parameter : Binding.DoNothing;
+        }
+    }
+
+    public class ZoomValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double zoomFactor)
+            {
+                return $"{zoomFactor * 100:F0}%";
+            }
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string input)
+            {
+                input = input.Trim(' ', '%');
+
+                if (double.TryParse(input, out double percentage))
+                {
+                    return percentage / 100.0;
+                }
+            }
+            return 1.0;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace MVVMPaintApp.Models.Tools
 {
     public class ColorPicker(ProjectManager projectManager) : ToolBase(projectManager)
     {
-        public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
             HitCheck(ref p);
             if (e.LeftButton == MouseButtonState.Pressed)

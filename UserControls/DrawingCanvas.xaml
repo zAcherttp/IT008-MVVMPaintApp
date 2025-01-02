@@ -20,13 +20,16 @@
     <UserControl.Resources>
         <conv:ZoomToScalingModeConverter x:Key="ZoomToScalingModeConverter"/>
     </UserControl.Resources>
+    <UserControl.Effect>
+        <DropShadowEffect ShadowDepth="0" BlurRadius="0" Color="{DynamicResource ControlElevationShadowColor}" Opacity="0.25"/>
+    </UserControl.Effect>
         <Grid x:Name="MainCanvasGrid"
-          Background="Transparent">
+          Background="{DynamicResource ControlFillColorTertiaryBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="Debug" Grid.Row="0" Panel.ZIndex="10">
+        <!--<Grid x:Name="Debug" Grid.Row="0" Panel.ZIndex="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="50"/>
@@ -48,13 +51,12 @@
             <TextBlock Grid.Column="2" Text="Pan X:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
             <TextBlock Grid.Column="3" Text="{Binding ProjectManager.PanOffsetX.Value, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
             <TextBlock Grid.Column="4" Text="Pan Y:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
-            <TextBlock Grid.Column="5" Text="{Binding ProjectManager.PanOffsetY.Value, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
-            <TextBlock Grid.Column="6" Text="Mode:" VerticalAlignment="Center" Foreground="Lime" Margin="5,0,5,0"/>
-            <TextBlock Grid.Column="7" Text="{Binding ModeText}" VerticalAlignment="Center" Foreground="Yellow"/>
-            <TextBlock Grid.Column="8" Text="Mouse:" VerticalAlignment="Center" Foreground="Lime" Margin="5,0,5,0"/>
-            <TextBlock Grid.Column="9" Text="{Binding MouseInfo}" VerticalAlignment="Center" Foreground="Yellow"/>
-            <Button Grid.Column="11" Foreground="Lime" Command="{Binding ProjectManager.FitToWindowCommand}">Fit to window</Button>
-        </Grid>
+            <TextBlock Grid.Column="5" Text="{Binding ProjectManager.PanOffsetY.Value, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/><TextBlock Grid.Column="4" Text="Pan Y:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
+            <TextBlock Grid.Column="6" Text="Control Y:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
+            <TextBlock Grid.Column="7" Text="{Binding ProjectManager.DrawingCanvasControlWidth, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
+            <TextBlock Grid.Column="8" Text="Control X:" VerticalAlignment="Center" Foreground="Lime" Margin="0,0,5,0"/>
+            <TextBlock Grid.Column="9" Text="{Binding ProjectManager.DrawingCanvasControlHeight, Mode=OneWay, StringFormat=F0}" VerticalAlignment="Center" Foreground="Lime"/>
+        </Grid>-->
         <Grid Grid.Row="1" x:Name="MainCanvasArea" Background="Transparent">
             <Canvas
             Background="White" 
@@ -71,9 +73,11 @@
                     </TransformGroup>
                 </Canvas.RenderTransform>
                 <Image Source="{Binding ProjectManager.RenderTarget}" 
+                       Panel.ZIndex="0"
                        Stretch="None"
                        RenderOptions.BitmapScalingMode="{Binding ProjectManager.ZoomFactor.Value, 
                         Converter={StaticResource ZoomToScalingModeConverter}}"
+                       SnapsToDevicePixels="True"
                        x:Name="MainImage"/>
             </Canvas>
         </Grid>

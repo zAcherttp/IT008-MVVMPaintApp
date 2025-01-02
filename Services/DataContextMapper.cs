@@ -37,6 +37,11 @@ namespace MVVMPaintApp.Services
         {
             Register<DrawingCanvasViewModel, DrawingCanvas>();
             Register<ColorPaletteViewModel, ColorPaletteControl>();
+            Register<LayerViewModel, LayerControl>();
+            Register<ToolboxViewModel, ToolboxControl>();
+            Register<ResizeViewModel, ResizeControl>();
+            Register<SaveChangesViewModel, SaveChangesControl>();
+            Register<AboutViewModel, AboutControl>();
         }
         public void Register<TViewModel, TView>() where TViewModel : ObservableObject where TView : UserControl
         {

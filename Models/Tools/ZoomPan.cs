@@ -1,6 +1,7 @@
 ﻿using MVVMPaintApp.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,15 +12,13 @@ namespace MVVMPaintApp.Models.Tools
 {
     public class ZoomPan(ProjectManager projectManager) : ToolBase(projectManager)
     {
-        private const double ZOOM_STEP_PERCENTAGE = 0.1;
-
-        public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
             IsDrawing = e.RightButton == MouseButtonState.Pressed;
             LastPoint = p;
         }
 
-        public override void OnMouseUp(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseUp(object sender, MouseButtonEventArgs e, Point p)
         {
             IsDrawing = false;
         }
@@ -42,16 +41,11 @@ namespace MVVMPaintApp.Models.Tools
         public async Task HandleMouseWheel(MouseWheelEventArgs e)
         {
             double zoomChange = e.Delta > 0 ? 1.0 : -1.0;
-            if(ProjectManager.ZoomFactor.Value < 2.0)
-            {
-                zoomChange *= 0.1;
-            }
-            else
-            {
-                zoomChange *= 0.25;
-            }
+            double scaleFactor = 0.1 + (ProjectManager.ZoomFactor.Value - 0.1) * 0.15;
+            zoomChange *= scaleFactor;
             double newZoomFactor = Math.Clamp(ProjectManager.ZoomFactor.Value + zoomChange, 0.1, 8.0);
-            await ProjectManager.ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 30);
+            Debug.WriteLine($"Zooming to {newZoomFactor}");
+            await ProjectManager.ZoomFactor.EaseToAsync(newZoomFactor, Easing.EasingType.EaseInOutCubic, 100);
         }
     }
 }

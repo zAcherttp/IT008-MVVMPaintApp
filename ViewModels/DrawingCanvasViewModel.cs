@@ -6,6 +6,8 @@ using MVVMPaintApp.Services;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Input;
 
 namespace MVVMPaintApp.ViewModels
 {
@@ -31,19 +33,27 @@ namespace MVVMPaintApp.ViewModels
         [ObservableProperty]
         private double userControlHeight = 700;
 
-        // Debugging properties
         [ObservableProperty]
-        private string modeText = "";
+        private string mousePosOnCanvas = "";
 
         [ObservableProperty]
-        private string mouseInfo = "0, 0";
+        private string selectionSize = "";
+
+        [ObservableProperty]
+        private string canvasSize = "";
+
+        [ObservableProperty]
+        private List<ZoomPreset> zoomPresets = [];
+
 
         public DrawingCanvasViewModel(ProjectManager projectManager)
         {
             ProjectManager = projectManager;
             CurrentProject = projectManager.CurrentProject;
-            SelectedTool = new Pencil(projectManager);
+            CanvasSize = $"{CurrentProject.Width}, {CurrentProject.Height}px";
+            SelectedTool = new Default(projectManager);
             keyHandler = new KeyHandler();
+            InitZoomPresets();
             RegisterKeyCommands();
             DebugPrintKeyCommandList();
             ProjectManager.Render();
@@ -53,7 +63,8 @@ namespace MVVMPaintApp.ViewModels
         {
             ProjectManager = projectManager;
             CurrentProject = projectManager.CurrentProject;
-            SelectedTool = new Pencil(projectManager);
+            CanvasSize = $"{CurrentProject.Width}, {CurrentProject.Height}px";
+            SelectedTool = new Default(projectManager);
             ProjectManager.Render();
         }
 
@@ -69,7 +80,9 @@ namespace MVVMPaintApp.ViewModels
                 ToolType.Eraser => new Eraser(ProjectManager),
                 ToolType.Fill => new Fill(ProjectManager),
                 ToolType.ColorPicker => new ColorPicker(ProjectManager),
+                ToolType.Shape => new Shape(ProjectManager),
                 ToolType.ZoomPan => new ZoomPan(ProjectManager),
+                ToolType.RectSelect => new RectSelect(ProjectManager),
                 ToolType.Default => new Default(ProjectManager),
 
                 _ => new Pencil(ProjectManager),
@@ -81,6 +94,12 @@ namespace MVVMPaintApp.ViewModels
         partial void OnSelectedToolTypeChanged(ToolType value)
         {
             SetTool(value);
+        }
+
+        [RelayCommand]
+        private void SetRectSelectTool()
+        {
+            SetTool(ToolType.RectSelect);
         }
 
         public void SetUserControlSize(double width, double height)
@@ -146,6 +165,11 @@ namespace MVVMPaintApp.ViewModels
                 [Key.Escape]);
         }
 
+        private void InitZoomPresets()
+        {
+            ZoomPresets = [new(8.0), new(7.0), new(6.0), new(5.0), new(4.0), new(3.0), new(2.0), new(1.0), new(0.5), new(0.25)];
+        }
+
         public void DebugPrintKeyCommandList()
         {
             Debug.WriteLine("Key Commands:");
@@ -161,9 +185,26 @@ namespace MVVMPaintApp.ViewModels
             keyHandler.HandleKeyPress(key, currentlyPressedKeys);
         }
 
-        public void UpdateMouseInfo(Point position, bool isPressed)
+        public void UpdateMousePosOnCanvas(Point position)
         {
-            MouseInfo = $"{position.X:F0}, {position.Y:F0}" + (isPressed ? " [DOWN]" : "");
+            if (position.X < 0 || position.Y < 0 || position.X > CurrentProject.Width || position.Y > CurrentProject.Height)
+            {
+                MousePosOnCanvas = "";
+                return;
+            }
+            MousePosOnCanvas = $"{position.X:F0}, {position.Y:F0}px";
+        }
+
+        public void UpdateSelectionSize()
+        {
+            if (SelectedTool is RectSelect rectSelect)
+            {
+                SelectionSize = $"{rectSelect.Selection.Bounds.Width:F0}, {rectSelect.Selection.Bounds.Height:F0}px";
+            }
+            else
+            {
+                SelectionSize = "";
+            }
         }
 
         public void HandleMouseDown(object sender, MouseButtonEventArgs e, Point p)

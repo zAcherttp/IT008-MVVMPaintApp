@@ -154,7 +154,7 @@
                                         ClipToBounds="True">
                                     <Canvas x:Name="ThumbnailCanvas" 
                                     Height="{Binding ThumbnailHeight}" Width="{Binding ThumbnailWidth}" ClipToBounds="True">
-                                        <Image Source="{Binding Thumbnail}" ClipToBounds="True"
+                                        <Image Source="{Binding Thumbnail}" ClipToBounds="True" RenderOptions.BitmapScalingMode="HighQuality"
                                         Stretch="UniformToFill"/>
                                     </Canvas>
                                 </Border>
@@ -164,7 +164,11 @@
                                     FontSize="18"
                                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                     Margin="0,4,0,0"
-                                    TextTrimming="CharacterEllipsis"/>
+                                    TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}" Direction="0" ShadowDepth="5" BlurRadius="10" Opacity="0.5"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -172,7 +176,7 @@
             </StackPanel>
         </Border>
         <StackPanel Grid.Column="0">
-            <Image Source="pack://application:,,,/Resources/MyPaintAppIcon.png" Width="80" Height="80" HorizontalAlignment="left" Margin="80,40,0,40"/>
+            <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/Resources/MyPaintAppIcon.png" Width="80" Height="80" HorizontalAlignment="left" Margin="70,40,0,40"/>
             <Button Style="{StaticResource NewFileButtonStyle}" Command="{Binding OpenNewFileWindowCommand}"  Content="New File" VerticalAlignment="Top" Background="#1A99DD" Foreground="White" FontSize="21" FontFamily="Segoe UI" Margin="40,0,40,10"/>
             <Button Style="{StaticResource OpenButtonStyle}" Command="{Binding OpenProjectCommand}"
                     Content="Open" VerticalAlignment="Top" FontSize="21" FontFamily="Segoe UI" Margin="40,0,40,10"

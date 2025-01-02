@@ -17,7 +17,7 @@ namespace MVVMPaintApp.Models.Tools
             DrawPreview(LastPoint, Colors.Transparent);
         }
 
-        public override void OnMouseDown(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseDown(object sender, MouseButtonEventArgs e, Point p)
         {
             base.OnMouseDown(sender, e, p);
             if (!IsValidDrawingState()) return;
@@ -42,9 +42,9 @@ namespace MVVMPaintApp.Models.Tools
             LastPoint = p;
         }
 
-        public override void OnMouseUp(object sender, MouseEventArgs e, Point p)
+        public override void OnMouseUp(object sender, MouseButtonEventArgs e, Point p)
         {
-            if (ProjectManager.StrokeLayer != null && CurrentStrokeRegion != null)
+            if (CurrentStrokeRegion.HasValue)
             {
                 ProjectManager.UndoRedoManager.AddHistoryEntry(
                     new LayerHistoryEntry(
@@ -56,6 +56,7 @@ namespace MVVMPaintApp.Models.Tools
             ProjectManager.StrokeLayer.Clear(Colors.Transparent);
             DrawPreview(p, ProjectManager.CurrentProject.Background);
             ProjectManager.Render(new Rect(0, 0, ProjectManager.CurrentProject.Width, ProjectManager.CurrentProject.Height));
+            ProjectManager.HasUnsavedChanges = true;
             CurrentStrokeRegion = null;
             OldState = null;
 
@@ -103,9 +104,9 @@ namespace MVVMPaintApp.Models.Tools
                     CurrentStrokeRegion = Rect.Union(CurrentStrokeRegion.Value, region);
                 }
 
-                var diagonal = Math.Sqrt(2) * BrushSize / 2;
+                var h = BrushSize / 2;
                 ProjectManager.SelectedLayer.Content.FillRectangle(
-                    (int)(point.X - diagonal), (int)(point.Y - diagonal), (int)(point.X + diagonal), (int)(point.Y + diagonal), color);
+                    (int)(point.X - h), (int)(point.Y - h), (int)(point.X + h), (int)(point.Y + h), color);
 
 
                 ProjectManager.Render(region);
@@ -132,10 +133,9 @@ namespace MVVMPaintApp.Models.Tools
 
                     var region = CalculateSegmentRegion(lastDrawnPoint, currentPoint, BrushSize);
 
-                    var diagonal = Math.Sqrt(2) * BrushSize / 2;
-
+                    var h = BrushSize / 2;
                     ProjectManager.SelectedLayer.Content.FillRectangle(
-                        (int)(currentPoint.X - diagonal), (int)(currentPoint.Y - diagonal), (int)(currentPoint.X + diagonal), (int)(currentPoint.Y + diagonal), color);
+                        (int)(currentPoint.X - h), (int)(currentPoint.Y - h), (int)(currentPoint.X + h), (int)(currentPoint.Y + h), color);
                     
                     if (CurrentStrokeRegion.HasValue)
                     {

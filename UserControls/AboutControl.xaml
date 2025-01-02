@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="MVVMPaintApp.UserControls.AboutControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVMPaintApp.UserControls"
+        xmlns:resx="clr-namespace:MVVMPaintApp.Resources"
+        mc:Ignorable="d"
+        Height="Auto"
+        Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+        d:Background="Gray">
+
+    <Border>
+        <Grid Margin="15,15,15,15" Width="400">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image Margin="10,0,10,0" RenderOptions.BitmapScalingMode="HighQuality" Grid.Column="0" Source="/Resources/MyPaintAppIcon.png" Width="50" Height="50">
+                    <Image.Effect>
+                        <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}" Direction="-90" ShadowDepth="5" BlurRadius="10" Opacity="0.5"/>
+                    </Image.Effect>
+                </Image>
+                <TextBlock Grid.Column="1"
+                           VerticalAlignment="Center"
+                        Text="{Binding AppName}"
+                           FontWeight="SemiBold"
+                        FontSize="20"
+                        Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"/>
+                <TextBlock Text="{Binding Version}" Grid.Column="2" Margin="5,5,0,0"
+                           VerticalAlignment="Center"
+                        FontSize="14"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock TextWrapping="Wrap" Grid.Row="0" Margin="10,0,10,10" TextAlignment="Justify"
+                           Text="My Paint App là ứng dụng vẽ đồ hoạ đơn giản được phát triển cho đồ án môn Lập trình Trực quan IT008.P13 HK1 NH2024-2025 bởi nhóm:"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" VerticalAlignment="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Margin="10,0,0,0" Text="23520918 - Bùi Xuân Minh" Grid.Row="0" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                        <TextBlock Margin="10,0,0,0" Text="23521078 - Nguyễn Đức Nhân" Grid.Row="1" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                        <TextBlock Margin="10,0,0,0" Text="23521150 - Thang Tuấn Phát" Grid.Row="2" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                    </Grid>
+                    <Image Grid.Column="1" Margin="20,0,0,0" Source="/Resources/UIT.png" Height="60" Width="60" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Effect>
+                            <DropShadowEffect Color="{DynamicResource ControlElevationShadowColor}" Direction="-90" ShadowDepth="5" BlurRadius="10" Opacity="0.2"/>
+                        </Image.Effect>
+                    </Image>
+                </Grid>
+            </Grid>
+            <StackPanel Grid.Row="2" Margin="0,20,0,0"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+                <Button Content="Close"
+                    Width="80"
+                    Height="30"
+                    BorderThickness="0"
+                    Command="{Binding CancelCommand}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

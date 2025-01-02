@@ -8,7 +8,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
         </ResourceDictionary>
     </Application.Resources>
 </Application>
