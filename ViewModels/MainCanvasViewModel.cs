@@ -288,6 +288,7 @@ namespace MVVMPaintApp.ViewModels
             if (result)
             {
                 ProjectManager.ResizeProject(dialogVm.Width, dialogVm.Height, dialogVm.IsPixels);
+                DrawingCanvasViewModel.CanvasSize = $"{ProjectManager.CurrentProject.Width}, {ProjectManager.CurrentProject.Height}px";
             }
         }
 
