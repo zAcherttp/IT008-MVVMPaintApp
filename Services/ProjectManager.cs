@@ -43,6 +43,9 @@ namespace MVVMPaintApp.Services
         private Color secondaryColor = Colors.White;
 
         [ObservableProperty]
+        private bool isPrimaryColorSelected = true;
+
+        [ObservableProperty]
         private Cursor cursor = Cursors.Arrow;
 
         [ObservableProperty]
@@ -119,7 +122,6 @@ namespace MVVMPaintApp.Services
                 (int)(region.Y + region.Height),
                 CurrentProject.Background
             );
-            Debug.WriteLine("Rendering project at size: " + RenderTarget.PixelWidth + "x" + RenderTarget.PixelHeight);
 
             for (int i = CurrentProject.Layers.Count - 1; i >= 0; i--)
             {
@@ -138,7 +140,7 @@ namespace MVVMPaintApp.Services
                 }
             }
 
-            // Draw dirty rect region for debugging
+            // Draw render region for debugging
             //RenderTarget.DrawRectangle(
             //    (int)region.X,
             //    (int)region.Y,

@@ -62,10 +62,17 @@ namespace MVVMPaintApp.Models.Tools
         public bool IsValidDrawingState() =>
             ProjectManager.SelectedLayer?.Content != null;
 
-        public Color GetCurrentColor(MouseEventArgs e) =>
-            e.LeftButton == MouseButtonState.Pressed
-                ? ProjectManager.PrimaryColor
-                : ProjectManager.SecondaryColor;
+        public Color GetCurrentColor(MouseEventArgs e)
+        {
+            bool isPrimary = ProjectManager.IsPrimaryColorSelected;
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                return isPrimary ? ProjectManager.SecondaryColor : ProjectManager.PrimaryColor;
+            } else
+            {
+                return isPrimary ? ProjectManager.PrimaryColor : ProjectManager.SecondaryColor;
+            }
+        }
 
         public static bool IsColorSimilar(Color c1, Color c2, int tolerance = 0)
         {

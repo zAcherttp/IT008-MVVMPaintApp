@@ -28,7 +28,7 @@ namespace MVVMPaintApp.Models.Tools
 
         public override void OnMouseMove(object sender, MouseEventArgs e, Point p)
         {
-            DrawPreview(p, ProjectManager.PrimaryColor);
+            DrawPreview(p, GetCurrentColor(e));
             if (!IsDrawing || !IsValidDrawingState()) return;
             float distance = CalculateDistance(LastPoint, p);
             if (distance < MIN_INTERP_DISTANCE) return;

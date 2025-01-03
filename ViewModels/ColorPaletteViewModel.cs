@@ -26,13 +26,19 @@ namespace MVVMPaintApp.ViewModels
         private Color paletteButtonColor = Colors.Transparent;
 
         [ObservableProperty]
+        private Color primaryColor = Colors.Black;
+
+        [ObservableProperty]
+        private Color secondaryColor = Colors.White;
+
+        [ObservableProperty]
         private Color colorPickerColor;
 
         [ObservableProperty]
         private bool isColorPickerOpen;
 
         private int nextColorButtonIndex = 0;
-        private bool isPrimaryColorSelected;
+        private bool isPrimaryColorSelected = true;
 
         [RelayCommand]
         private void ToggleColorPicker() => IsColorPickerOpen ^= true;
@@ -44,29 +50,35 @@ namespace MVVMPaintApp.ViewModels
         }
 
         [RelayCommand]
-        private void SetPrimaryColor() => isPrimaryColorSelected = true;
+        private void SetPrimaryColor()
+        {
+            isPrimaryColorSelected = ProjectManager.IsPrimaryColorSelected = true;
+        }
 
         [RelayCommand]
-        private void SetSecondaryColor() => isPrimaryColorSelected = false;
+        private void SetSecondaryColor()
+        {
+            isPrimaryColorSelected = ProjectManager.IsPrimaryColorSelected = false;
+        }
 
         [RelayCommand]
         private void PaletteButtonRightClick(object? param)
         {
             if (param is not PaletteColorSlot slot) return;
             if (isPrimaryColorSelected)
-                ProjectManager.SecondaryColor = slot.Color;
+                ProjectManager.SecondaryColor = SecondaryColor = slot.Color;
             else
-                ProjectManager.PrimaryColor = slot.Color;
+                ProjectManager.PrimaryColor = PrimaryColor = slot.Color;
         }
 
         [RelayCommand]
         private void PaletteButtonLeftClick(object? param)
         {
             if (param is not PaletteColorSlot slot) return;
-            if (isPrimaryColorSelected)
-                ProjectManager.PrimaryColor = slot.Color;
+            if(isPrimaryColorSelected)
+                ProjectManager.PrimaryColor = PrimaryColor = slot.Color;
             else
-                ProjectManager.SecondaryColor = slot.Color;
+                ProjectManager.SecondaryColor = SecondaryColor = slot.Color;
         }
 
         [RelayCommand]
