@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conv="Mvv"
              xmlns:uc="clr-namespace:MVVMPaintApp.UserControls"
+             FocusVisualStyle="{x:Null}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="100">
     <UserControl.Resources>
@@ -125,7 +126,8 @@
                 <Image Source="{StaticResource LayerAddButtonIcon}" Stretch="UniformToFill" Effect="{StaticResource ControlElevationEffect}"/>
             </Button>
             <Line Grid.Row="1" Stroke="{DynamicResource ControlElevationBorderBrush}" X1="0" Y1="0" X2="120" Y2="0" StrokeThickness="1"/>
-            <ListView Grid.Row="1" 
+            <ListView Grid.Row="1"
+                      FocusVisualStyle="{x:Null}"
                       x:Name="LayerControlListView"
                       ItemsSource="{Binding Layers}"
                       SelectedItem="{Binding SelectedLayer}"

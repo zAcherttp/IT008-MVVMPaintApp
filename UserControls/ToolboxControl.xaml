@@ -154,7 +154,7 @@
                 <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
                              ContextMenu="{StaticResource BrushToolsMenu}"
                              ContextMenuService.HasDropShadow="True"
-                            ContextMenuService.Placement="Right"
+                            ContextMenuService.Placement="Right" ToolTip="Pencil: V"
                             ContextMenuService.PlacementTarget="{Binding RelativeSource={RelativeSource Self}}"
                             ContextMenuService.HorizontalOffset="10"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
@@ -165,7 +165,7 @@
                 <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
                              ContextMenu="{StaticResource BrushToolsMenu}"
                              ContextMenuService.HasDropShadow="True"
-                            ContextMenuService.Placement="Right"
+                            ContextMenuService.Placement="Right" ToolTip="Brush: B"
                             ContextMenuService.PlacementTarget="{Binding RelativeSource={RelativeSource Self}}"
                             ContextMenuService.HorizontalOffset="10"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
@@ -176,7 +176,7 @@
                 <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
                              ContextMenu="{StaticResource BrushToolsMenu}"
                              ContextMenuService.HasDropShadow="True"
-                             ContextMenuService.Placement="Right"
+                             ContextMenuService.Placement="Right" ToolTip="Eraser: E"
                              ContextMenuService.PlacementTarget="{Binding RelativeSource={RelativeSource Self}}"
                              ContextMenuService.HorizontalOffset="10"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
@@ -185,14 +185,14 @@
                     <Image Source="/Resources/Eraser.png" Width="32" Height="32"/>
                 </RadioButton>
                 <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
-                             
+                             ToolTip="Fill: F"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.Fill}}">
                     <Image Source="/Resources/Fill.png" Width="32" Height="32"/>
                 </RadioButton>
                 <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
-                             
+                             ToolTip="Color picker: Q"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ColorPicker}}">
@@ -210,7 +210,7 @@
                     <Image Source="/Resources/Shape.png" Width="32" Height="32"/>
                 </RadioButton>
                 <RadioButton Style="{StaticResource ToolRadioButtonStyle}" GroupName="Tools"
-                             
+                             ToolTip="Zoom pan: Z"
                            IsChecked="{Binding ViewModelLocator.DrawingCanvasViewModel.SelectedToolType, Mode=TwoWay, 
                            Converter={StaticResource EnumToBoolConverter}, 
                            ConverterParameter={x:Static t:ToolType.ZoomPan}}">

@@ -137,8 +137,7 @@ namespace MVVMPaintApp.Models.Tools
             if (CurrentStrokeRegion == null) return;
             ProjectManager.SelectedLayer.Content.Blit((Rect)CurrentStrokeRegion,
                 ProjectManager.StrokeLayer,
-                (Rect)CurrentStrokeRegion,
-                WriteableBitmapExtensions.BlendMode.Alpha
+                (Rect)CurrentStrokeRegion, WriteableBitmapExtensions.BlendMode.Alpha
             );
         }
     }

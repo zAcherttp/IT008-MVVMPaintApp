@@ -14,6 +14,7 @@ namespace MVVMPaintApp.ViewModels
     public partial class DrawingCanvasViewModel : ObservableObject
     {
         private readonly KeyHandler keyHandler;
+        private readonly ViewModelLocator viewModelLocator;
 
         [ObservableProperty]
         private ProjectManager projectManager;
@@ -46,9 +47,10 @@ namespace MVVMPaintApp.ViewModels
         private List<ZoomPreset> zoomPresets = [];
 
 
-        public DrawingCanvasViewModel(ProjectManager projectManager)
+        public DrawingCanvasViewModel(ProjectManager projectManager, ViewModelLocator _viewModelLocator)
         {
             ProjectManager = projectManager;
+            viewModelLocator = _viewModelLocator;
             CurrentProject = projectManager.CurrentProject;
             CanvasSize = $"{CurrentProject.Width}, {CurrentProject.Height}px";
             SelectedTool = new Default(projectManager);
@@ -163,6 +165,18 @@ namespace MVVMPaintApp.ViewModels
                 () => SetTool(ToolType.Default),
                 "Tool - Default",
                 [Key.Escape]);
+
+            keyHandler.RegisterCommand(
+                Key.Delete,
+                () => DeleteSelectedLayer(),
+                "Tool - Default",
+                [Key.Delete]);
+        }
+
+        public void DeleteSelectedLayer()
+        {
+            Debug.WriteLine("Delete Layer");
+            viewModelLocator.LayerViewModel.DeleteLayerCommand.Execute(null);
         }
 
         private void InitZoomPresets()

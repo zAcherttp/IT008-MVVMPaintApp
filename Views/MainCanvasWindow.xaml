@@ -828,8 +828,8 @@
         <Popup IsOpen="{Binding LayerViewModel.IsColorPickerOpen}"
                PlacementTarget="{Binding ElementName=ZoomSlider}"
                Placement="Top"
-               HorizontalOffset="-380"
-               VerticalOffset="-13"
+               HorizontalOffset="-400"
+               VerticalOffset="-33"
                AllowsTransparency="True"
                PopupAnimation="Fade">
             <Border Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
