@@ -37,16 +37,17 @@ The application leverages several WPF features, including:
 - XAML-based UI definitions
 
 ## Screenshots
-Dashboard
-![image](https://github.com/user-attachments/assets/0848b6dd-2487-4c44-ba5f-27c8e8526062)
 
-New file
+### Dashboard
+![image](https://github.com/user-attachments/assets/3df19f33-bb19-42c3-a00e-af439586ccc2)
+
+### New file
 ![image](https://github.com/user-attachments/assets/cf0f6ff5-6f45-4098-b72e-e08278bb2dae)
 
-Main canvas
+### Main canvas
 ![image](https://github.com/user-attachments/assets/87a4c924-d14d-4eb6-8a51-a35b443b48c7)
 
-Credits
+### Credits
 ![image](https://github.com/user-attachments/assets/7c281699-b510-49a5-b6cf-8275a4fb908f)
 
 ## Keyboard Shortcuts
