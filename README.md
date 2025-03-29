@@ -4,9 +4,9 @@ A WPF-based paint application developed using the MVVM (Model-View-ViewModel) ar
 
 ## Team Members
 
-- Bùi Xuân Minh (2352091823520918@gm.uit.edu.vn)
-- Nguyễn Đức Nhân (2352107823521078@gm.uit.edu.vn)
-- Thang Tuấn Phát (2352115023521150@gm.uit.edu.vn)
+- Bùi Xuân Minh (23520918@gm.uit.edu.vn)
+- Nguyễn Đức Nhân (23521078@gm.uit.edu.vn)
+- Thang Tuấn Phát (23521150@gm.uit.edu.vn)
 
 ## Features
 
