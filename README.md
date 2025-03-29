@@ -72,6 +72,11 @@ These shortcuts are implemented
 - Windows operating system
 - .NET Framework (version used in development)
 - Visual Studio (recommended for development)
+NuGet packages:
++ CommunityToolkit.Mvvm (8.4.0) by Microsoft
++ Microsoft.Extensions.DependencyInjection (9.0.0, 9.0.3) by Microsoft
++ Newtonsoft.Json (13.0.3) by James Newton-King
++ WriteableBitmapEx (1.6.8) by Schulte Software Development
 
 ## How to Run
 
